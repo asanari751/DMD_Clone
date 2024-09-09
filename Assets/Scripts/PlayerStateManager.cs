@@ -1,129 +1,127 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using DG.Tweening;
+using System.Linq;
 
 public class PlayerStateManager : MonoBehaviour
 {
     [SerializeField] private float detectionRadius = 5f;
     [SerializeField] private LayerMask targetLayers;
-    [SerializeField] private bool showDetectionRadius = true;
-    [SerializeField] private Color detectionRadiusColor = new Color(1f, 1f, 0f, 0.2f);
-    [SerializeField] private float detectionInterval = 0.5f;
+    [SerializeField] private float attackAngle = 180f;
+    [SerializeField] private float attackDamage = 10f;
+    [SerializeField] private float attackEffectDuration = 0.5f;
+    [SerializeField] private SpriteRenderer attackEffectSprite;
+    [SerializeField] private InputActionReference attackAction;
+    [SerializeField] private float atkDelay = 1f;
 
-    private GameObject currentTarget;
-    private LineRenderer circleRenderer;
-    private Tween detectionTween;
+    private Camera mainCamera;
+    private bool isAutoAttack = false;
+    private Tween autoAttackTween;
+    private float lastAttackTime = 0f;
 
     private void Awake()
     {
-        if (showDetectionRadius)
-        {
-            SetupCircleRenderer();
-        }
+        attackAction.action.performed += _ => ToggleAutoAttack();
+        mainCamera = Camera.main;
     }
 
-    private void Start()
-    {
-        StartDetectionLoop();
-    }
+    private void OnEnable() => attackAction.action.Enable();
 
     private void OnDisable()
     {
-        StopDetectionLoop();
+        attackAction.action.Disable();
+        StopAutoAttack();
     }
 
-    private void SetupCircleRenderer()
+    private void ToggleAutoAttack()
     {
-        circleRenderer = gameObject.AddComponent<LineRenderer>();
-        circleRenderer.useWorldSpace = true;
-        circleRenderer.loop = true;
-        circleRenderer.startWidth = 0.1f;
-        circleRenderer.endWidth = 0.1f;
-        circleRenderer.positionCount = 51;
-        circleRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        circleRenderer.startColor = detectionRadiusColor;
-        circleRenderer.endColor = detectionRadiusColor;
-
-        DrawDetectionRadius();
+        isAutoAttack = !isAutoAttack;
+        if (isAutoAttack) StartAutoAttack();
+        else StopAutoAttack();
     }
 
-    private void DrawDetectionRadius()
+    private void StartAutoAttack()
     {
-        float deltaTheta = (2f * Mathf.PI) / 50;
-        float theta = 0f;
+        StopAutoAttack();
+        autoAttackTween = DOVirtual.DelayedCall(atkDelay, PerformAttack, false).SetLoops(-1);
+    }
 
-        for (int i = 0; i < 51; i++)
+    private void StopAutoAttack() => DOTween.Kill(autoAttackTween);
+
+    private void PerformAttack()
+    {
+        if (Time.time - lastAttackTime < atkDelay) return;
+
+        GameObject closestEnemy = FindClosestEnemy();
+        if (closestEnemy != null)
         {
-            float x = detectionRadius * Mathf.Cos(theta);
-            float y = detectionRadius * Mathf.Sin(theta);
-            Vector3 pos = transform.position + new Vector3(x, y, 0);
-            circleRenderer.SetPosition(i, pos);
-            theta += deltaTheta;
+            AttackInSemicircle(closestEnemy.transform.position);
+            lastAttackTime = Time.time;
         }
     }
 
-    private void StartDetectionLoop()
-    {
-        detectionTween = DOVirtual.DelayedCall(detectionInterval, () =>
-        {
-            DetectClosestTarget();
-            StartDetectionLoop();
-        }, false);
-    }
-
-    private void StopDetectionLoop()
-    {
-        detectionTween?.Kill();
-    }
-
-    private void DetectClosestTarget()
+    private GameObject FindClosestEnemy()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, detectionRadius, targetLayers);
+        return colliders.Length > 0 ? 
+            colliders.OrderBy(c => Vector2.Distance(transform.position, c.transform.position)).First().gameObject : 
+            null;
+    }
 
-        float closestDistance = float.MaxValue;
-        GameObject closestTarget = null;
+    private void AttackInSemicircle(Vector2 targetPosition)
+    {
+        Vector2 directionToTarget = (targetPosition - (Vector2)transform.position).normalized;
+        float angleToTarget = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
 
-        foreach (Collider2D collider in colliders)
+        foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, detectionRadius, targetLayers))
         {
-            float distance = Vector2.Distance(transform.position, collider.transform.position);
-            if (distance < closestDistance)
+            Vector2 directionToCollider = (collider.transform.position - transform.position).normalized;
+            float angleToCollider = Mathf.Atan2(directionToCollider.y, directionToCollider.x) * Mathf.Rad2Deg;
+
+            if (Mathf.Abs(Mathf.DeltaAngle(angleToTarget, angleToCollider)) <= attackAngle / 2)
             {
-                closestDistance = distance;
-                closestTarget = collider.gameObject;
+                if (collider.TryGetComponent<BasicEnemy>(out var enemy))
+                {
+                    Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized;
+                    enemy.TakeDamage(attackDamage, knockbackDirection);
+                }
             }
         }
-
-        currentTarget = closestTarget;
-
-        // if (currentTarget != null)
-        // {
-            // Debug.Log($"Closest Target: {currentTarget.name}, Distance: {closestDistance}");
-        // }
-        // else
-        // {
-            // Debug.Log("No target detected");
-        // }
+        ShowAttackEffect(targetPosition);
     }
 
-    public GameObject GetClosestTarget()
+    private void ShowAttackEffect(Vector2 targetPosition)
     {
-        return currentTarget;
-    }
+        if (attackEffectSprite == null) return;
 
-    private void OnValidate()
-    {
-        if (showDetectionRadius && circleRenderer != null)
-        {
-            DrawDetectionRadius();
-            circleRenderer.startColor = detectionRadiusColor;
-            circleRenderer.endColor = detectionRadiusColor;
-        }
+        DOTween.Kill(attackEffectSprite);
+        attackEffectSprite.gameObject.SetActive(true);
+        attackEffectSprite.color = Color.white;
+
+        Vector2 directionToTarget = (targetPosition - (Vector2)transform.position).normalized;
+        float angleToTarget = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
+
+        Vector2 originalSize = attackEffectSprite.sprite.bounds.size;
+        float scaleX = detectionRadius * 2 / originalSize.x;
+        float scaleY = detectionRadius / originalSize.y;
+
+        attackEffectSprite.transform.localScale = new Vector3(scaleX, scaleY, 1f);
+        attackEffectSprite.transform.position = (Vector2)transform.position + directionToTarget * (detectionRadius / 2f);
+        attackEffectSprite.transform.rotation = Quaternion.Euler(0, 0, angleToTarget - 90);
+
+        DOTween.Sequence()
+            .Append(attackEffectSprite.DOFade(0.5f, attackEffectDuration * 0.1f))
+            .Append(attackEffectSprite.DOFade(0f, attackEffectDuration * 0.4f))
+            .OnComplete(() => attackEffectSprite.gameObject.SetActive(false));
     }
 
     private void Update()
     {
-        if (showDetectionRadius)
+        if (Input.GetMouseButtonDown(0))
         {
-            DrawDetectionRadius();
+            Vector2 worldPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            AttackInSemicircle(worldPosition);
+            lastAttackTime = Time.time;
         }
     }
 }

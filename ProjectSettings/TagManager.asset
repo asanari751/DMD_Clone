@@ -8,12 +8,12 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - Enemy
   - Impassible
-  - 
+  - Interactable
   - 
   - 
   - 
@@ -40,6 +40,12 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Bubble
+    uniqueID: 265118131
+    locked: 0
+  - name: UI
+    uniqueID: 1296529357
     locked: 0
   m_RenderingLayers:
   - Default

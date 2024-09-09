@@ -175,7 +175,7 @@ public class Flowfield : MonoBehaviour
             {
                 if (neighbor.isObstacle) continue;
 
-                float moveCost = (neighbor.position - current.position).magnitude == 1 ? 1f : 1.414f;
+                float moveCost = (neighbor.position - current.position).magnitude == 1 ? 1f : 2f;
                 float newCost = current.cost + moveCost;
 
                 if (newCost < neighbor.cost)

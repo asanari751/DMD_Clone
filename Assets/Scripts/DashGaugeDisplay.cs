@@ -4,36 +4,65 @@ using UnityEngine.UI;
 public class DashGaugeDisplay : MonoBehaviour
 {
     [SerializeField] private Image[] dashGaugeImages;
-    [SerializeField] private PlayerStates playerStates;
+    [SerializeField] private PlayerDash playerDash;
     [SerializeField] private Color activeColor = Color.white;
     [SerializeField] private Color inactiveColor = Color.gray;
 
     private void Start()
     {
-        // 시작 시 대시 게이지 이미지 개수 확인
-        if (dashGaugeImages.Length != playerStates.MaxDashGauge)
+        if (dashGaugeImages == null || dashGaugeImages.Length == 0 || playerDash == null)
         {
-            Debug.LogWarning("대시 게이지 이미지 개수가 최대 대시 게이지 수와 일치하지 않습니다.");
+            return;
         }
+
+        for (int i = 0; i < dashGaugeImages.Length; i++)
+        {
+            dashGaugeImages[i].type = Image.Type.Filled;
+            dashGaugeImages[i].fillMethod = Image.FillMethod.Horizontal;
+            dashGaugeImages[i].fillOrigin = (int)Image.OriginHorizontal.Left;
+        }
+
+        UpdateDashGauge();
+        playerDash.OnDashStateChanged += UpdateDashGauge;
     }
 
-    private void Update()
+    private void OnDestroy()
     {
-        UpdateDashGauge();
+        if (playerDash != null)
+        {
+            playerDash.OnDashStateChanged -= UpdateDashGauge;
+        }
     }
 
     private void UpdateDashGauge()
     {
-        int currentGauge = playerStates.CurrentDashGauge;
+        if (playerDash == null)
+        {
+            return;
+        }
+
+        float[] gauges = playerDash.GetDashGauges();
+        if (gauges == null)
+        {
+            return;
+        }
         
         for (int i = 0; i < dashGaugeImages.Length; i++)
         {
-            if (i < currentGauge)
+            if (dashGaugeImages[i] == null)
             {
-                dashGaugeImages[i].color = activeColor;
+                continue;
+            }
+
+            if (i < gauges.Length)
+            {
+                float targetFillAmount = gauges[i];
+                dashGaugeImages[i].fillAmount = targetFillAmount;
+                dashGaugeImages[i].color = targetFillAmount >= 1f ? activeColor : inactiveColor;
             }
             else
             {
+                dashGaugeImages[i].fillAmount = 0f;
                 dashGaugeImages[i].color = inactiveColor;
             }
         }

@@ -89,4 +89,21 @@ public class GameTimerController : MonoBehaviour
             Debug.Log("Timer resumed");
         }
     }
+
+    public void PauseGame()
+    {
+        isRunning = false;
+        Time.timeScale = 0f;
+        Debug.Log("Game paused");
+    }
+
+    public void ResumeGame()
+    {
+        if (!isGameEnded)
+        {
+            isRunning = true;
+            Time.timeScale = 1f;
+            Debug.Log("Game resumed");
+        }
+    }
 }

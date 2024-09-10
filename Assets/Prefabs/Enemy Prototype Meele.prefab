@@ -180,10 +180,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyType: 0
   moveSpeed: 3
-  maxHealth: 3
+  maxHealth: 2
   attackRange: 1
   retreatSpeed: 1
   deathTime: 1
   knockbackDistance: 1
   knockbackDuration: 0.5
-  knockbackColor: {r: 0, g: 0, b: 0, a: 1}
+  knockbackColor: {r: 0.4811321, g: 0.46070668, b: 0.46070668, a: 1}

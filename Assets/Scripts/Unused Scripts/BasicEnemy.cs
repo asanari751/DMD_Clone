@@ -26,11 +26,24 @@ public class BasicEnemy : MonoBehaviour
     private bool isKnockedBack = false;
     private bool isDead = false;
 
+    public event System.Action<GameObject> OnEnemyDeath;
+
+    private void Awake()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            originalColor = spriteRenderer.color;
+        }
+        else
+        {
+            Debug.LogError("SpriteRenderer component not found on BasicEnemy!");
+        }
+    }
+
     private void Start()
     {
-        currentHealth = maxHealth;
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        originalColor = spriteRenderer.color;
+        ResetEnemy();
     }
 
     public EnemyType GetEnemyType()
@@ -57,7 +70,7 @@ public class BasicEnemy : MonoBehaviour
     {
         currentHealth -= damage;
 
-        if (currentHealth <= 0)
+        if (currentHealth <= 0 && !isDead)
         {
             Die();
         }
@@ -95,30 +108,50 @@ public class BasicEnemy : MonoBehaviour
         return isKnockedBack;
     }
 
-    private void Die()
+    public void Die()
     {
-        isDead = true;
-        StartCoroutine(FadeOutAndDestroy());
+        if (!isDead)
+        {
+            isDead = true;
+            FadeOutAndDestroy();
+            OnEnemyDeath?.Invoke(gameObject);
+        }
     }
 
-    private IEnumerator FadeOutAndDestroy()
+    private void FadeOutAndDestroy()
     {
-        float elapsedTime = 0f;
-        Color originalColor = spriteRenderer.color;
+        // 기존 색상 저장
+        Color startColor = spriteRenderer.color;
 
-        while (elapsedTime < deathTime)
-        {
-            elapsedTime += Time.deltaTime;
-            float alpha = Mathf.Lerp(1f, 0f, elapsedTime / deathTime);
-            spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
-            yield return null;
-        }
+        // DOTween을 사용하여 페이드 아웃 애니메이션 실행
+        spriteRenderer.DOColor(new Color(startColor.r, startColor.g, startColor.b, 0f), deathTime)
+            .OnComplete(() => 
+            {
+                gameObject.SetActive(false);  // 오브젝트 풀링을 위해 비활성화
+            });
+    }
 
-        Destroy(gameObject);
+    // OnDisable 메서드 추가
+    private void OnDisable()
+    {
+        // 오브젝트가 비활성화될 때 모든 DOTween 애니메이션 중지
+        DOTween.Kill(spriteRenderer);
     }
 
     public bool IsDead()
     {
         return isDead;
+    }
+
+    public void ResetEnemy()
+    {
+        currentHealth = maxHealth;
+        isDead = false;
+        isKnockedBack = false;
+
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.color = originalColor;
+        }
     }
 }

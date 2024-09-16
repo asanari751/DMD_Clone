@@ -187,3 +187,6 @@ MonoBehaviour:
   knockbackDistance: 1
   knockbackDuration: 0.5
   knockbackColor: {r: 0.4811321, g: 0.46070668, b: 0.46070668, a: 1}
+  experienceDrop: 1
+  expOrbPrefab: {fileID: 6992617434821140472, guid: 5221308d8fca95b4f88475e0a2e5314c, type: 3}
+  expOrbCount: 1

@@ -26,10 +26,6 @@ public class EnemyDictionary : MonoBehaviour
         {
             enemies.Add(key, info);
         }
-        else
-        {
-            Debug.LogWarning($"적 '{key}'는 이미 존재합니다.");
-        }
     }
 
     // 적 정보 가져오기 메서드

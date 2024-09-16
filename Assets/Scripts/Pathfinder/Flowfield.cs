@@ -25,6 +25,7 @@ public class Flowfield : MonoBehaviour
 
     public float obstacleCheckInterval = 0.5f; // 장애물 검사 간격 (초)
     private float lastObstacleCheckTime;
+    private Dictionary<Vector2Int, CellCache> cellCache;
 
     private void Start()
     {
@@ -40,6 +41,7 @@ public class Flowfield : MonoBehaviour
             playerPos.y - (gridSize.y / 2f) * cellSize
         );
 
+        cellCache = new Dictionary<Vector2Int, CellCache>();
         CreateGrid();
         UpdateFlowField(true);
     }
@@ -107,11 +109,10 @@ public class Flowfield : MonoBehaviour
             }
             CalculateCostField();
             CalculateFlowField();
+            UpdateCellCache();
         }
         else
         {
-            // 플레이어 주변의 제한된 영역만 업데이트
-            UpdateLocalCostField();
             UpdateLocalFlowField();
         }
     }
@@ -397,8 +398,78 @@ public class Flowfield : MonoBehaviour
         {
             for (int y = min.y; y <= max.y; y++)
             {
-                // 여기서 각 셀의 최적 방향을 업데이트합니다.
-                // 예: grid[x, y].bestDirection = CalculateBestDirection(new Vector2Int(x, y));
+                Vector2Int pos = new Vector2Int(x, y);
+                if (!cellCache.ContainsKey(pos) || HasCellChanged(pos))
+                {
+                    UpdateCell(pos);
+                }
+            }
+        }
+    }
+    private bool HasCellChanged(Vector2Int pos)
+    {
+        Cell cell = grid[pos.x, pos.y];
+        CellCache cache = cellCache[pos];
+        return cell.isObstacle != cache.isObstacle ||
+               !Mathf.Approximately(cell.cost, cache.cost) ||
+               cell.bestDirection != cache.bestDirection;
+    }
+
+    private void UpdateCell(Vector2Int pos)
+    {
+        Cell cell = grid[pos.x, pos.y];
+        cell.cost = CalculateCellCost(pos);
+        cell.bestDirection = CalculateCellBestDirection(pos);
+
+        cellCache[pos] = new CellCache(cell.isObstacle, cell.cost, cell.bestDirection);
+    }
+
+    private float CalculateCellCost(Vector2Int pos)
+    {
+        if (grid[pos.x, pos.y].isObstacle)
+            return 99;
+
+        float distanceToPlayer = Vector2Int.Distance(pos, playerGridPosition);
+        return Mathf.Min(98, distanceToPlayer);
+    }
+
+    private Vector2 CalculateCellBestDirection(Vector2Int pos)
+    {
+        if (grid[pos.x, pos.y].isObstacle || pos == playerGridPosition)
+            return Vector2.zero;
+
+        List<Cell> neighbors = GetNeighbors(pos);
+        Cell bestNeighbor = null;
+        float bestCost = float.MaxValue;
+
+        foreach (Cell neighbor in neighbors)
+        {
+            if (neighbor.cost < bestCost)
+            {
+                bestNeighbor = neighbor;
+                bestCost = neighbor.cost;
+            }
+        }
+
+        if (bestNeighbor != null)
+        {
+            Vector2 direction = (Vector2)(bestNeighbor.position - pos);
+            return NormalizeToEightDirections(direction);
+        }
+
+        return Vector2.zero;
+    }
+
+    private void UpdateCellCache()
+    {
+        cellCache.Clear();
+        for (int x = 0; x < gridSize.x; x++)
+        {
+            for (int y = 0; y < gridSize.y; y++)
+            {
+                Vector2Int pos = new Vector2Int(x, y);
+                Cell cell = grid[x, y];
+                cellCache[pos] = new CellCache(cell.isObstacle, cell.cost, cell.bestDirection);
             }
         }
     }
@@ -436,5 +507,18 @@ public class Cell
     {
         position = pos;
         isObstacle = obstacle;
+    }
+}
+public class CellCache
+{
+    public bool isObstacle;
+    public float cost;
+    public Vector2 bestDirection;
+
+    public CellCache(bool isObstacle, float cost, Vector2 bestDirection)
+    {
+        this.isObstacle = isObstacle;
+        this.cost = cost;
+        this.bestDirection = bestDirection;
     }
 }

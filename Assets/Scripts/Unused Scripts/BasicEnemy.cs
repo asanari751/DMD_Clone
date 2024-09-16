@@ -19,12 +19,17 @@ public class BasicEnemy : MonoBehaviour
     [SerializeField] private float knockbackDistance = 1f; // 넉백 거리
     [SerializeField] private float knockbackDuration = 0.5f; // 넉백 지속 시간
     [SerializeField] private Color knockbackColor = Color.black; // 넉백 시 변경될 색상
+    [SerializeField] private float experienceDrop; // 경험치 드랍 양
+    [SerializeField] private GameObject expOrbPrefab;
+    [SerializeField] private int expOrbCount = 1;
 
     private float currentHealth;
     private SpriteRenderer spriteRenderer;
     private Color originalColor;
     private bool isKnockedBack = false;
     private bool isDead = false;
+    private PlayerManager playerManager;
+    private ExpOrbPool expOrbPool;
 
     public event System.Action<GameObject> OnEnemyDeath;
 
@@ -44,6 +49,17 @@ public class BasicEnemy : MonoBehaviour
     private void Start()
     {
         ResetEnemy();
+        // PlayerManager 찾기
+        playerManager = FindAnyObjectByType<PlayerManager>();
+        if (playerManager == null)
+        {
+            Debug.LogError("PlayerManager를 찾을 수 없습니다!");
+        }
+        expOrbPool = FindAnyObjectByType<ExpOrbPool>();
+        if (expOrbPool == null)
+        {
+            Debug.LogError("ExpOrbPool을 찾을 수 없습니다!");
+        }
     }
 
     public EnemyType GetEnemyType()
@@ -77,6 +93,12 @@ public class BasicEnemy : MonoBehaviour
         else
         {
             ApplyKnockback(knockbackDirection);
+        }
+        
+        // 여기를 수정합니다
+        if (DamageIndicator.Instance != null)
+        {
+            DamageIndicator.Instance.ShowDamage(transform.position, Mathf.RoundToInt(damage));
         }
     }
 
@@ -115,6 +137,26 @@ public class BasicEnemy : MonoBehaviour
             isDead = true;
             FadeOutAndDestroy();
             OnEnemyDeath?.Invoke(gameObject);
+            
+            SpawnExpOrbs();
+        }
+    }
+
+    private void SpawnExpOrbs()
+    {
+        for (int i = 0; i < expOrbCount; i++)
+        {
+            GameObject expOrb = expOrbPool.GetExpOrb();
+            if (expOrb != null)
+            {
+                expOrb.transform.position = transform.position;
+                expOrb.SetActive(true);
+                ExpOrb orbScript = expOrb.GetComponent<ExpOrb>();
+                if (orbScript != null)
+                {
+                    orbScript.SetExperience(experienceDrop / expOrbCount);
+                }
+            }
         }
     }
 

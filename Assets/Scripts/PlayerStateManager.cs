@@ -5,68 +5,197 @@ using System.Linq;
 
 public class PlayerStateManager : MonoBehaviour
 {
-    [SerializeField] private float detectionRadius = 5f;
+    [Header("Common")]
+    [SerializeField] private ProjectilePool projectilePool;
+    [SerializeField] private float detectionRadius;
     [SerializeField] private LayerMask targetLayers;
-    [SerializeField] private float attackAngle = 180f;
-    [SerializeField] private float attackDamage = 10f;
-    [SerializeField] private float attackEffectDuration = 0.5f;
-    [SerializeField] private SpriteRenderer attackEffectSprite;
     [SerializeField] private InputActionReference attackAction;
-    [SerializeField] private float atkDelay = 1f;
+    [SerializeField] private bool isRangedAttack; // true면 원거리, false면 근접 공격
+
+    [Header("Melee")]
+    [SerializeField] private float attackAngle;
+    [SerializeField] private float attackDamage;
+    [SerializeField] private float attackEffectDuration;
+    [SerializeField] private float atkDelay;
+
+    [Header("Arrow")]
+    [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private float projectileSpeed;
+    [SerializeField] private float projectileDamage;
+    [SerializeField] private float rangedAttackCooldown;
+    [SerializeField] private int penetrateCount;
+
+    [Header("Projectile Trail")]
+    [SerializeField] private TrailRenderer projectileTrailPrefab; // 새로 추가
+    [SerializeField] private float trailDuration;
+    [SerializeField] private float trailMaxLength;
+    [SerializeField] private float trailStartWidth;
+    [SerializeField] private float trailEndWidth;
+    [SerializeField] private Color trailStartColor = Color.white; // 새로 추가
+    [SerializeField] private Color trailEndColor = Color.white; // 새로 추가
+
+    [Header("Attack Effect")]
+    [SerializeField] private SpriteRenderer attackEffectSprite;
+    [SerializeField] private Vector2 attackEffectOffset = Vector2.zero;
 
     private Camera mainCamera;
     private bool isAutoAttack = false;
     private Tween autoAttackTween;
     private float lastAttackTime = 0f;
 
+    private float lastRangedAttackTime = 0f;
+
     private void Awake()
     {
         attackAction.action.performed += _ => ToggleAutoAttack();
         mainCamera = Camera.main;
+
+        // ProjectilePool 찾기
+        if (projectilePool == null)
+        {
+            projectilePool = FindAnyObjectByType<ProjectilePool>();
+        }
     }
 
     private void OnEnable() => attackAction.action.Enable();
+    private void OnDisable() => attackAction.action.Disable();
 
-    private void OnDisable()
+    private void Update()
     {
-        attackAction.action.Disable();
-        StopAutoAttack();
+        if (Input.GetMouseButtonDown(0))
+        {
+            PerformManualAttack();
+        }
     }
 
     private void ToggleAutoAttack()
     {
         isAutoAttack = !isAutoAttack;
-        if (isAutoAttack) StartAutoAttack();
-        else StopAutoAttack();
+        if (isAutoAttack)
+        {
+            StartAutoAttack();
+            Debug.Log("Auto attack started");
+        }
+        else
+        {
+            StopAutoAttack();
+            Debug.Log("Auto attack stopped");
+        }
     }
 
     private void StartAutoAttack()
     {
-        StopAutoAttack();
-        autoAttackTween = DOVirtual.DelayedCall(atkDelay, PerformAttack, false).SetLoops(-1);
+        StopAutoAttack(); // 기존 Tween이 있다면 먼저 정지
+        autoAttackTween = DOVirtual.DelayedCall(isRangedAttack ? rangedAttackCooldown : atkDelay, PerformAutoAttack, false).SetLoops(-1);
     }
 
-    private void StopAutoAttack() => DOTween.Kill(autoAttackTween);
-
-    private void PerformAttack()
+    private void StopAutoAttack()
     {
-        if (Time.time - lastAttackTime < atkDelay) return;
-
-        GameObject closestEnemy = FindClosestEnemy();
-        if (closestEnemy != null)
+        if (autoAttackTween != null)
         {
-            AttackInSemicircle(closestEnemy.transform.position);
-            lastAttackTime = Time.time;
+            autoAttackTween.Kill();
+            autoAttackTween = null;
         }
     }
 
-    private GameObject FindClosestEnemy()
+    private void PerformAutoAttack()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, detectionRadius, targetLayers);
-        return colliders.Length > 0 ? 
-            colliders.OrderBy(c => Vector2.Distance(transform.position, c.transform.position)).First().gameObject : 
-            null;
+        GameObject closestEnemy = FindClosestEnemy();
+        if (closestEnemy == null) return; // 적이 없으면 공격하지 않음
+
+        if (isRangedAttack)
+        {
+            PerformRangedAttack(closestEnemy.transform.position);
+        }
+        else
+        {
+            PerformAttack(closestEnemy.transform.position);
+        }
     }
+
+    private void PerformManualAttack()
+    {
+        if (mainCamera == null) return;
+
+        Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+
+        if (isRangedAttack)
+        {
+            PerformRangedAttack(mousePosition);
+        }
+        else
+        {
+            PerformAttack(mousePosition, true);
+        }
+    }
+
+    private void PerformRangedAttack(Vector2 targetPosition)
+    {
+        if (Time.time - lastRangedAttackTime < rangedAttackCooldown)
+        {
+            Debug.Log("Ranged attack on cooldown");
+            return;
+        }
+
+        if (projectilePool == null)
+        {
+            Debug.LogError("ProjectilePool is not assigned!");
+            return;
+        }
+
+        Vector2 direction = (targetPosition - (Vector2)transform.position).normalized;
+
+        GameObject projectileObj = projectilePool.GetProjectile();
+        projectileObj.transform.position = transform.position;
+        projectileObj.transform.right = direction;
+
+        Projectile projectile = projectileObj.GetComponent<Projectile>();
+        if (projectile != null)
+        {
+            // TrailRenderer 추가
+            TrailRenderer trail = projectileObj.GetComponent<TrailRenderer>();
+            if (trail == null && projectileTrailPrefab != null)
+            {
+                trail = Instantiate(projectileTrailPrefab, projectileObj.transform);
+            }
+
+            if (trail != null)
+            {
+                trail.time = trailDuration;
+                trail.startWidth = trailStartWidth;
+                trail.endWidth = trailEndWidth;
+                trail.startColor = trailStartColor; // 새로 추가
+                trail.endColor = trailEndColor; // 새로 추가
+                trail.enabled = true;
+            }
+
+            projectile.Initialize(projectileSpeed, projectileDamage, penetrateCount, projectilePool);
+            Debug.Log("Projectile initialized and fired towards: " + targetPosition);
+        }
+        else
+        {
+            Debug.LogError("Projectile script not found on instantiated object");
+            projectilePool.ReturnProjectile(projectileObj);
+        }
+
+        lastRangedAttackTime = Time.time;
+    }
+
+    private void PerformAttack(Vector2 targetPosition, bool isManualAttack = false)
+    {
+        if (Time.time - lastAttackTime < atkDelay)
+        {
+            return;
+        }
+
+        AttackInSemicircle(targetPosition);
+        lastAttackTime = Time.time;
+    }
+
+    private GameObject FindClosestEnemy() =>
+        Physics2D.OverlapCircleAll(transform.position, detectionRadius, targetLayers)
+            .OrderBy(c => Vector2.Distance(transform.position, c.transform.position))
+            .FirstOrDefault()?.gameObject;
 
     private void AttackInSemicircle(Vector2 targetPosition)
     {
@@ -75,19 +204,21 @@ public class PlayerStateManager : MonoBehaviour
 
         foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, detectionRadius, targetLayers))
         {
-            Vector2 directionToCollider = (collider.transform.position - transform.position).normalized;
-            float angleToCollider = Mathf.Atan2(directionToCollider.y, directionToCollider.x) * Mathf.Rad2Deg;
-
-            if (Mathf.Abs(Mathf.DeltaAngle(angleToTarget, angleToCollider)) <= attackAngle / 2)
+            if (IsInAttackAngle(collider.transform.position, angleToTarget) &&
+                collider.TryGetComponent<BasicEnemy>(out var enemy))
             {
-                if (collider.TryGetComponent<BasicEnemy>(out var enemy))
-                {
-                    Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized;
-                    enemy.TakeDamage(attackDamage, knockbackDirection);
-                }
+                Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized;
+                enemy.TakeDamage(attackDamage, knockbackDirection);
             }
         }
         ShowAttackEffect(targetPosition);
+    }
+
+    private bool IsInAttackAngle(Vector3 position, float targetAngle)
+    {
+        Vector2 directionToCollider = (position - transform.position).normalized;
+        float angleToCollider = Mathf.Atan2(directionToCollider.y, directionToCollider.x) * Mathf.Rad2Deg;
+        return Mathf.Abs(Mathf.DeltaAngle(targetAngle, angleToCollider)) <= attackAngle / 2;
     }
 
     private void ShowAttackEffect(Vector2 targetPosition)
@@ -98,6 +229,16 @@ public class PlayerStateManager : MonoBehaviour
         attackEffectSprite.gameObject.SetActive(true);
         attackEffectSprite.color = Color.white;
 
+        SetAttackEffectTransform(targetPosition);
+
+        DOTween.Sequence()
+            .Append(attackEffectSprite.DOFade(0.5f, attackEffectDuration * 0.1f))
+            .Append(attackEffectSprite.DOFade(0f, attackEffectDuration * 0.4f))
+            .OnComplete(() => attackEffectSprite.gameObject.SetActive(false));
+    }
+
+    private void SetAttackEffectTransform(Vector2 targetPosition)
+    {
         Vector2 directionToTarget = (targetPosition - (Vector2)transform.position).normalized;
         float angleToTarget = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
 
@@ -106,22 +247,29 @@ public class PlayerStateManager : MonoBehaviour
         float scaleY = detectionRadius / originalSize.y;
 
         attackEffectSprite.transform.localScale = new Vector3(scaleX, scaleY, 1f);
-        attackEffectSprite.transform.position = (Vector2)transform.position + directionToTarget * (detectionRadius / 2f);
-        attackEffectSprite.transform.rotation = Quaternion.Euler(0, 0, angleToTarget - 90);
 
-        DOTween.Sequence()
-            .Append(attackEffectSprite.DOFade(0.5f, attackEffectDuration * 0.1f))
-            .Append(attackEffectSprite.DOFade(0f, attackEffectDuration * 0.4f))
-            .OnComplete(() => attackEffectSprite.gameObject.SetActive(false));
+        Vector2 adjustedOffset = CalculateDirectionalOffset(directionToTarget);
+
+        Vector3 basePosition = transform.position + (Vector3)adjustedOffset;
+        attackEffectSprite.transform.position = (Vector2)basePosition + directionToTarget * (detectionRadius / 2f);
+
+        attackEffectSprite.transform.rotation = Quaternion.Euler(0, 0, angleToTarget - 90);
     }
 
-    private void Update()
+    private Vector2 CalculateDirectionalOffset(Vector2 direction)
     {
-        if (Input.GetMouseButtonDown(0))
+        Vector2 absDirection = new Vector2(Mathf.Abs(direction.x), Mathf.Abs(direction.y));
+
+        float xOffset = direction.x > 0 ? attackEffectOffset.x : -attackEffectOffset.x;
+        float yOffset = direction.y > 0 ? attackEffectOffset.y : -attackEffectOffset.y;
+
+        if (absDirection.x > absDirection.y)
         {
-            Vector2 worldPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-            AttackInSemicircle(worldPosition);
-            lastAttackTime = Time.time;
+            return new Vector2(xOffset, 0);
+        }
+        else
+        {
+            return new Vector2(0, yOffset);
         }
     }
 }

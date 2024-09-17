@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using DG.Tweening; // DoTween 네임스페이스 추가
 
-public class BasicEnemy : MonoBehaviour
+public class BasicEnemy : MonoBehaviour, IDamageable
 {
     public enum EnemyType
     {
@@ -30,6 +30,7 @@ public class BasicEnemy : MonoBehaviour
     private bool isDead = false;
     private PlayerManager playerManager;
     private ExpOrbPool expOrbPool;
+    private Sequence knockbackSequence;
 
     public event System.Action<GameObject> OnEnemyDeath;
 
@@ -40,10 +41,7 @@ public class BasicEnemy : MonoBehaviour
         {
             originalColor = spriteRenderer.color;
         }
-        else
-        {
-            Debug.LogError("SpriteRenderer component not found on BasicEnemy!");
-        }
+        DOTween.SetTweensCapacity(1000, 500);
     }
 
     private void Start()
@@ -95,11 +93,15 @@ public class BasicEnemy : MonoBehaviour
             ApplyKnockback(knockbackDirection);
         }
         
-        // 여기를 수정합니다
         if (DamageIndicator.Instance != null)
         {
             DamageIndicator.Instance.ShowDamage(transform.position, Mathf.RoundToInt(damage));
         }
+    }
+
+    public bool IsDead()
+    {
+        return isDead;
     }
 
     private void ApplyKnockback(Vector2 knockbackDirection)
@@ -107,8 +109,14 @@ public class BasicEnemy : MonoBehaviour
         isKnockedBack = true;
         Vector2 knockbackTarget = (Vector2)transform.position + knockbackDirection.normalized * knockbackDistance;
 
-        // 색상 변경 시퀀스 생성
-        Sequence knockbackSequence = DOTween.Sequence();
+        // 이전 시퀀스가 실행 중이라면 중지
+        if (knockbackSequence != null && knockbackSequence.IsActive())
+        {
+            knockbackSequence.Kill();
+        }
+
+        // 새로운 시퀀스 생성
+        knockbackSequence = DOTween.Sequence();
 
         // 스프라이트 색상을 knockbackColor로 변경
         knockbackSequence.Append(spriteRenderer.DOColor(knockbackColor, knockbackDuration * 0.5f));
@@ -119,9 +127,10 @@ public class BasicEnemy : MonoBehaviour
         // 원래 색상으로 복귀
         knockbackSequence.Append(spriteRenderer.DOColor(originalColor, knockbackDuration * 0.5f));
 
-        // 시퀀스 완료 후 넉백 상태 해제
+        // 시퀀스 완료 후 넉백 상태 해제 및 시퀀스 정리
         knockbackSequence.OnComplete(() => {
             isKnockedBack = false;
+            knockbackSequence = null;
         });
     }
 
@@ -178,11 +187,10 @@ public class BasicEnemy : MonoBehaviour
     {
         // 오브젝트가 비활성화될 때 모든 DOTween 애니메이션 중지
         DOTween.Kill(spriteRenderer);
-    }
-
-    public bool IsDead()
-    {
-        return isDead;
+        if (knockbackSequence != null && knockbackSequence.IsActive())
+        {
+            knockbackSequence.Kill();
+        }
     }
 
     public void ResetEnemy()

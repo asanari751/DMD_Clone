@@ -14,6 +14,7 @@ TagManager:
   - Enemy
   - Impassible
   - Interactable
+  - Minimap
   - 
   - 
   - 
@@ -35,8 +36,7 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
+  - Post Processing
   m_SortingLayers:
   - name: Default
     uniqueID: 0
@@ -46,6 +46,9 @@ TagManager:
     locked: 0
   - name: UI
     uniqueID: 1296529357
+    locked: 0
+  - name: Panel
+    uniqueID: 3987873023
     locked: 0
   m_RenderingLayers:
   - Default

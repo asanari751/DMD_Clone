@@ -14,7 +14,6 @@ public class AnimationController : MonoBehaviour
 
     private Vector2 movement;
     private string currentStateName;
-
     private void Start()
     {
         if (animator == null)

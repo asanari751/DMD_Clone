@@ -10,7 +10,7 @@ public class PlayerStateManager : MonoBehaviour
     [SerializeField] private float detectionRadius;
     [SerializeField] private LayerMask targetLayers;
     [SerializeField] private InputActionReference attackAction;
-    [SerializeField] private bool isRangedAttack; // true면 원거리, false면 근접 공격
+    [SerializeField] private bool isRangedAttack;
 
     [Header("Melee")]
     [SerializeField] private float attackAngle;
@@ -26,13 +26,13 @@ public class PlayerStateManager : MonoBehaviour
     [SerializeField] private int penetrateCount;
 
     [Header("Projectile Trail")]
-    [SerializeField] private TrailRenderer projectileTrailPrefab; // 새로 추가
+    [SerializeField] private TrailRenderer projectileTrailPrefab;
     [SerializeField] private float trailDuration;
     [SerializeField] private float trailMaxLength;
     [SerializeField] private float trailStartWidth;
     [SerializeField] private float trailEndWidth;
-    [SerializeField] private Color trailStartColor = Color.white; // 새로 추가
-    [SerializeField] private Color trailEndColor = Color.white; // 새로 추가
+    [SerializeField] private Color trailStartColor = Color.white;
+    [SerializeField] private Color trailEndColor = Color.white;
 
     [Header("Attack Effect")]
     [SerializeField] private SpriteRenderer attackEffectSprite;
@@ -42,7 +42,6 @@ public class PlayerStateManager : MonoBehaviour
     private bool isAutoAttack = false;
     private Tween autoAttackTween;
     private float lastAttackTime = 0f;
-
     private float lastRangedAttackTime = 0f;
 
     private void Awake()
@@ -50,7 +49,6 @@ public class PlayerStateManager : MonoBehaviour
         attackAction.action.performed += _ => ToggleAutoAttack();
         mainCamera = Camera.main;
 
-        // ProjectilePool 찾기
         if (projectilePool == null)
         {
             projectilePool = FindAnyObjectByType<ProjectilePool>();
@@ -74,18 +72,16 @@ public class PlayerStateManager : MonoBehaviour
         if (isAutoAttack)
         {
             StartAutoAttack();
-            Debug.Log("Auto attack started");
         }
         else
         {
             StopAutoAttack();
-            Debug.Log("Auto attack stopped");
         }
     }
 
     private void StartAutoAttack()
     {
-        StopAutoAttack(); // 기존 Tween이 있다면 먼저 정지
+        StopAutoAttack();
         autoAttackTween = DOVirtual.DelayedCall(isRangedAttack ? rangedAttackCooldown : atkDelay, PerformAutoAttack, false).SetLoops(-1);
     }
 
@@ -101,7 +97,7 @@ public class PlayerStateManager : MonoBehaviour
     private void PerformAutoAttack()
     {
         GameObject closestEnemy = FindClosestEnemy();
-        if (closestEnemy == null) return; // 적이 없으면 공격하지 않음
+        if (closestEnemy == null) return;
 
         if (isRangedAttack)
         {
@@ -133,13 +129,11 @@ public class PlayerStateManager : MonoBehaviour
     {
         if (Time.time - lastRangedAttackTime < rangedAttackCooldown)
         {
-            Debug.Log("Ranged attack on cooldown");
             return;
         }
 
         if (projectilePool == null)
         {
-            Debug.LogError("ProjectilePool is not assigned!");
             return;
         }
 
@@ -152,7 +146,6 @@ public class PlayerStateManager : MonoBehaviour
         Projectile projectile = projectileObj.GetComponent<Projectile>();
         if (projectile != null)
         {
-            // TrailRenderer 추가
             TrailRenderer trail = projectileObj.GetComponent<TrailRenderer>();
             if (trail == null && projectileTrailPrefab != null)
             {
@@ -164,17 +157,15 @@ public class PlayerStateManager : MonoBehaviour
                 trail.time = trailDuration;
                 trail.startWidth = trailStartWidth;
                 trail.endWidth = trailEndWidth;
-                trail.startColor = trailStartColor; // 새로 추가
-                trail.endColor = trailEndColor; // 새로 추가
+                trail.startColor = trailStartColor;
+                trail.endColor = trailEndColor;
                 trail.enabled = true;
             }
 
             projectile.Initialize(projectileSpeed, projectileDamage, penetrateCount, projectilePool);
-            Debug.Log("Projectile initialized and fired towards: " + targetPosition);
         }
         else
         {
-            Debug.LogError("Projectile script not found on instantiated object");
             projectilePool.ReturnProjectile(projectileObj);
         }
 

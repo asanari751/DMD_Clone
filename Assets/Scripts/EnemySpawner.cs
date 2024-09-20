@@ -104,24 +104,25 @@ public class EnemySpawner : MonoBehaviour
     private Vector2 GetRandomSpawnPosition()
     {
         Vector2 cameraSize = new Vector2(mainCamera.orthographicSize * mainCamera.aspect, mainCamera.orthographicSize);
-        float spawnDistance = 1f; // 카메라 경계선으로부터의 거리
+        float spawnDistance = 1f;
 
+        Vector2 cameraPosition = mainCamera.transform.position; // 카메라 위치 가져오기
         float randomSide = Random.value;
         if (randomSide < 0.25f) // 위쪽
         {
-            return new Vector2(Random.Range(-cameraSize.x, cameraSize.x), cameraSize.y + spawnDistance);
+            return new Vector2(Random.Range(-cameraSize.x, cameraSize.x) + cameraPosition.x, cameraPosition.y + cameraSize.y + spawnDistance);
         }
         else if (randomSide < 0.5f) // 오른쪽
         {
-            return new Vector2(cameraSize.x + spawnDistance, Random.Range(-cameraSize.y, cameraSize.y));
+            return new Vector2(cameraPosition.x + cameraSize.x + spawnDistance, Random.Range(-cameraSize.y, cameraSize.y) + cameraPosition.y);
         }
         else if (randomSide < 0.75f) // 아래쪽
         {
-            return new Vector2(Random.Range(-cameraSize.x, cameraSize.x), -cameraSize.y - spawnDistance);
+            return new Vector2(Random.Range(-cameraSize.x, cameraSize.x) + cameraPosition.x, cameraPosition.y - cameraSize.y - spawnDistance);
         }
         else // 왼쪽
         {
-            return new Vector2(-cameraSize.x - spawnDistance, Random.Range(-cameraSize.y, cameraSize.y));
+            return new Vector2(cameraPosition.x - cameraSize.x - spawnDistance, Random.Range(-cameraSize.y, cameraSize.y) + cameraPosition.y);
         }
     }
 }

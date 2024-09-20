@@ -47,12 +47,6 @@ public class EnemyMovementController : MonoBehaviour
             }
 
             rb.velocity = movement;
-
-            if (movement != Vector2.zero)
-            {
-                float angle = Mathf.Atan2(movement.y, movement.x) * Mathf.Rad2Deg;
-                transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-            }
         }
         else
         {

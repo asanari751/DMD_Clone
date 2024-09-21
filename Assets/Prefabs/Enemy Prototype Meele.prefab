@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4514696612962679870}
   - component: {fileID: 662584177183261202}
   - component: {fileID: 8577688993285471522}
+  - component: {fileID: -5425967302737157190}
   - component: {fileID: 6413013340263304632}
   - component: {fileID: 8803329705486930600}
   - component: {fileID: 1334247076841853299}
@@ -82,7 +83,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 7812820661483254461, guid: 215687feeab0b7445b4a1cd86c82c2e1, type: 3}
+  m_Sprite: {fileID: 7812820661483254461, guid: 215687feeab0b7445b4a1cd86c82c2e1,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -107,8 +109,8 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_AngularDrag: 0
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -120,8 +122,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!58 &6413013340263304632
-CircleCollider2D:
+--- !u!61 &-5425967302737157190
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -154,8 +156,54 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.0030424595, y: -0.022848368}
-  m_Radius: 0.30643725
+  m_Offset: {x: 0.007678911, y: -0.0046072975}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.68, y: 0.66}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.46806368, y: 0.48492235}
+  m_EdgeRadius: 0
+--- !u!58 &6413013340263304632
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4976483147096513540}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.0030424446, y: -0.007928327}
+  m_Radius: 0.22852142
 --- !u!114 &8803329705486930600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,7 +238,8 @@ MonoBehaviour:
   knockbackDuration: 0.5
   knockbackColor: {r: 0.4811321, g: 0.46070668, b: 0.46070668, a: 1}
   experienceDrop: 1
-  expOrbPrefab: {fileID: 6992617434821140472, guid: 5221308d8fca95b4f88475e0a2e5314c, type: 3}
+  expOrbPrefab: {fileID: 6992617434821140472, guid: 5221308d8fca95b4f88475e0a2e5314c,
+    type: 3}
   expOrbCount: 1
 --- !u!1 &5223107067649577173
 GameObject:
@@ -268,7 +317,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -1
-  m_Sprite: {fileID: 4093480436322176185, guid: 4b18ad44f3f1a8a4e97c86b53774dace, type: 3}
+  m_Sprite: {fileID: 4093480436322176185, guid: 4b18ad44f3f1a8a4e97c86b53774dace,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -289,7 +339,7 @@ GameObject:
   m_Component:
   - component: {fileID: 885378353456498619}
   - component: {fileID: 1349267634131678995}
-  m_Layer: 9
+  m_Layer: 30
   m_Name: Minimap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -355,7 +405,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b,
+    type: 3}
   m_Color: {r: 1, g: 0.38523895, b: 0.2783019, a: 1}
   m_FlipX: 0
   m_FlipY: 0

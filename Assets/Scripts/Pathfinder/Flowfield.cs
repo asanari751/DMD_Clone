@@ -176,7 +176,7 @@ public class Flowfield : MonoBehaviour
             {
                 if (neighbor.isObstacle) continue;
 
-                float moveCost = (neighbor.position - current.position).magnitude == 1 ? 1f : 2f;
+                float moveCost = (neighbor.position - current.position).magnitude == 1 ? 1f : 1.8f;
                 float newCost = current.cost + moveCost;
 
                 if (newCost < neighbor.cost)
@@ -254,15 +254,27 @@ public class Flowfield : MonoBehaviour
         return neighbors;
     }
 
-    // 적 객체가 사용할 메서드
     public Vector2 GetFlowDirection(Vector3 worldPosition)
     {
         Vector2Int gridPosition = WorldToGrid(worldPosition);
         if (IsValidGridPosition(gridPosition))
         {
+            if (grid[gridPosition.x, gridPosition.y].cost == float.MaxValue)
+            {
+                return GetDirectionToPlayer();
+            }
             return grid[gridPosition.x, gridPosition.y].bestDirection;
         }
         return Vector2.zero;
+    }
+
+    private Vector2 GetDirectionToPlayer() // 예외상황 발생시 경로 무시
+    {
+        Vector2Int playerGridPos = WorldToGrid(playerTransform.position);
+        Vector2Int currentGridPos = WorldToGrid(transform.position);
+
+        Vector2 direction = ((Vector2)playerGridPos - (Vector2)currentGridPos).normalized;
+        return direction;
     }
 
     private void OnDrawGizmos()
@@ -371,15 +383,6 @@ public class Flowfield : MonoBehaviour
             Mathf.Min(gridSize.x - 1, playerGridPosition.x + range),
             Mathf.Min(gridSize.y - 1, playerGridPosition.y + range)
         );
-
-        for (int x = min.x; x <= max.x; x++)
-        {
-            for (int y = min.y; y <= max.y; y++)
-            {
-                // 여기서 각 셀의 비용을 업데이트합니다.
-                // 예: grid[x, y].cost = CalculateCost(new Vector2Int(x, y));
-            }
-        }
     }
 
     private void UpdateLocalFlowField()
@@ -488,12 +491,11 @@ public class Flowfield : MonoBehaviour
         }
     }
 
-    private bool CheckForObstacle(Vector3 worldPos)
-    {
-        // OverlapBox를 사용하여 장애물 검사
-        Collider2D obstacle = Physics2D.OverlapBox(worldPos, Vector2.one * cellSize, 0f, obstacleLayer);
-        return obstacle != null;
-    }
+private bool CheckForObstacle(Vector3 worldPos)
+{
+    Collider2D obstacle = Physics2D.OverlapBox(worldPos, Vector2.one * (cellSize * 0.9f), 0f, obstacleLayer);
+    return obstacle != null;
+}
 }
 
 public class Cell

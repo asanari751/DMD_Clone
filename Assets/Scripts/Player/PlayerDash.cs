@@ -12,6 +12,7 @@ public class PlayerDash : MonoBehaviour
     private float[] dashGauges;
     private PlayerController playerController;
     private bool isDashing;
+    public LayerMask collisionMask;
 
     public event System.Action OnDashStateChanged;
 
@@ -47,17 +48,22 @@ public class PlayerDash : MonoBehaviour
         }
     }
 
-    private bool CanDash()
+private bool CanDash()
+{
+    if (playerController.InputVector.magnitude < 0.1f)
     {
-        for (int i = dashGaugeCount - 1; i >= 0; i--)
-        {
-            if (dashGauges[i] >= 1f)
-            {
-                return true;
-            }
-        }
         return false;
     }
+
+    for (int i = dashGaugeCount - 1; i >= 0; i--)
+    {
+        if (dashGauges[i] >= 1f)
+        {
+            return true;
+        }
+    }
+    return false;
+}
 
     private void PerformDash()
     {
@@ -65,7 +71,16 @@ public class PlayerDash : MonoBehaviour
         Vector2 dashDirection = playerController.InputVector.normalized;
         Vector2 dashTarget = (Vector2)transform.position + dashDirection * dashDistance;
 
-        transform.DOMove(dashTarget, dashDuration)
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dashDirection, dashDistance, collisionMask);
+        if (hit.collider != null)
+        {
+            dashTarget = hit.point - (dashDirection * 0.1f);
+        }
+
+        float actualDashDistance = Vector2.Distance(transform.position, dashTarget);
+        float adjustedDashDuration = dashDuration * (actualDashDistance / dashDistance);
+
+        transform.DOMove(dashTarget, adjustedDashDuration)
             .SetEase(Ease.OutQuad)
             .OnComplete(CompleteDash);
 

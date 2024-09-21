@@ -82,7 +82,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: 4204462825853213970, guid: 2096c209cf44b4a47bc93be88d47d929,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -169,7 +170,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: a1886f06b34f896438b03680aaca1a39, type: 3}
+  m_Actions: {fileID: -944628639613478452, guid: a1886f06b34f896438b03680aaca1a39,
+    type: 3}
   m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -239,7 +241,7 @@ MonoBehaviour:
     m_ActionId: bb0e414d-9a23-4e0f-a8e8-2345769b3738
     m_ActionName: UI/TrackedDeviceOrientation
   m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
+  m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
@@ -270,9 +272,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dashDistance: 5
   dashDuration: 0.2
-  maxDashGauge: 2
-  dashGaugeRecoveryTime: 1
-  dashEase: 6
+  dashGaugeCount: 3
+  dashGaugeRecoveryRate: 0.25
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &7507806457156272074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -285,10 +289,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7392bcbc3a9433448819a13dfddbe0fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  projectilePool: {fileID: 0}
   detectionRadius: 5
   targetLayers:
     serializedVersion: 2
     m_Bits: 64
-  showDetectionRadius: 1
-  detectionRadiusColor: {r: 1, g: 1, b: 0, a: 0.2}
-  detectionInterval: 0.1
+  attackAction: {fileID: 4982818992402008513, guid: a1886f06b34f896438b03680aaca1a39,
+    type: 3}
+  isRangedAttack: 1
+  attackAngle: 0
+  attackDamage: 0
+  attackEffectDuration: 0
+  atkDelay: 0
+  projectilePrefab: {fileID: 0}
+  projectileSpeed: 0
+  projectileDamage: 0
+  rangedAttackCooldown: 0
+  penetrateCount: 0
+  projectileTrailPrefab: {fileID: 0}
+  trailDuration: 0
+  trailMaxLength: 0
+  trailStartWidth: 0
+  trailEndWidth: 0
+  trailStartColor: {r: 1, g: 1, b: 1, a: 1}
+  trailEndColor: {r: 1, g: 1, b: 1, a: 1}
+  attackEffectSprite: {fileID: 0}
+  attackEffectOffset: {x: 0, y: 0}

@@ -6,17 +6,23 @@ public class GameTimerController : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private UIManager uiManager;
-    [SerializeField] [Range(0.1f, 10f)] private float debugParameter = 1f;
+    [SerializeField] [Range(0.1f, 100f)] private float debugParameter = 1f;
 
     [Header("Pause Times")]
     [SerializeField] private float elitePauseTime = 5f;
     [SerializeField] private float bossPauseTime = 10f;
+    [SerializeField] private GameObject prefabToSpawn; // 생성할 프리팹
+    [SerializeField] private Transform playerTransform; // 플레이어의 위치
 
     private float elapsedTime = 0f;
     private bool isRunning = true;
     private bool isGameEnded = false;
     private float[] pauseTimes;
     private int currentPauseIndex = 0;
+
+    [SerializeField] private float xOffset = 1f; // X 방향 오프셋
+    [SerializeField] private float yOffset = 1f; // Y 방향 오프셋
+    [SerializeField] private int squareSize = 5; // 반드시 홀수!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     private void Awake()
     {
@@ -64,6 +70,7 @@ public class GameTimerController : MonoBehaviour
         isRunning = false;
         if (currentPauseIndex == 0) // Elite pause time
         {
+            LimitsCombatArea(); // 플레이어 주변에 프리팹 생성
             if (uiManager != null)
             {
                 uiManager.ShowResumeButton();
@@ -79,6 +86,24 @@ public class GameTimerController : MonoBehaviour
             Debug.Log("Game ended at boss time");
         }
         currentPauseIndex++;
+    }
+
+    private void LimitsCombatArea()
+    {
+        Vector3 playerPosition = playerTransform.position;
+        int halfSize = (squareSize - 1) / 2; // 1 = 중앙 타일, 2 = 각 변의 중앙 타일 제외
+
+        for (int x = -halfSize; x <= halfSize; x++)
+        {
+            for (int y = -halfSize; y <= halfSize; y++)
+            {
+                if (x == -halfSize || x == halfSize || y == -halfSize || y == halfSize)
+                {
+                    Vector3 spawnPosition = playerPosition + new Vector3(x * xOffset, y * yOffset, 0);
+                    Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
+                }
+            }
+        }
     }
 
     public void ResumeTimer()

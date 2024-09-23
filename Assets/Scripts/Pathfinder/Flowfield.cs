@@ -25,6 +25,8 @@ public class Flowfield : MonoBehaviour
 
     public float obstacleCheckInterval = 0.5f; // 장애물 검사 간격 (초)
     private float lastObstacleCheckTime;
+    private bool isPathToPlayerAvailable = true;
+    
     private Dictionary<Vector2Int, CellCache> cellCache;
 
     private void Start()
@@ -159,7 +161,7 @@ public class Flowfield : MonoBehaviour
     {
         foreach (Cell cell in grid)
         {
-            cell.cost = cell.isObstacle ? 99 : 98;
+            cell.cost = cell.isObstacle ? float.MaxValue : float.MaxValue - 1;
         }
 
         Queue<Cell> cellsToCheck = new Queue<Cell>();
@@ -176,13 +178,36 @@ public class Flowfield : MonoBehaviour
             {
                 if (neighbor.isObstacle) continue;
 
-                float moveCost = (neighbor.position - current.position).magnitude == 1 ? 1f : 1.8f;
+                float moveCost = (neighbor.position - current.position).magnitude == 1 ? 1f : 1.4f;
                 float newCost = current.cost + moveCost;
 
                 if (newCost < neighbor.cost)
                 {
                     neighbor.cost = newCost;
                     cellsToCheck.Enqueue(neighbor);
+                }
+            }
+        }
+
+        // 모든 셀을 확인하여 플레이어에게 도달할 수 있는 경로가 있는지 확인
+        isPathToPlayerAvailable = false;
+        foreach (Cell cell in grid)
+        {
+            if (!cell.isObstacle && cell.cost < float.MaxValue - 1)
+            {
+                isPathToPlayerAvailable = true;
+                break;
+            }
+        }
+
+        // 경로가 없는 경우, 모든 셀의 코스트를 플레이어와의 거리로 설정
+        if (!isPathToPlayerAvailable)
+        {
+            foreach (Cell cell in grid)
+            {
+                if (!cell.isObstacle)
+                {
+                    cell.cost = Vector2.Distance(GridToWorld(cell.position), GridToWorld(playerGridPosition));
                 }
             }
         }
@@ -259,21 +284,20 @@ public class Flowfield : MonoBehaviour
         Vector2Int gridPosition = WorldToGrid(worldPosition);
         if (IsValidGridPosition(gridPosition))
         {
-            if (grid[gridPosition.x, gridPosition.y].cost == float.MaxValue)
+            Cell cell = grid[gridPosition.x, gridPosition.y];
+            if (cell.cost == float.MaxValue || cell.isObstacle || !isPathToPlayerAvailable)
             {
-                return GetDirectionToPlayer();
+                return GetDirectionToPlayer(worldPosition);
             }
-            return grid[gridPosition.x, gridPosition.y].bestDirection;
+            return cell.bestDirection;
         }
-        return Vector2.zero;
+        return GetDirectionToPlayer(worldPosition);
     }
 
-    private Vector2 GetDirectionToPlayer() // 예외상황 발생시 경로 무시
+    private Vector2 GetDirectionToPlayer(Vector3 currentPosition)
     {
-        Vector2Int playerGridPos = WorldToGrid(playerTransform.position);
-        Vector2Int currentGridPos = WorldToGrid(transform.position);
-
-        Vector2 direction = ((Vector2)playerGridPos - (Vector2)currentGridPos).normalized;
+        Vector2 playerPosition = playerTransform.position;
+        Vector2 direction = (playerPosition - (Vector2)currentPosition).normalized;
         return direction;
     }
 

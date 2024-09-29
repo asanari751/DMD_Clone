@@ -1,32 +1,30 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.Collections;
 using DG.Tweening;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
-    [Header ("Button")]
+    
+    [Header("Scripts")]
+    [SerializeField] private GameTimerController gameTimerController;
+    
+    [Header("Button")]
     [SerializeField] private GameObject resumeButton;
-    [SerializeField] private TextMeshProUGUI resumeButtonText;
-    [SerializeField] private GameTimerController gameTimer;
-
-    [Header ("Key Binding")]
-    [SerializeField] private RectTransform controlsUI; // RectTransform으로 변경
+    
+    [Header("Key Binding")]
+    [SerializeField] private RectTransform controlsUI;
     [SerializeField] private float bindingTime = 3f;
-    [SerializeField] private float fadeDuration = 0.5f; // 페이드 효과 지속 시간
+    [SerializeField] private float fadeDuration = 0.5f;
 
     private CanvasGroup controlsCanvasGroup;
 
     private void Start()
     {
-        if (gameTimer == null)
-        {
-            Debug.LogError("GameTimerController is not assigned to UIManager!");
-        }
-
         resumeButton.SetActive(false);
-        
+
         if (controlsUI != null)
         {
             controlsCanvasGroup = controlsUI.GetComponent<CanvasGroup>();
@@ -36,53 +34,67 @@ public class UIManager : MonoBehaviour
             }
             ShowControlsUI();
         }
-        else
+
+        if (resumeButton != null)
         {
-            Debug.LogError("Controls UI is not assigned to UIManager!");
+            resumeButton.GetComponent<Button>().onClick.AddListener(OnResumeButtonClick);
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            CheckButtonClick();
+        }
+    }
+
+    private void CheckButtonClick()
+    {
+        PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
+        pointerEventData.position = Input.mousePosition;
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerEventData, results);
+
+        foreach (RaycastResult result in results)
+        {
+            if (result.gameObject == resumeButton)
+            {
+                OnResumeButtonClick();
+                break;
+            }
         }
     }
 
     private void ShowControlsUI()
     {
-        // 초기 설정
         controlsCanvasGroup.alpha = 0f;
 
-        // UI 등장 애니메이션
         Sequence showSequence = DOTween.Sequence();
         showSequence.Append(controlsCanvasGroup.DOFade(1, fadeDuration));
 
-        // 대기 후 사라짐 애니메이션
         showSequence.AppendInterval(bindingTime);
         showSequence.Append(controlsCanvasGroup.DOFade(0, fadeDuration));
 
-        // 애니메이션 실행
         showSequence.Play();
     }
 
     public void OnResumeButtonClick()
     {
-        Debug.Log("Resume button clicked");
-        if (gameTimer != null)
+        if (gameTimerController != null)
         {
-            gameTimer.ResumeTimer();
+            gameTimerController.ResumeTimer();
+            gameTimerController.RemoveCombatAreaLimits();
             resumeButton.SetActive(false);
-        }
-        else
-        {
-            Debug.LogError("GameTimerController is null in UIManager. Cannot resume timer.");
         }
     }
 
     public void ShowResumeButton()
     {
-        Debug.Log("ShowResumeButton called");
         if (resumeButton != null)
         {
             resumeButton.SetActive(true);
-        }
-        else
-        {
-            Debug.LogError("Resume Button is null in UIManager. Cannot show button.");
         }
     }
 }

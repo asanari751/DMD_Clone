@@ -4,25 +4,40 @@ using System.Collections.Generic;
 
 public class EnemySpawner : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] private GameTimerController gameTimerController;
+    [SerializeField] private UIManager uiManager;
+
+    [Header("Enemy Prefabs")]
     [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private float spawnInterval = 2f;
-    [SerializeField] private int maxEnemies = 100;
+    [SerializeField] private GameObject eliteEnemyPrefab;
+    [SerializeField] private GameObject bossEnemyPrefab;
+
+    [Header("Spawn Settings")]
+    [SerializeField] private float spawnInterval;
+    [SerializeField] private int maxEnemies;
 
     private Camera mainCamera;
     private List<GameObject> enemyPool;
     private int currentEnemyCount = 0;
+    
 
     private void Start()
     {
         mainCamera = Camera.main;
         if (mainCamera == null)
         {
-            Debug.LogError("메인 카메라를 찾을 수 없습니다.");
             return;
         }
 
         InitializeEnemyPool();
         StartCoroutine(SpawnEnemies());
+
+        if (gameTimerController != null)
+        {
+            gameTimerController.OnEliteTime += SpawnEliteEnemy;
+            gameTimerController.OnBossTime += SpawnBossEnemy;
+        }
     }
 
     private void InitializeEnemyPool()
@@ -55,26 +70,67 @@ public class EnemySpawner : MonoBehaviour
         {
             Vector2 spawnPosition = GetRandomSpawnPosition();
             enemy.transform.position = spawnPosition;
-            
+
             BasicEnemy basicEnemy = enemy.GetComponent<BasicEnemy>();
             if (basicEnemy != null)
             {
-                basicEnemy.ResetEnemy();  // 적 상태 초기화
-                basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;  // 이전 이벤트 구독 제거
-                basicEnemy.OnEnemyDeath += ReturnEnemyToPool;  // 새로운 이벤트 구독
-            }
-            else
-            {
-                Debug.LogError("BasicEnemy component not found on spawned enemy!");
+                basicEnemy.ResetEnemy();
+                basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;
+                basicEnemy.OnEnemyDeath += ReturnEnemyToPool;
             }
 
             enemy.SetActive(true);
             currentEnemyCount++;
         }
-        else
+    }
+
+    private void SpawnEliteEnemy()
+    {
+        GameObject eliteEnemy = SpawnSpecialEnemy(eliteEnemyPrefab);
+        if (eliteEnemy != null)
         {
-            Debug.LogWarning("No available enemies in the pool!");
+            EliteEnemy eliteEnemyScript = eliteEnemy.GetComponent<EliteEnemy>();
+            if (eliteEnemyScript != null)
+            {
+                eliteEnemyScript.OnEliteEnemyDeath += OnEliteEnemyDeath;
+            }
         }
+    }
+
+    private void OnEliteEnemyDeath()
+    {
+        gameTimerController.RemoveCombatAreaLimits();
+        uiManager.OnResumeButtonClick();
+    }
+
+    private void SpawnBossEnemy()
+    {
+        GameObject bossEnemy = SpawnSpecialEnemy(bossEnemyPrefab);
+        if (bossEnemy != null)
+        {
+            EnemyBoss bossEnemyScript = bossEnemy.GetComponent<EnemyBoss>();
+            if (bossEnemyScript != null)
+            {
+                bossEnemyScript.OnBossEnemyDeath += OnBossEnemyDeath;
+            }
+        }
+    }
+
+    private void OnBossEnemyDeath()
+    {
+        Debug.Log("Boss enemy defeated!");
+        gameTimerController.RemoveCombatAreaLimits();
+        uiManager.OnResumeButtonClick();
+    }
+
+    private GameObject SpawnSpecialEnemy(GameObject specialEnemyPrefab)
+    {
+        if (specialEnemyPrefab != null)
+        {
+            Vector2 spawnPosition = GetRandomSpawnPosition();
+            return Instantiate(specialEnemyPrefab, spawnPosition, Quaternion.identity);
+        }
+        return null;
     }
 
     private GameObject GetEnemyFromPool()
@@ -94,7 +150,7 @@ public class EnemySpawner : MonoBehaviour
         BasicEnemy basicEnemy = enemy.GetComponent<BasicEnemy>();
         if (basicEnemy != null)
         {
-            basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;  // 이벤트 구독 제거
+            basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;
         }
 
         enemy.SetActive(false);
@@ -106,8 +162,9 @@ public class EnemySpawner : MonoBehaviour
         Vector2 cameraSize = new Vector2(mainCamera.orthographicSize * mainCamera.aspect, mainCamera.orthographicSize);
         float spawnDistance = 1f;
 
-        Vector2 cameraPosition = mainCamera.transform.position; // 카메라 위치 가져오기
+        Vector2 cameraPosition = mainCamera.transform.position;
         float randomSide = Random.value;
+
         if (randomSide < 0.25f) // 위쪽
         {
             return new Vector2(Random.Range(-cameraSize.x, cameraSize.x) + cameraPosition.x, cameraPosition.y + cameraSize.y + spawnDistance);

@@ -3,31 +3,24 @@ using System.Collections.Generic;
 
 public class Flowfield : MonoBehaviour
 {
-    public Vector2Int gridSize = new Vector2Int(20, 20);
-    public float cellSize = 1f;
+    [SerializeField] private Vector2Int gridSize = new Vector2Int(20, 20);
+    [SerializeField] private float cellSize = 1f;
     private Cell[,] grid;
     private Vector2Int playerGridPosition;
-    public Transform playerTransform; // 플레이어의 Transform 컴포넌트
+    public Transform playerTransform;
     private Vector2 gridOrigin;
     private Vector2 lastUpdatePosition;
-
-    [Header("Gizmo Settings")]
-    public bool showGrid = true;
-    public bool showCost = true;
-    public bool showDirection = true;
-    public bool showArrows = true;
-    public Color gridColor = Color.yellow;
-    public Color arrowColor = Color.red;
-    public float arrowSize = 0.5f;
-
-    public LayerMask obstacleLayer; // Inspector에서 장애물 레이어 설정
-    public Color obstacleColor = Color.red;
+    public LayerMask obstacleLayer;
 
     public float obstacleCheckInterval = 0.5f; // 장애물 검사 간격 (초)
     private float lastObstacleCheckTime;
     private bool isPathToPlayerAvailable = true;
     
-    private Dictionary<Vector2Int, CellCache> cellCache;
+    public Dictionary<Vector2Int, CellCache> cellCache;
+
+    public Vector2Int GridSize => gridSize;
+    public float CellSize => cellSize;
+    public Cell[,] Grid => grid;
 
     private void Start()
     {
@@ -301,93 +294,7 @@ public class Flowfield : MonoBehaviour
         return direction;
     }
 
-    private void OnDrawGizmos()
-    {
-        if (grid == null) return;
-
-        for (int x = 0; x < gridSize.x; x++)
-        {
-            for (int y = 0; y < gridSize.y; y++)
-            {
-                Vector3 worldPos = GridToWorld(new Vector2Int(x, y));
-
-                if (grid[x, y].isObstacle)
-                {
-                    DrawObstacle(worldPos);
-                }
-                else
-                {
-                    // 장애물이 아닌 셀에만 박스를 그립니다
-                    Gizmos.color = gridColor;
-                    Gizmos.DrawWireCube(worldPos, Vector3.one * cellSize);
-
-                    if (showCost || showDirection)
-                    {
-                        DrawCellInfo(worldPos, x, y);
-                    }
-
-                    if (showArrows && grid[x, y].bestDirection != Vector2.zero)
-                    {
-                        DrawDirectionArrow(worldPos, grid[x, y].bestDirection);
-                    }
-                }
-            }
-        }
-    }
-
-    private void DrawGridCell(Vector3 position)
-    {
-        Gizmos.color = gridColor;
-        Gizmos.DrawWireCube(position, Vector3.one * cellSize);
-    }
-
-    private void DrawCellInfo(Vector3 position, int x, int y)
-    {
-        string label = "";
-        if (showCost)
-        {
-            // Mathf.RoundToInt를 사용하여 반올림한 정수 값으로 표시
-            label += $"{Mathf.RoundToInt(grid[x, y].cost)}\n";
-        }
-        if (showDirection)
-        {
-            label += $"D:{grid[x, y].bestDirection}";
-        }
-        UnityEditor.Handles.Label(position, label);
-    }
-
-    private void DrawDirectionArrow(Vector3 start, Vector2 direction)
-    {
-        Vector3 end = start + (Vector3)(direction * cellSize * arrowSize);
-        Gizmos.color = arrowColor;
-        Gizmos.DrawLine(start, end);
-        DrawArrowHead(start, end, 30f, cellSize * 0.2f);
-    }
-
-    private void DrawArrowHead(Vector3 start, Vector3 end, float angle, float length)
-    {
-        Vector3 direction = (end - start).normalized;
-        Vector3 right = Quaternion.Euler(0, 0, angle) * direction * length;
-        Vector3 left = Quaternion.Euler(0, 0, -angle) * direction * length;
-
-        Gizmos.DrawLine(end, end - right);
-        Gizmos.DrawLine(end, end - left);
-    }
-
-    private void DrawObstacle(Vector3 position)
-    {
-        Gizmos.color = obstacleColor;
-        float size = cellSize * 0.8f;
-        Vector3 topLeft = position + new Vector3(-size / 2, size / 2, 0);
-        Vector3 topRight = position + new Vector3(size / 2, size / 2, 0);
-        Vector3 bottomLeft = position + new Vector3(-size / 2, -size / 2, 0);
-        Vector3 bottomRight = position + new Vector3(size / 2, -size / 2, 0);
-
-        Gizmos.DrawLine(topLeft, bottomRight);
-        Gizmos.DrawLine(topRight, bottomLeft);
-    }
-
-    private Vector3 GridToWorld(Vector2Int gridPosition)
+    public Vector3 GridToWorld(Vector2Int gridPosition)
     {
         return new Vector3(
             gridPosition.x * cellSize + gridOrigin.x + cellSize / 2,

@@ -2,16 +2,22 @@ using UnityEngine;
 
 public class ExpOrb : MonoBehaviour
 {
-    [SerializeField] private float magnateArea = 3f;
-    [SerializeField] private float initialMoveSpeed = 2f;
-    [SerializeField] private float maxMoveSpeed = 10f;
-    [SerializeField] private float accelerationRate = 5f;
+    [SerializeField] private float magnateArea;
+    [SerializeField] private float initialMoveSpeed;
+    [SerializeField] private float maxMoveSpeed;
+    [SerializeField] private float accelerationRate;
     [SerializeField] private float experienceValue;
-    [SerializeField] private float collectionDistance = 0.5f;
+    [SerializeField] private float collectionDistance;
+
+    [SerializeField] private float minScatterDistance;
+    [SerializeField] private float maxScatterDistance;
 
     private PlayerManager playerManager;
     private bool isMovingToPlayer = false;
     private float currentMoveSpeed;
+    private Vector2 scatterDirection;
+    private float scatterDistance;
+    private bool isScattering = true;
 
     private void Awake()
     {
@@ -22,34 +28,50 @@ public class ExpOrb : MonoBehaviour
     {
         isMovingToPlayer = false;
         currentMoveSpeed = initialMoveSpeed;
+        ScatterOrb();
     }
+      private void ScatterOrb()
+      {
+          scatterDirection = Random.insideUnitCircle.normalized;
+          scatterDistance = Random.Range(minScatterDistance, maxScatterDistance);
+          isScattering = true;
+          currentMoveSpeed = initialMoveSpeed;
+      }
 
-    private void Update()
-    {
-        if (playerManager != null)
-        {
-            Vector2 playerPosition = playerManager.transform.position;
-            float distanceToPlayer = Vector2.Distance(transform.position, playerPosition);
+      private void Update()
+      {
+          if (isScattering)
+          {
+              currentMoveSpeed = Mathf.Min(currentMoveSpeed + accelerationRate * Time.deltaTime, maxMoveSpeed);
+              transform.Translate(scatterDirection * currentMoveSpeed * Time.deltaTime);
+              scatterDistance -= currentMoveSpeed * Time.deltaTime;
+              if (scatterDistance <= 0)
+              {
+                  isScattering = false;
+                  currentMoveSpeed = initialMoveSpeed;
+              }
+          }
+          else if (playerManager != null)
+          {
+              Vector2 playerPosition = playerManager.transform.position;
+              float distanceToPlayer = Vector2.Distance(transform.position, playerPosition);
             
-            if (distanceToPlayer <= magnateArea)
-            {
-                isMovingToPlayer = true;
-            }
+              if (distanceToPlayer <= magnateArea)
+              {
+                  isMovingToPlayer = true;
+              }
 
-            if (isMovingToPlayer)
-            {
-                // 가속도 적용
-                currentMoveSpeed = Mathf.Min(currentMoveSpeed + accelerationRate * Time.deltaTime, maxMoveSpeed);
+              if (isMovingToPlayer)
+              {
+                  currentMoveSpeed = Mathf.Min(currentMoveSpeed + accelerationRate * Time.deltaTime, maxMoveSpeed);
+                  Vector2 direction = (playerPosition - (Vector2)transform.position).normalized;
+                  transform.position = Vector2.MoveTowards(transform.position, playerPosition, currentMoveSpeed * Time.deltaTime);
 
-                // 플레이어 방향으로 이동
-                Vector2 direction = (playerPosition - (Vector2)transform.position).normalized;
-                transform.position = Vector2.MoveTowards(transform.position, playerPosition, currentMoveSpeed * Time.deltaTime);
-
-                if (distanceToPlayer <= collectionDistance)
-                {
-                    CollectExperience();
-                }
-            }
+                  if (distanceToPlayer <= collectionDistance)
+                  {
+                      CollectExperience();
+                  }
+              }
         }
     }
 

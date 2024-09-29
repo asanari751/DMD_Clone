@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class EnemyDictionary : MonoBehaviour
+public class EnemyDictionary
 {
     // 적 정보를 저장할 딕셔너리
     private Dictionary<string, EnemyInfo> enemies = new Dictionary<string, EnemyInfo>();
@@ -16,7 +16,6 @@ public class EnemyDictionary : MonoBehaviour
         public int enemyArmor;
         public float enemyASpeed;
         public float enemySpeed;
-        // 필요한 다른 속성들을 여기에 추가할 수 있습니다.
     }
 
     // 적 정보 추가 메서드

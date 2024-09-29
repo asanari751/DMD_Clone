@@ -215,32 +215,36 @@ ScriptedImporter:
     layerType: 0
     blendMode: 0
     cells:
-    - name: Prototype_Character_Frame_0
+    - name: Frame_0
       frameIndex: 0
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: 0
         width: 128
         height: 96
       spriteId: 44800a9c45e5a3746a29462f7da220cf
-    - name: Prototype_Character_Frame_1
+    - name: Frame_1
       frameIndex: 1
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: 0
         width: 128
         height: 96
       spriteId: 5b70cdece0bd659459f74f540910cba7
-    - name: Prototype_Character_Frame_2
+    - name: Frame_2
       frameIndex: 2
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: 0
         width: 128
         height: 96
       spriteId: 425b35932ba22f44cb66e2e6d827a83f
-    - name: Prototype_Character_Frame_3
+    - name: Frame_3
       frameIndex: 3
+      additiveSortOrder: 0
       cellRect:
         x: 0
         y: 0

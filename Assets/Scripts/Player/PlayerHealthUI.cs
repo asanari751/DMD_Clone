@@ -14,7 +14,7 @@ public class PlayerHealthUI : MonoBehaviour
     {
         canvas = FindAnyObjectByType<Canvas>();
         healthBarInstance = Instantiate(healthBarPrefab, canvas.transform);
-        healthBarInstance.SetActive(InCombatArea); // 초기 상태 설정
+        healthBarInstance.SetActive(InCombatArea);
     }
 
     private void Update()

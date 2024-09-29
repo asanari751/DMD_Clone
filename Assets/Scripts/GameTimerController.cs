@@ -6,13 +6,15 @@ public class GameTimerController : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private UIManager uiManager;
-    [SerializeField] [Range(0.1f, 100f)] private float debugParameter = 1f;
+    [SerializeField][Range(0.1f, 100f)] private float debugParameter = 1f;
 
     [Header("Pause Times")]
-    [SerializeField] private float elitePauseTime = 5f;
-    [SerializeField] private float bossPauseTime = 10f;
+    [SerializeField] private float elitePauseTime;
+    [SerializeField] private float bossPauseTime;
     [SerializeField] private GameObject prefabToSpawn; // 생성할 프리팹
     [SerializeField] private Transform playerTransform; // 플레이어의 위치
+    [SerializeField] private float updateInterval = 1f;
+    [SerializeField] private float timeSinceLastUpdate = 0f;
 
     private float elapsedTime = 0f;
     private bool isRunning = true;
@@ -24,6 +26,9 @@ public class GameTimerController : MonoBehaviour
     [SerializeField] private float yOffset = 1f; // Y 방향 오프셋
     [SerializeField] private int squareSize = 5; // 반드시 홀수!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+    public event System.Action OnEliteTime;
+    public event System.Action OnBossTime;
+
     private void Awake()
     {
         // Pause times in seconds
@@ -32,14 +37,6 @@ public class GameTimerController : MonoBehaviour
 
     private void Start()
     {
-        if (timerText == null)
-        {
-            Debug.LogError("Timer Text is not assigned to GameTimerController!");
-        }
-        if (uiManager == null)
-        {
-            Debug.LogError("UIManager is not assigned to GameTimerController!");
-        }
         UpdateTimerDisplay();
     }
 
@@ -48,11 +45,19 @@ public class GameTimerController : MonoBehaviour
         if (isRunning && !isGameEnded)
         {
             elapsedTime += Time.deltaTime * debugParameter;
+            timeSinceLastUpdate += Time.deltaTime;
+
+            if (timeSinceLastUpdate >= updateInterval)
+            {
+                UpdateTimerDisplay();
+                timeSinceLastUpdate = 0f;
+            }
+
             if (currentPauseIndex < pauseTimes.Length && elapsedTime >= pauseTimes[currentPauseIndex])
             {
+                UpdateTimerDisplay();
                 PauseTimer();
             }
-            UpdateTimerDisplay();
         }
     }
 
@@ -68,22 +73,26 @@ public class GameTimerController : MonoBehaviour
     private void PauseTimer()
     {
         isRunning = false;
-        if (currentPauseIndex == 0) // Elite pause time
+        if (currentPauseIndex == 0) // 엘리트
         {
-            LimitsCombatArea(); // 플레이어 주변에 프리팹 생성
+            OnEliteTime?.Invoke();
+            LimitsCombatArea();
             if (uiManager != null)
             {
                 uiManager.ShowResumeButton();
             }
-            else
-            {
-                Debug.LogError("UIManager is null in GameTimerController. Cannot show resume button.");
-            }
         }
-        else if (currentPauseIndex == 1) // Boss pause time
+
+        else if (currentPauseIndex == 1) // 보스
         {
+            OnBossTime?.Invoke();
+            LimitsCombatArea();
+            if (uiManager != null)
+            {
+                uiManager.ShowResumeButton();
+            }
+
             isGameEnded = true;
-            Debug.Log("Game ended at boss time");
         }
         currentPauseIndex++;
     }
@@ -103,6 +112,15 @@ public class GameTimerController : MonoBehaviour
                     Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
                 }
             }
+        }
+    }
+
+    public void RemoveCombatAreaLimits()
+    {
+        GameObject[] limitObjects = GameObject.FindGameObjectsWithTag("Obstacle");
+        foreach (GameObject obj in limitObjects)
+        {
+            Destroy(obj);
         }
     }
 

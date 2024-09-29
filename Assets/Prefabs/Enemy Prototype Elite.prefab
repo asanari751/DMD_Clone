@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3072086067738393681
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2712799559976269576}
+  m_Layer: 6
+  m_Name: Transform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2712799559976269576
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3072086067738393681}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4514696612962679870}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4976483147096513540
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,11 +44,12 @@ GameObject:
   - component: {fileID: 8577688993285471522}
   - component: {fileID: 6413013340263304632}
   - component: {fileID: 8803329705486930600}
-  - component: {fileID: 1334247076841853299}
-  - component: {fileID: 4453743842889480057}
+  - component: {fileID: 3673361870676350476}
+  - component: {fileID: 4706016339872012645}
+  - component: {fileID: 3223325326158038769}
   m_Layer: 6
-  m_Name: Enemy Prototype Meele
-  m_TagString: Untagged
+  m_Name: Enemy Prototype Elite
+  m_TagString: Elite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -32,11 +64,12 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7484714946537723146}
   - {fileID: 885378353456498619}
+  - {fileID: 2712799559976269576}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &662584177183261202
@@ -85,7 +118,7 @@ SpriteRenderer:
   m_SortingOrder: 1
   m_Sprite: {fileID: 7812820661483254461, guid: 215687feeab0b7445b4a1cd86c82c2e1,
     type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6680556, g: 1, b: 0.5896226, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -170,7 +203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 528cc4556cfc5014481229843c43583b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1334247076841853299
+--- !u!114 &3673361870676350476
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -179,21 +212,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 4976483147096513540}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 219a463292eeb9f4b92e42cdca874bba, type: 3}
+  m_Script: {fileID: 11500000, guid: a1f181633f45cd341bed96261f280ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deathTime: 1
-  experienceDrop: 1
+  deathTime: 0.3
+  experienceDrop: 10
   expOrbPrefab: {fileID: 6992617434821140472, guid: 5221308d8fca95b4f88475e0a2e5314c,
     type: 3}
-  expOrbCount: 1
+  expOrbCount: 5
   stats:
     enemyType: 0
-    MoveSpeed: 3
-    MaxHealth: 1
+    MoveSpeed: 5
+    MaxHealth: 50
     AttackRange: 1
     RetreatSpeed: 1
---- !u!114 &4453743842889480057
+  healthUI: {fileID: 3223325326158038769}
+--- !u!114 &4706016339872012645
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -205,9 +239,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 605f792aaaab51641bbf76e3aace2bb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  knockbackDistance: 1
-  knockbackDuration: 0.5
-  knockbackColor: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
+  knockbackDistance: 0.1
+  knockbackDuration: 0.1
+  knockbackColor: {r: 0.50980395, g: 0.50980395, b: 0.50980395, a: 1}
+--- !u!114 &3223325326158038769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4976483147096513540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d64d6d45d19c3d6499f20501556e9f3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthBarPrefab: {fileID: 3313146955159993653, guid: be32f15cf05eeed4cb449554d71a0360,
+    type: 3}
+  yOffset: 1
+  isActive: 1
 --- !u!1 &5223107067649577173
 GameObject:
   m_ObjectHideFlags: 0
@@ -323,7 +373,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 10}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.33, y: 0.33, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4514696612962679870}

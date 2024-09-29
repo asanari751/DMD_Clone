@@ -3,6 +3,7 @@ using UnityEngine;
 public class EnemyMovementController : MonoBehaviour
 {
     private BasicEnemy basicEnemy;
+    private EnemyStats enemyStats;
     private Flowfield flowfield;
     private Rigidbody2D rb;
     private Transform playerTransform;
@@ -38,19 +39,19 @@ public class EnemyMovementController : MonoBehaviour
 
             switch (basicEnemy.GetEnemyType())
             {
-                case BasicEnemy.EnemyType.Melee:
+                case EnemyStats.EnemyType.Melee:
                     movement = GetMeleeMovement();
                     break;
-                case BasicEnemy.EnemyType.Arrow:
+                case EnemyStats.EnemyType.Arrow:
                     movement = GetArrowMovement();
                     break;
             }
 
-            rb.velocity = movement;
+            rb.linearVelocity = movement;
         }
         else
         {
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
         }
     }
 

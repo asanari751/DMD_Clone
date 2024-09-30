@@ -86,10 +86,6 @@ public class InteractiveProto : MonoBehaviour
         {
             gameTimerController.PauseGame();
         }
-        else
-        {
-            Debug.LogError("GameTimerController is not assigned to InteractiveProto!");
-        }
         isInteracting = true;
     }
 

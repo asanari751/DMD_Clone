@@ -4,10 +4,11 @@ using System.Collections;
 
 public class DamageIndicator : MonoBehaviour
 {
-    [Header ("Damage Indicator")]
+    [Header("Damage Indicator")]
     [SerializeField] private GameObject textPrefab;
+    [SerializeField] private Canvas canvas;
 
-    [Header ("Properties")]
+    [Header("Properties")]
     [SerializeField] private float lifetime = 1f;
     [SerializeField] private float moveSpeed = 1f;
     [SerializeField] private Vector3 offset = new Vector3(0, 2f, 0);
@@ -15,7 +16,7 @@ public class DamageIndicator : MonoBehaviour
     [SerializeField] private float minAlpha = 0f;
     [SerializeField] private float fontSize = 36f;
 
-    [Header ("Curve")]
+    [Header("Curve")]
     [SerializeField] private AnimationCurve scaleCurve = AnimationCurve.EaseInOut(0, 1, 1, 0.5f);
     [SerializeField] private AnimationCurve alphaCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
 
@@ -24,15 +25,19 @@ public class DamageIndicator : MonoBehaviour
     private void Awake()
     {
         InitializeSingleton();
+        if (canvas == null)
+        {
+            canvas = FindAnyObjectByType<Canvas>();
+        }
     }
+
 
     private void InitializeSingleton()
     {
         if (Instance == null)
         {
             Instance = this;
-            
-            // 현재 오브젝트가 루트가 아니라면 새로운 루트 오브젝트를 생성
+
             if (transform.parent != null)
             {
                 GameObject root = new GameObject("DamageIndicatorRoot");
@@ -56,15 +61,21 @@ public class DamageIndicator : MonoBehaviour
         SetDamageTextProperties(damageText, amount);
         StartCoroutine(AnimateText(damageText));
     }
-
     private GameObject CreateDamageText(Vector3 position)
     {
-        return Instantiate(textPrefab, position + offset, Quaternion.identity);
+        GameObject damageText = Instantiate(textPrefab, canvas.transform);
+        RectTransform rectTransform = damageText.GetComponent<RectTransform>();
+        Vector2 viewportPosition = Camera.main.WorldToViewportPoint(position + offset);
+        Vector2 worldObjectScreenPosition = new Vector2(
+            ((viewportPosition.x * canvas.pixelRect.width) - (canvas.pixelRect.width * 0.5f)),
+            ((viewportPosition.y * canvas.pixelRect.height) - (canvas.pixelRect.height * 0.5f)));
+        rectTransform.anchoredPosition = worldObjectScreenPosition;
+        return damageText;
     }
 
     private void SetDamageTextProperties(GameObject damageText, int amount)
     {
-        TextMeshPro textMesh = damageText.GetComponent<TextMeshPro>();
+        TextMeshProUGUI textMesh = damageText.GetComponent<TextMeshProUGUI>();
         if (textMesh != null)
         {
             textMesh.text = amount.ToString();
@@ -78,7 +89,7 @@ public class DamageIndicator : MonoBehaviour
 
     private IEnumerator AnimateText(GameObject damageText)
     {
-        TextMeshPro textMesh = damageText.GetComponent<TextMeshPro>();
+        TextMeshProUGUI textMesh = damageText.GetComponent<TextMeshProUGUI>();
         float elapsedTime = 0f;
         Vector3 startPosition = damageText.transform.position;
         Vector3 startScale = damageText.transform.localScale;
@@ -93,8 +104,7 @@ public class DamageIndicator : MonoBehaviour
 
         Destroy(damageText);
     }
-
-    private void UpdateTextAnimation(GameObject damageText, TextMeshPro textMesh, Vector3 startPosition, Vector3 startScale, Color startColor, float elapsedTime)
+    private void UpdateTextAnimation(GameObject damageText, TextMeshProUGUI textMesh, Vector3 startPosition, Vector3 startScale, Color startColor, float elapsedTime)
     {
         float t = elapsedTime / lifetime;
         float scale = Mathf.Lerp(1f, minScale, scaleCurve.Evaluate(t));

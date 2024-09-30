@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using DG.Tweening;
@@ -5,34 +6,35 @@ using System.Linq;
 
 public class PlayerStateManager : MonoBehaviour
 {
+    public enum AttackType
+    {
+        Melee,
+        Arrow
+    }
+
     [Header("Common")]
     [SerializeField] private ProjectilePool projectilePool;
-    [SerializeField] private float detectionRadius;
-    [SerializeField] private LayerMask targetLayers;
     [SerializeField] private InputActionReference attackAction;
-    [SerializeField] private bool isRangedAttack;
+    [SerializeField] private LayerMask targetLayers;
+    [SerializeField] private float detectionRadius;
+    [SerializeField] private AttackType currentAttackType;
+    [SerializeField] private float atkDelay;
 
     [Header("Melee")]
     [SerializeField] private float attackAngle;
     [SerializeField] private float attackDamage;
     [SerializeField] private float attackEffectDuration;
-    [SerializeField] private float atkDelay;
+    [SerializeField] private float meeleAttackRange;
 
     [Header("Arrow")]
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float projectileDamage;
-    [SerializeField] private float rangedAttackCooldown;
     [SerializeField] private int penetrateCount;
 
     [Header("Projectile Trail")]
     [SerializeField] private TrailRenderer projectileTrailPrefab;
-    [SerializeField] private float trailDuration;
-    [SerializeField] private float trailMaxLength;
-    [SerializeField] private float trailStartWidth;
-    [SerializeField] private float trailEndWidth;
-    [SerializeField] private Color trailStartColor = Color.white;
-    [SerializeField] private Color trailEndColor = Color.white;
+    [SerializeField] private ProjectileTrailSettings projectileTrailSettings;
 
     [Header("Attack Effect")]
     [SerializeField] private SpriteRenderer attackEffectSprite;
@@ -71,68 +73,45 @@ public class PlayerStateManager : MonoBehaviour
         isAutoAttack = !isAutoAttack;
         if (isAutoAttack)
         {
-            StartAutoAttack();
+            if (autoAttackTween != null)
+            {
+                autoAttackTween.Kill();
+            }
+            float attackInterval = atkDelay;
+            autoAttackTween = DOVirtual.DelayedCall(attackInterval, PerformAutoAttack, false).SetLoops(-1);
         }
         else
         {
-            StopAutoAttack();
-        }
-    }
-
-    private void StartAutoAttack()
-    {
-        StopAutoAttack();
-        autoAttackTween = DOVirtual.DelayedCall(isRangedAttack ? rangedAttackCooldown : atkDelay, PerformAutoAttack, false).SetLoops(-1);
-    }
-
-    private void StopAutoAttack()
-    {
-        if (autoAttackTween != null)
-        {
-            autoAttackTween.Kill();
-            autoAttackTween = null;
+            if (autoAttackTween != null)
+            {
+                autoAttackTween.Kill();
+                autoAttackTween = null;
+            }
         }
     }
 
     private void PerformAutoAttack()
     {
+        if (GameTimerController.Paused == true) return;
         GameObject closestEnemy = FindClosestEnemy();
-        if (closestEnemy == null) return;
 
-        if (isRangedAttack)
-        {
-            PerformRangedAttack(closestEnemy.transform.position);
-        }
-        else
-        {
-            PerformAttack(closestEnemy.transform.position);
-        }
+        Vector2 targetPosition = closestEnemy.transform.position;
+        Action<Vector2> attackAction = currentAttackType == AttackType.Arrow ? PerformRangedAttack : PerformAttack;
+        attackAction(targetPosition);
     }
 
     private void PerformManualAttack()
     {
-        if (mainCamera == null) return;
+        if (GameTimerController.Paused == true) return;
 
         Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-
-        if (isRangedAttack)
-        {
-            PerformRangedAttack(mousePosition);
-        }
-        else
-        {
-            PerformAttack(mousePosition, true);
-        }
+        Action<Vector2> attackAction = currentAttackType == AttackType.Arrow ? PerformRangedAttack : PerformAttack;
+        attackAction(mousePosition);
     }
 
     private void PerformRangedAttack(Vector2 targetPosition)
     {
-        if (Time.time - lastRangedAttackTime < rangedAttackCooldown)
-        {
-            return;
-        }
-
-        if (projectilePool == null)
+        if (Time.time - lastRangedAttackTime < atkDelay)
         {
             return;
         }
@@ -144,35 +123,22 @@ public class PlayerStateManager : MonoBehaviour
         projectileObj.transform.right = direction;
 
         Projectile projectile = projectileObj.GetComponent<Projectile>();
-        if (projectile != null)
-        {
-            TrailRenderer trail = projectileObj.GetComponent<TrailRenderer>();
-            if (trail == null && projectileTrailPrefab != null)
-            {
-                trail = Instantiate(projectileTrailPrefab, projectileObj.transform);
-            }
 
-            if (trail != null)
-            {
-                trail.time = trailDuration;
-                trail.startWidth = trailStartWidth;
-                trail.endWidth = trailEndWidth;
-                trail.startColor = trailStartColor;
-                trail.endColor = trailEndColor;
-                trail.enabled = true;
-            }
+        TrailRenderer trail = projectileObj.GetComponent<TrailRenderer>();
 
-            projectile.Initialize(projectileSpeed, projectileDamage, penetrateCount, projectilePool);
-        }
-        else
-        {
-            projectilePool.ReturnProjectile(projectileObj);
-        }
+        trail.time = projectileTrailSettings.trailDuration;
+        trail.startWidth = projectileTrailSettings.trailStartWidth;
+        trail.endWidth = projectileTrailSettings.trailEndWidth;
+        trail.startColor = projectileTrailSettings.trailStartColor;
+        trail.endColor = projectileTrailSettings.trailEndColor;
+        trail.enabled = true;
+
+        projectile.Initialize(projectileSpeed, projectileDamage, penetrateCount, projectilePool);
 
         lastRangedAttackTime = Time.time;
     }
 
-    private void PerformAttack(Vector2 targetPosition, bool isManualAttack = false)
+    private void PerformAttack(Vector2 targetPosition)
     {
         if (Time.time - lastAttackTime < atkDelay)
         {
@@ -193,7 +159,7 @@ public class PlayerStateManager : MonoBehaviour
         Vector2 directionToTarget = (targetPosition - (Vector2)transform.position).normalized;
         float angleToTarget = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
 
-        foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, detectionRadius, targetLayers))
+        foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, meeleAttackRange, targetLayers))
         {
             if (IsInAttackAngle(collider.transform.position, angleToTarget) &&
                 collider.TryGetComponent<BasicEnemy>(out var enemy))
@@ -234,15 +200,15 @@ public class PlayerStateManager : MonoBehaviour
         float angleToTarget = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
 
         Vector2 originalSize = attackEffectSprite.sprite.bounds.size;
-        float scaleX = detectionRadius * 2 / originalSize.x;
-        float scaleY = detectionRadius / originalSize.y;
+        float scaleX = meeleAttackRange * 2 / originalSize.x;
+        float scaleY = meeleAttackRange / originalSize.y;
 
         attackEffectSprite.transform.localScale = new Vector3(scaleX, scaleY, 1f);
 
         Vector2 adjustedOffset = CalculateDirectionalOffset(directionToTarget);
 
         Vector3 basePosition = transform.position + (Vector3)adjustedOffset;
-        attackEffectSprite.transform.position = (Vector2)basePosition + directionToTarget * (detectionRadius / 2f);
+        attackEffectSprite.transform.position = (Vector2)basePosition + directionToTarget * (meeleAttackRange / 2f);
 
         attackEffectSprite.transform.rotation = Quaternion.Euler(0, 0, angleToTarget - 90);
     }

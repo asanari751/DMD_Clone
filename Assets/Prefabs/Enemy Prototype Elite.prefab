@@ -226,7 +226,6 @@ MonoBehaviour:
     MaxHealth: 50
     AttackRange: 1
     RetreatSpeed: 1
-  healthUI: {fileID: 3223325326158038769}
 --- !u!114 &4706016339872012645
 MonoBehaviour:
   m_ObjectHideFlags: 0

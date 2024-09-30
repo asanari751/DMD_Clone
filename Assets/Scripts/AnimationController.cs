@@ -24,16 +24,15 @@ public class AnimationController : MonoBehaviour
 
     private void Update()
     {
-        // 입력 받기
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
-        // 애니메이션 업데이트
         UpdateAnimation();
     }
 
     private void UpdateAnimation()
     {
+        if (GameTimerController.Paused == true) return;
         if (animator != null && spriteRenderer != null)
         {
             bool isMoving = movement.magnitude > moveThreshold;

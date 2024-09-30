@@ -7,20 +7,21 @@ public class GameTimerController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private UIManager uiManager;
     [SerializeField][Range(0.1f, 100f)] private float debugParameter = 1f;
+    [SerializeField] private float updateInterval;
+    [SerializeField] private float timeSinceLastUpdate;
 
     [Header("Pause Times")]
     [SerializeField] private float elitePauseTime;
     [SerializeField] private float bossPauseTime;
-    [SerializeField] private GameObject prefabToSpawn; // 생성할 프리팹
-    [SerializeField] private Transform playerTransform; // 플레이어의 위치
-    [SerializeField] private float updateInterval = 1f;
-    [SerializeField] private float timeSinceLastUpdate = 0f;
+    [SerializeField] private GameObject prefabToSpawn;
+    [SerializeField] private Transform playerTransform;
 
-    private float elapsedTime = 0f;
+    private float elapsedTime;
     private bool isRunning = true;
+    public static bool Paused = false;
     private bool isGameEnded = false;
     private float[] pauseTimes;
-    private int currentPauseIndex = 0;
+    private int currentPauseIndex;
 
     [SerializeField] private float xOffset = 1f; // X 방향 오프셋
     [SerializeField] private float yOffset = 1f; // Y 방향 오프셋
@@ -57,6 +58,18 @@ public class GameTimerController : MonoBehaviour
             {
                 UpdateTimerDisplay();
                 PauseTimer();
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (isRunning)
+            {
+                PauseGame();
+            }
+            else
+            {
+                ResumeGame();
             }
         }
     }
@@ -136,8 +149,9 @@ public class GameTimerController : MonoBehaviour
     public void PauseGame()
     {
         isRunning = false;
+        Paused = true;
         Time.timeScale = 0f;
-        Debug.Log("Game paused");
+        uiManager.SetPauseUIVisibility(true);
     }
 
     public void ResumeGame()
@@ -145,8 +159,9 @@ public class GameTimerController : MonoBehaviour
         if (!isGameEnded)
         {
             isRunning = true;
+            Paused = false;
             Time.timeScale = 1f;
-            Debug.Log("Game resumed");
+            uiManager.SetPauseUIVisibility(false);
         }
     }
 }

@@ -7,17 +7,20 @@ using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
-    
+
     [Header("Scripts")]
     [SerializeField] private GameTimerController gameTimerController;
-    
+
     [Header("Button")]
     [SerializeField] private GameObject resumeButton;
-    
+
     [Header("Key Binding")]
     [SerializeField] private RectTransform controlsUI;
     [SerializeField] private float bindingTime = 3f;
     [SerializeField] private float fadeDuration = 0.5f;
+    [Header("Image")]
+    [SerializeField] private GameObject pauseOverlay;
+    [SerializeField] private TextMeshProUGUI pausedText;
 
     private CanvasGroup controlsCanvasGroup;
 
@@ -96,5 +99,11 @@ public class UIManager : MonoBehaviour
         {
             resumeButton.SetActive(true);
         }
+    }
+
+    public void SetPauseUIVisibility(bool isVisible)
+    {
+        pauseOverlay.SetActive(isVisible);
+        pausedText.gameObject.SetActive(isVisible);
     }
 }

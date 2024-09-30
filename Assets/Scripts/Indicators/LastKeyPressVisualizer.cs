@@ -7,7 +7,7 @@ public class LastKeyPressVisualizer : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI displayText;
     [SerializeField] private string prefix = "Recent key: ";
-    [SerializeField] private float displayDuration = 2f;
+    [SerializeField] private float displayDuration;
 
     private float lastKeyPressTime;
     private string lastKeyPressed = "";
@@ -16,11 +16,6 @@ public class LastKeyPressVisualizer : MonoBehaviour
 
     private void Awake()
     {
-        if (displayText == null)
-        {
-            Debug.LogError("Display Text (TMP) is not assigned to LastKeyPressVisualizer!");
-        }
-
         InitializeKeyNames();
     }
 

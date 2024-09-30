@@ -307,11 +307,6 @@ MonoBehaviour:
   rangedAttackCooldown: 0
   penetrateCount: 0
   projectileTrailPrefab: {fileID: 0}
-  trailDuration: 0
-  trailMaxLength: 0
-  trailStartWidth: 0
-  trailEndWidth: 0
-  trailStartColor: {r: 1, g: 1, b: 1, a: 1}
-  trailEndColor: {r: 1, g: 1, b: 1, a: 1}
+  projectileTrailSettings: {fileID: 0}
   attackEffectSprite: {fileID: 0}
   attackEffectOffset: {x: 0, y: 0}

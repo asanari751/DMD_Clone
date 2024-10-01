@@ -48,10 +48,10 @@ public class MonsterHealthUI : MonoBehaviour
         isActive = active;
         healthBarInstance.SetActive(active);
     }
-
+    
     public void UpdateHealthBar(float currentHealth, float maxHealth)
     {
-        Image fillImage = healthBarInstance.transform.Find("Fill").GetComponent<Image>();
+        Image fillImage = healthBarInstance.GetComponent<Image>();
         fillImage.fillAmount = currentHealth / maxHealth;
     }
 

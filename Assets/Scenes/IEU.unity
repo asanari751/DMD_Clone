@@ -2117,6 +2117,7 @@ RectTransform:
   - {fileID: 276019402}
   - {fileID: 745831974}
   - {fileID: 328380441}
+  - {fileID: 1931440135}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4973,6 +4974,41 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1931440134
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1931440135}
+  m_Layer: 5
+  m_Name: Boss Health Transform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1931440135
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931440134}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 651483436}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 400}
+  m_SizeDelta: {x: 1000, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1933444133
 GameObject:
   m_ObjectHideFlags: 0
@@ -5362,6 +5398,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameTimerController: {fileID: 1866859118}
   uiManager: {fileID: 1743977334}
+  bossHealthUI: {fileID: -5363098943912834024, guid: 828a4fd817b8f6643a43fbec72ac9980,
+    type: 3}
   enemyPrefab: {fileID: 4976483147096513540, guid: 59825fa9970cb5244a15edb5125abe5b,
     type: 3}
   eliteEnemyPrefab: {fileID: 4976483147096513540, guid: 383556ea955e249498e8deb0dd71561a,
@@ -5726,7 +5764,7 @@ PrefabInstance:
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       propertyPath: atkDelay
-      value: 1
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}

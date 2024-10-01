@@ -1,32 +1,36 @@
 using UnityEngine;
+using UnityEngine.UI;
 
-public class BossHealthUI : HealthUI
+public class BossHealthUI : MonoBehaviour
 {
-    [SerializeField] private RectTransform bossHealthBarContainer;
+    [SerializeField] private GameObject bossHealthBarPrefab;
+    [SerializeField] private bool isActive = true;
 
-    private void Awake()
+    private Image bossHealthBarInstance;
+
+    private void Start()
     {
-        SetupBossHealthBar();
+        Canvas canvas = FindAnyObjectByType<Canvas>();
+        GameObject instance = Instantiate(bossHealthBarPrefab, canvas.transform);
+        bossHealthBarInstance = instance.GetComponent<Image>();
+        SetActive(isActive);
     }
 
-    private void SetupBossHealthBar()
+    public void SetActive(bool isActive)
     {
-        if (bossHealthBarContainer != null)
-        {
-            bossHealthBarContainer.anchorMin = new Vector2(0, 1);
-            bossHealthBarContainer.anchorMax = new Vector2(1, 1);
-            bossHealthBarContainer.anchoredPosition = Vector2.zero;
-            bossHealthBarContainer.sizeDelta = new Vector2(0, 30); // 높이 30으로 설정
-        }
+        this.isActive = isActive;
+        bossHealthBarInstance.enabled = isActive;
     }
 
-    public void Show()
+    public void UpdateHealthBar(float currentHealth, float maxHealth)
     {
-        gameObject.SetActive(true);
+        Image fillImage = bossHealthBarInstance.GetComponent<Image>();
+        fillImage.fillAmount = currentHealth / maxHealth;
     }
 
-    public void Hide()
+    public void DestroyHealthBar()
     {
-        gameObject.SetActive(false);
+        Destroy(bossHealthBarInstance);
+        isActive = false;
     }
 }

@@ -8,7 +8,6 @@ public class EnemyBoss : BasicEnemy
     {
         if (!IsDead())
         {
-            Debug.Log("Enemy Boss Died!");
             base.Die();
             OnBossEnemyDeath?.Invoke();
         }

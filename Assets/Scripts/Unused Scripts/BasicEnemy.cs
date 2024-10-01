@@ -48,6 +48,7 @@ public class BasicEnemy : MonoBehaviour, IDamageable
         {
             Die();
         }
+
         else if (enemyKnockback != null)
         {
             enemyKnockback.ApplyKnockback(knockbackDirection);
@@ -57,6 +58,19 @@ public class BasicEnemy : MonoBehaviour, IDamageable
         {
             DamageIndicator.Instance.ShowDamage(transform.position, Mathf.RoundToInt(damage));
         }
+
+        if (this is EliteEnemy)
+        {
+            MonsterHealthUI healthUI = GetComponent<MonsterHealthUI>();
+            healthUI.UpdateHealthBar(currentHealth, stats.MaxHealth);
+        }
+
+        if (this is EnemyBoss)
+        {
+            BossHealthUI bossHealthUI = GetComponent<BossHealthUI>();
+            bossHealthUI.UpdateHealthBar(currentHealth, stats.MaxHealth);
+        }
+        
     }
 
     public bool IsDead()
@@ -81,6 +95,12 @@ public class BasicEnemy : MonoBehaviour, IDamageable
             {
                 MonsterHealthUI healthUI = GetComponent<MonsterHealthUI>();
                 healthUI.DestroyHealthBar();
+            }
+
+            if (gameObject.CompareTag("Boss"))
+            {
+                BossHealthUI bossHealthUI = GetComponent<BossHealthUI>();
+                bossHealthUI.DestroyHealthBar();
             }
 
             SpawnExpOrbs();

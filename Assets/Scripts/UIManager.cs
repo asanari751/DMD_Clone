@@ -18,6 +18,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform controlsUI;
     [SerializeField] private float bindingTime = 3f;
     [SerializeField] private float fadeDuration = 0.5f;
+    
     [Header("Image")]
     [SerializeField] private GameObject pauseOverlay;
     [SerializeField] private TextMeshProUGUI pausedText;

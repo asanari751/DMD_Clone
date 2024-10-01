@@ -103,6 +103,7 @@ public class LastKeyPressVisualizer : MonoBehaviour
         keyNames[Key.F] = "F";
         keyNames[Key.G] = "G";
         keyNames[Key.H] = "H";
+        keyNames[Key.Tab] = "Tab";
         // 필요한 다른 키 이름들을 여기에 추가할 수 있습니다.
     }
 }

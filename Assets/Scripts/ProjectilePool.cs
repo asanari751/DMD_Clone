@@ -5,6 +5,7 @@ public class ProjectilePool : MonoBehaviour
 {
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private int poolSize;
+    [SerializeField] private Transform parentTransform;
 
     private Queue<GameObject> projectilePool = new Queue<GameObject>();
 
@@ -17,7 +18,7 @@ public class ProjectilePool : MonoBehaviour
     {
         for (int i = 0; i < poolSize; i++)
         {
-            GameObject projectile = Instantiate(projectilePrefab);
+            GameObject projectile = Instantiate(projectilePrefab, parentTransform);
             projectile.SetActive(false);
             projectilePool.Enqueue(projectile);
         }

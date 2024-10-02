@@ -95,9 +95,12 @@ public class PlayerStateManager : MonoBehaviour
         if (GameTimerController.Paused == true) return;
         GameObject closestEnemy = FindClosestEnemy();
 
-        Vector2 targetPosition = closestEnemy.transform.position;
-        Action<Vector2> attackAction = currentAttackType == AttackType.Arrow ? PerformRangedAttack : PerformAttack;
-        attackAction(targetPosition);
+        if (closestEnemy != null)
+        {
+            Vector2 targetPosition = closestEnemy.transform.position;
+            Action<Vector2> attackAction = currentAttackType == AttackType.Arrow ? PerformRangedAttack : PerformAttack;
+            attackAction(targetPosition);
+        } return;
     }
 
     private void PerformManualAttack()

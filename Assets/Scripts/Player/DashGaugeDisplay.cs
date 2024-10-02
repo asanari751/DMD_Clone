@@ -1,25 +1,22 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using System.Linq;
 
 public class DashGaugeDisplay : MonoBehaviour
 {
-    [SerializeField] private Image[] dashGaugeImages;
+    [SerializeField] private Image dashGaugeImage;
+    [SerializeField] private TextMeshProUGUI dashCountText;
     [SerializeField] private PlayerDash playerDash;
     [SerializeField] private Color activeColor = Color.white;
     [SerializeField] private Color inactiveColor = Color.gray;
 
     private void Start()
     {
-        if (dashGaugeImages == null || dashGaugeImages.Length == 0 || playerDash == null)
+        if (dashGaugeImage == null || playerDash == null || dashCountText == null)
         {
+            Debug.LogError("Missing references in DashGaugeDisplay");
             return;
-        }
-
-        for (int i = 0; i < dashGaugeImages.Length; i++)
-        {
-            dashGaugeImages[i].type = Image.Type.Filled;
-            dashGaugeImages[i].fillMethod = Image.FillMethod.Horizontal;
-            dashGaugeImages[i].fillOrigin = (int)Image.OriginHorizontal.Left;
         }
 
         UpdateDashGauge();
@@ -46,25 +43,18 @@ public class DashGaugeDisplay : MonoBehaviour
         {
             return;
         }
-        
-        for (int i = 0; i < dashGaugeImages.Length; i++)
-        {
-            if (dashGaugeImages[i] == null)
-            {
-                continue;
-            }
 
-            if (i < gauges.Length)
-            {
-                float targetFillAmount = gauges[i];
-                dashGaugeImages[i].fillAmount = targetFillAmount;
-                dashGaugeImages[i].color = targetFillAmount >= 1f ? activeColor : inactiveColor;
-            }
-            else
-            {
-                dashGaugeImages[i].fillAmount = 0f;
-                dashGaugeImages[i].color = inactiveColor;
-            }
-        }
+        int availableDashes = gauges.Count(g => g >= 1f);
+        int totalDashes = gauges.Length;
+
+        // Update the dash count text
+        dashCountText.text = $"{availableDashes}";
+
+        // Update the gauge image fill amount
+        float fillAmount = (float)availableDashes / totalDashes;
+        dashGaugeImage.fillAmount = fillAmount;
+
+        // Update the color based on availability
+        dashGaugeImage.color = availableDashes > 0 ? activeColor : inactiveColor;
     }
 }

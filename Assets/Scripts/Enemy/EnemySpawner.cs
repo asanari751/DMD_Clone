@@ -17,6 +17,7 @@ public class EnemySpawner : MonoBehaviour
     [Header("Spawn Settings")]
     [SerializeField] private float spawnInterval;
     [SerializeField] private int maxEnemies;
+    [SerializeField] private Transform parent;
 
     private Camera mainCamera;
     private List<GameObject> enemyPool;
@@ -46,7 +47,7 @@ public class EnemySpawner : MonoBehaviour
         enemyPool = new List<GameObject>();
         for (int i = 0; i < maxEnemies; i++)
         {
-            GameObject enemy = Instantiate(enemyPrefab);
+            GameObject enemy = Instantiate(enemyPrefab, parent);
             enemy.SetActive(false);
             enemyPool.Add(enemy);
         }

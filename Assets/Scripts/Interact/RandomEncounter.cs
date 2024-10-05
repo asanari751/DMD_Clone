@@ -5,6 +5,7 @@ public class RandomEncounter : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject[] encounterPrefabs;
     [SerializeField] private GameObject player;
+    [SerializeField] private Transform encounterBox;
 
     [Header("Encounter Settings")]
     [SerializeField] private float encounterChance; // 기본 10%
@@ -35,7 +36,7 @@ public class RandomEncounter : MonoBehaviour
     {
         GameObject prefabToSpawn = encounterPrefabs[Random.Range(0, encounterPrefabs.Length)];
         Vector2 spawnPosition = GetRandomSpawnPosition();
-        Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
+        Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity, encounterBox);
     }
 
     private Vector2 GetRandomSpawnPosition()

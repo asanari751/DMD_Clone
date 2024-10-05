@@ -9,6 +9,7 @@ public class GameTimerController : MonoBehaviour
     [SerializeField][Range(0.1f, 100f)] private float debugParameter = 1f;
     [SerializeField] private float updateInterval;
     [SerializeField] private float timeSinceLastUpdate;
+    [SerializeField] private Transform obstacleHierahy;
 
     [Header("Pause Times")]
     [SerializeField] private float elitePauseTime;
@@ -122,7 +123,7 @@ public class GameTimerController : MonoBehaviour
                 if (x == -halfSize || x == halfSize || y == -halfSize || y == halfSize)
                 {
                     Vector3 spawnPosition = playerPosition + new Vector3(x * xOffset, y * yOffset, 0);
-                    Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
+                    Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity, obstacleHierahy);
                 }
             }
         }

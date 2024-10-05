@@ -6,7 +6,7 @@ public class AnimationController : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private float moveThreshold = 0.1f;
 
-    [Header("애니메이션 상태 이름")]
+    [Header("Animation States")]
     [SerializeField] private string idleStateName = "Idle";
     [SerializeField] private string walkSideStateName = "Walk_Side";
     [SerializeField] private string walkUpStateName = "Walk_Up";

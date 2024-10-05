@@ -14,10 +14,15 @@ public class Interaction : MonoBehaviour
         public string dialogueText;
     }
 
+    [Header("Interaction UI")]
     [SerializeField] private GameObject interactionField;
     [SerializeField] private Image backgroundOverlay;
+
+    [Header("Input Action")]
     [SerializeField] private InputActionReference interactionAction;
     [SerializeField] private InputActionReference cancleAction;
+
+    [Header("Character Data")]
     [SerializeField] private CharacterData[] characters;
     [SerializeField] private TMP_Text characterNameText;
     [SerializeField] private TMP_Text dialogueText;
@@ -57,6 +62,10 @@ public class Interaction : MonoBehaviour
     private void OnTriggerExit2D(Collider2D other)
     {
         isInRange = false;
+        if (isInRange == false)
+        {
+            SetInteractionUI(false);
+        }
     }
 
     private void OnInteract(InputAction.CallbackContext context)

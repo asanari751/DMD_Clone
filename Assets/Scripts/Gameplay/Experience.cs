@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using AYellowpaper.SerializedCollections;
+using UnityEngine.Events;
 
 public class Experience : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class Experience : MonoBehaviour
 	private int currentLevel = 1;  // 초기 레벨을 1로 설정
 	private float expForCurrentLevel;
 	private float expForNextLevel;
+	public UnityEvent onLevelUp;
 
 	private void Start()
 	{
@@ -48,6 +50,7 @@ public class Experience : MonoBehaviour
 	{
 		currentLevel++;
 		UpdateLevelExperience();
+		onLevelUp.Invoke();
 	}
 
 	// 레벨별 경험치 업데이트

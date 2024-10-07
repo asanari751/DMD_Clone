@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
+using DG.Tweening;
 
 public class Interaction : MonoBehaviour
 {
@@ -17,6 +18,7 @@ public class Interaction : MonoBehaviour
     [Header("Interaction UI")]
     [SerializeField] private GameObject interactionField;
     [SerializeField] private Image backgroundOverlay;
+    [SerializeField] private float typingSpeed;
 
     [Header("Input Action")]
     [SerializeField] private InputActionReference interactionAction;
@@ -28,6 +30,8 @@ public class Interaction : MonoBehaviour
     [SerializeField] private TMP_Text dialogueText;
 
     [SerializeField] private bool isInRange = false;
+    private Tween textTween;
+    private bool isDialogueComplete = false;
 
     private void Start()
     {
@@ -48,6 +52,11 @@ public class Interaction : MonoBehaviour
         interactionAction.action.performed -= OnInteract;
         cancleAction.action.Disable();
         cancleAction.action.performed -= OnCancel;
+
+        if (textTween != null && textTween.IsActive()) // 강제 취소
+        {
+            textTween.Kill();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -72,16 +81,36 @@ public class Interaction : MonoBehaviour
     {
         if (isInRange)
         {
-            Debug.Log("상호작용");
-            SetInteractionUI(true);
-            DisplayCharacterData();
+            if (!interactionField.activeSelf)
+            {
+                Debug.Log("상호작용");
+                SetInteractionUI(true);
+                DisplayCharacterData();
+            }
+
+            else if (!isDialogueComplete) // 즉시 완료
+            {
+                if (textTween != null && textTween.IsActive())
+                {
+                    textTween.Kill();
+                }
+                dialogueText.maxVisibleCharacters = dialogueText.text.Length;
+                isDialogueComplete = true;
+            }
         }
     }
 
     private void SetInteractionUI(bool enable)
     {
-        interactionField.SetActive(enable);
-        backgroundOverlay.gameObject.SetActive(enable);
+        if (interactionField != null)
+        {
+            interactionField.SetActive(enable);
+        }
+
+        if (backgroundOverlay != null && backgroundOverlay.gameObject != null)
+        {
+            backgroundOverlay.gameObject.SetActive(enable);
+        }
     }
 
     private void DisplayCharacterData()
@@ -95,11 +124,34 @@ public class Interaction : MonoBehaviour
         }
 
         characterNameText.text = selectedCharacter.characterName;
+
+        if (textTween != null && textTween.IsActive())
+        {
+            textTween.Kill();
+        }
+
         dialogueText.text = selectedCharacter.dialogueText;
+        dialogueText.maxVisibleCharacters = 0;
+        isDialogueComplete = false;
+
+        float duration = selectedCharacter.dialogueText.Length / typingSpeed;
+
+        textTween = DOTween.To(() => dialogueText.maxVisibleCharacters, x => dialogueText.maxVisibleCharacters = x, selectedCharacter.dialogueText.Length, duration)
+            .SetEase(Ease.Linear)
+            .OnComplete(() => isDialogueComplete = true);
     }
 
     private void OnCancel(InputAction.CallbackContext context)
     {
-        SetInteractionUI(false);
+        if (textTween != null && textTween.IsActive())
+        {
+            textTween.Kill();
+            dialogueText.maxVisibleCharacters = dialogueText.text.Length;
+            isDialogueComplete = true;
+        }
+        else
+        {
+            SetInteractionUI(false);
+        }
     }
 }

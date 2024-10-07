@@ -46,7 +46,7 @@ public class Experience : MonoBehaviour
 	}
 
 	// 레벨업 처리
-	private void LevelUp()
+	public void LevelUp()
 	{
 		currentLevel++;
 		UpdateLevelExperience();

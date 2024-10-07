@@ -21,9 +21,6 @@ public class SkillSelector : MonoBehaviour
     public Button[] skillButtons;
     public TextMeshProUGUI[] skillDescriptionTexts;
     public List<Skilldata> availableSkills;
-    private float pressStartTime;
-    private bool isPressed = false;
-    private const float PRESS_DURATION = 1f;
 
     public Transform skillPanel;
     private List<Image> skillIconImages = new List<Image>();
@@ -38,6 +35,7 @@ public class SkillSelector : MonoBehaviour
         }
 
         skillSelectorUI.SetActive(false);
+        darkBackground.gameObject.SetActive(false);
 
         for (int i = 1; i <= 4; i++)
         {
@@ -51,8 +49,6 @@ public class SkillSelector : MonoBehaviour
                 }
             }
         }
-
-        darkBackground.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -61,6 +57,38 @@ public class SkillSelector : MonoBehaviour
         {
             CheckButtonClick();
         }
+    }
+
+    private void ShowSkillSelector()
+    {
+        darkBackground.gameObject.SetActive(true);
+        skillSelectorUI.SetActive(true);
+        UpdateSkillUI();
+    }
+
+    private void SelectSkill(int index)
+    {
+        Skilldata selectedSkill = availableSkills[index];
+
+
+        bool isAlreadySelected = false;
+        for (int i = 0; i < currentSkillSlot; i++)
+        {
+            if (skillIconImages[i].sprite == selectedSkill.skillIcon)
+            {
+                isAlreadySelected = true;
+                break;
+            }
+        }
+
+        if (!isAlreadySelected && currentSkillSlot < skillIconImages.Count)
+        {
+            skillIconImages[currentSkillSlot].sprite = selectedSkill.skillIcon;
+            currentSkillSlot++;
+        }
+
+        skillSelectorUI.SetActive(false);
+        darkBackground.gameObject.SetActive(false);
     }
 
     private void CheckButtonClick()
@@ -100,11 +128,9 @@ public class SkillSelector : MonoBehaviour
                     buttonText.text = skill.skillName;
                 }
 
-                // 'Skill Icon' 오브젝트 찾기
                 Transform skillIconTransform = skillButtons[i].transform.Find("Skill Icon");
                 if (skillIconTransform != null)
                 {
-                    // 'Icon - Sprite' 오브젝트 찾기
                     Transform iconSpriteTransform = skillIconTransform.Find("Icon - Sprite");
                     if (iconSpriteTransform != null)
                     {
@@ -130,25 +156,5 @@ public class SkillSelector : MonoBehaviour
                 skillButtons[i].gameObject.SetActive(false);
             }
         }
-    }
-    private void SelectSkill(int index)
-    {
-        Skilldata selectedSkill = availableSkills[index];
-
-        if (currentSkillSlot < skillIconImages.Count)
-        {
-            skillIconImages[currentSkillSlot].sprite = selectedSkill.skillIcon;
-            currentSkillSlot++;
-        }
-
-        skillSelectorUI.SetActive(false);
-        darkBackground.gameObject.SetActive(false);
-    }
-
-    private void ShowSkillSelector()
-    {
-        darkBackground.gameObject.SetActive(true);
-        skillSelectorUI.SetActive(true);
-        UpdateSkillUI();
     }
 }

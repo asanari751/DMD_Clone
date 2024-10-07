@@ -4347,7 +4347,10 @@ MonoBehaviour:
   - {fileID: 946228068}
   - {fileID: 1073181252}
   - {fileID: 1681785714}
-  skillDescriptionTexts: []
+  skillDescriptionTexts:
+  - {fileID: 335227782}
+  - {fileID: 281024934}
+  - {fileID: 41720058}
   availableSkills:
   - skillName: 111
     skillIcon: {fileID: -6184050716912831369, guid: 1e694e256095c8b4ea2b8eb4fb555fa3,

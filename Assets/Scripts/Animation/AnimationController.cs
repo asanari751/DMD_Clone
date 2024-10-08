@@ -32,7 +32,7 @@ public class AnimationController : MonoBehaviour
 
     private void UpdateAnimation()
     {
-        if (GameTimerController.Paused == true) return;
+        if (PauseController.Paused == true) return;
         if (animator != null && spriteRenderer != null)
         {
             bool isMoving = movement.magnitude > moveThreshold;

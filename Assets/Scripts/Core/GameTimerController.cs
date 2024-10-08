@@ -10,6 +10,7 @@ public class GameTimerController : MonoBehaviour
     [SerializeField] private float updateInterval;
     [SerializeField] private float timeSinceLastUpdate;
     [SerializeField] private Transform obstacleHierahy;
+    [SerializeField] private PauseController pauseController;
 
     [Header("Pause Times")]
     [SerializeField] private float elitePauseTime;
@@ -18,9 +19,6 @@ public class GameTimerController : MonoBehaviour
     [SerializeField] private Transform playerTransform;
 
     private float elapsedTime;
-    private bool isRunning = true;
-    public static bool Paused = false;
-    private bool isGameEnded = false;
     private float[] pauseTimes;
     private int currentPauseIndex;
 
@@ -33,7 +31,6 @@ public class GameTimerController : MonoBehaviour
 
     private void Awake()
     {
-        // Pause times in seconds
         pauseTimes = new float[] { elitePauseTime, bossPauseTime };
     }
 
@@ -41,10 +38,9 @@ public class GameTimerController : MonoBehaviour
     {
         UpdateTimerDisplay();
     }
-
     private void Update()
     {
-        if (isRunning && !isGameEnded)
+        if (!PauseController.Paused && !pauseController.IsGameEnded() && pauseController.IsRunning())
         {
             elapsedTime += Time.deltaTime * debugParameter;
             timeSinceLastUpdate += Time.deltaTime;
@@ -57,20 +53,7 @@ public class GameTimerController : MonoBehaviour
 
             if (currentPauseIndex < pauseTimes.Length && elapsedTime >= pauseTimes[currentPauseIndex])
             {
-                UpdateTimerDisplay();
                 PauseTimer();
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (isRunning)
-            {
-                PauseGame();
-            }
-            else
-            {
-                ResumeGame();
             }
         }
     }
@@ -86,7 +69,10 @@ public class GameTimerController : MonoBehaviour
 
     private void PauseTimer()
     {
-        isRunning = false;
+        pauseController.SetRunning(false);
+        elapsedTime = pauseTimes[currentPauseIndex];
+        UpdateTimerDisplay();
+
         if (currentPauseIndex == 0) // 엘리트
         {
             OnEliteTime?.Invoke();
@@ -96,7 +82,6 @@ public class GameTimerController : MonoBehaviour
                 uiManager.ShowResumeButton();
             }
         }
-
         else if (currentPauseIndex == 1) // 보스
         {
             OnBossTime?.Invoke();
@@ -105,8 +90,7 @@ public class GameTimerController : MonoBehaviour
             {
                 uiManager.ShowResumeButton();
             }
-
-            isGameEnded = true;
+            pauseController.SetGameEnded(true);
         }
         currentPauseIndex++;
     }
@@ -140,29 +124,10 @@ public class GameTimerController : MonoBehaviour
 
     public void ResumeTimer()
     {
-        if (!isGameEnded)
+        if (!pauseController.IsGameEnded())
         {
-            isRunning = true;
-            Debug.Log("Timer resumed");
-        }
-    }
-
-    public void PauseGame()
-    {
-        isRunning = false;
-        Paused = true;
-        Time.timeScale = 0f;
-        uiManager.SetPauseUIVisibility(true);
-    }
-
-    public void ResumeGame()
-    {
-        if (!isGameEnded)
-        {
-            isRunning = true;
-            Paused = false;
-            Time.timeScale = 1f;
-            uiManager.SetPauseUIVisibility(false);
+            bool currentRunningState = pauseController.IsRunning();
+            pauseController.SetRunning(!currentRunningState);
         }
     }
 }

@@ -84,7 +84,7 @@ public class InteractiveProto : MonoBehaviour
         ShowDarkOverlay(); // 어두운 오버레이 표시
         if (gameTimerController != null)
         {
-            gameTimerController.PauseGame();
+            // gameTimerController.PauseGame();
         }
         isInteracting = true;
     }
@@ -95,7 +95,7 @@ public class InteractiveProto : MonoBehaviour
         HideDarkOverlay(); // 어두운 오버레이 숨기기
         if (gameTimerController != null)
         {
-            gameTimerController.ResumeGame();
+            // gameTimerController.ResumeGame();
         }
         isInteracting = false;
         if (isPlayerInRange)

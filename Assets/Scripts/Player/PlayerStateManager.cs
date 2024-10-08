@@ -45,6 +45,7 @@ public class PlayerStateManager : MonoBehaviour
     private Tween autoAttackTween;
     private float lastAttackTime = 0f;
     private float lastRangedAttackTime = 0f;
+    public event Action<float, float, int> OnStatsUpdated;
 
     private void Awake()
     {
@@ -55,6 +56,8 @@ public class PlayerStateManager : MonoBehaviour
         {
             projectilePool = FindAnyObjectByType<ProjectilePool>();
         }
+
+        UpdateStats();
     }
 
     private void OnEnable() => attackAction.action.Enable();
@@ -92,7 +95,7 @@ public class PlayerStateManager : MonoBehaviour
 
     private void PerformAutoAttack()
     {
-        if (GameTimerController.Paused == true) return;
+        if (PauseController.Paused == true) return;
         GameObject closestEnemy = FindClosestEnemy();
 
         if (closestEnemy != null)
@@ -105,7 +108,7 @@ public class PlayerStateManager : MonoBehaviour
 
     private void PerformManualAttack()
     {
-        if (GameTimerController.Paused == true) return;
+        if (PauseController.Paused == true) return;
 
         Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
         Action<Vector2> attackAction = currentAttackType == AttackType.Arrow ? PerformRangedAttack : PerformAttack;
@@ -231,5 +234,10 @@ public class PlayerStateManager : MonoBehaviour
         {
             return new Vector2(0, yOffset);
         }
+    }
+
+    private void UpdateStats()
+    {
+        OnStatsUpdated?.Invoke(attackDamage, projectileDamage, penetrateCount);
     }
 }

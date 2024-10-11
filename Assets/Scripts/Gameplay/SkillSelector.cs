@@ -1,7 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine.EventSystems;
 
 public class SkillSelector : MonoBehaviour
@@ -15,7 +17,17 @@ public class SkillSelector : MonoBehaviour
         public string skillDescription;
     }
 
+    [System.Serializable]
+    public class SkillLevelColor
+    {
+        public Color color;
+    }
+
     [SerializeField] private GameObject darkBackground;
+    [SerializeField] private float productionTime = 1f;
+    [SerializeField] private float maximizeButton = 1.1f;
+    [SerializeField] private float buttonEdge = 10f;
+    [SerializeField] private SkillLevelColor[] skillLevelColors = new SkillLevelColor[3];
 
     public GameObject skillSelectorUI;
     public Button[] skillButtons;
@@ -26,9 +38,15 @@ public class SkillSelector : MonoBehaviour
     private List<Image> skillIconImages = new List<Image>();
     private int currentSkillSlot = 0;
 
+    private Vector3[] originalPositions;
+    private Vector3[] originalScales;
+    private bool isProducing = false;
+    private PauseController pauseController;
+
     private void Start()
     {
         Experience experienceComponent = FindAnyObjectByType<Experience>();
+        pauseController = FindAnyObjectByType<PauseController>();
         if (experienceComponent != null)
         {
             experienceComponent.onLevelUp.AddListener(ShowSkillSelector);
@@ -49,27 +67,82 @@ public class SkillSelector : MonoBehaviour
                 }
             }
         }
-    }
 
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
+        originalPositions = new Vector3[skillButtons.Length];
+        originalScales = new Vector3[skillButtons.Length];
+
+        for (int i = 0; i < skillButtons.Length; i++)
         {
-            CheckButtonClick();
+            originalPositions[i] = skillButtons[i].transform.position;
+            originalScales[i] = skillButtons[i].transform.localScale;
+            AddHoverListeners(skillButtons[i]);
         }
     }
 
     private void ShowSkillSelector()
     {
+        ResetSkillButtons();
         darkBackground.gameObject.SetActive(true);
         skillSelectorUI.SetActive(true);
+        pauseController.TempPause();
         UpdateSkillUI();
+        StartProduction();
+    }
+
+    private void ResetSkillButtons()
+    {
+        for (int i = 0; i < skillButtons.Length; i++)
+        {
+            skillButtons[i].transform.localScale = originalScales[i];
+            RemoveColor(skillButtons[i].gameObject);
+        }
+    }
+
+    public void StartProduction()
+    {
+        if (!isProducing)
+        {
+            StartCoroutine(ProductionCoroutine());
+        }
+    }
+    private IEnumerator ProductionCoroutine()
+    {
+        isProducing = true;
+
+        for (int i = 0; i < skillButtons.Length; i++)
+        {
+            skillButtons[i].gameObject.SetActive(false);
+            skillButtons[i].transform.position = originalPositions[i] + Vector3.up * 1000f;
+        }
+
+        for (int i = 0; i < skillButtons.Length; i++)
+        {
+            skillButtons[i].gameObject.SetActive(true);
+            MoveButtonDown(skillButtons[i], i);
+            yield return new WaitForSecondsRealtime(productionTime / skillButtons.Length);
+        }
+
+        yield return new WaitForSecondsRealtime(productionTime);
+        isProducing = false;
+    }
+
+    // private void MoveButtonDown(Button button, int index) // x2
+    // {
+    //     button.transform.DOMove(originalPositions[index], productionTime)
+    //         .SetEase(Ease.InQuad);
+    // }
+
+    private void MoveButtonDown(Button button, int index)
+    {
+        button.transform.DOMove(originalPositions[index], productionTime)
+            .SetEase(Ease.OutBack).SetUpdate(true);
     }
 
     private void SelectSkill(int index)
     {
         Skilldata selectedSkill = availableSkills[index];
-
+        PlayerSkills.Instance.AddOrUpgradeSkill(selectedSkill.skillName);
+        UpdateSkillUI();
 
         bool isAlreadySelected = false;
         for (int i = 0; i < currentSkillSlot; i++)
@@ -87,29 +160,9 @@ public class SkillSelector : MonoBehaviour
             currentSkillSlot++;
         }
 
+        pauseController.TempResume();
         skillSelectorUI.SetActive(false);
         darkBackground.gameObject.SetActive(false);
-    }
-
-    private void CheckButtonClick()
-    {
-        PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
-        pointerEventData.position = Input.mousePosition;
-
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pointerEventData, results);
-
-        foreach (RaycastResult result in results)
-        {
-            for (int i = 0; i < skillButtons.Length; i++)
-            {
-                if (result.gameObject == skillButtons[i].gameObject)
-                {
-                    SelectSkill(i);
-                    return;
-                }
-            }
-        }
     }
 
     private void UpdateSkillUI()
@@ -121,6 +174,7 @@ public class SkillSelector : MonoBehaviour
                 skillButtons[i].gameObject.SetActive(true);
 
                 Skilldata skill = availableSkills[i];
+                int skillLevel = PlayerSkills.Instance.GetSkillLevel(skill.skillName);
 
                 TextMeshProUGUI buttonText = skillButtons[i].GetComponentInChildren<TextMeshProUGUI>();
                 if (buttonText != null)
@@ -140,6 +194,17 @@ public class SkillSelector : MonoBehaviour
                             skillIconImage.sprite = skill.skillIcon;
                         }
                     }
+
+                    Transform iconBackgroundTransform = skillIconTransform.Find("Icon Background");
+                    if (iconBackgroundTransform != null)
+                    {
+                        Image iconBackgroundImage = iconBackgroundTransform.GetComponent<Image>();
+                        if (iconBackgroundImage != null)
+                        {
+                            int colorIndex = Mathf.Clamp(skillLevel - 1, 0, skillLevelColors.Length - 1);
+                            iconBackgroundImage.color = skillLevelColors[colorIndex].color;
+                        }
+                    }
                 }
 
                 if (skillDescriptionTexts.Length > i && skillDescriptionTexts[i] != null)
@@ -155,6 +220,60 @@ public class SkillSelector : MonoBehaviour
             {
                 skillButtons[i].gameObject.SetActive(false);
             }
+        }
+    }
+
+    private void AddHoverListeners(Button button)
+    {
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() => { if (!isProducing) SelectSkill(System.Array.IndexOf(skillButtons, button)); });
+
+        button.transition = Selectable.Transition.None;
+
+        EventTrigger trigger = button.gameObject.GetComponent<EventTrigger>() ?? button.gameObject.AddComponent<EventTrigger>();
+
+        EventTrigger.Entry enterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+        enterEntry.callback.AddListener((data) =>
+        {
+            if (!isProducing)
+            {
+                button.transform.DOScale(originalScales[System.Array.IndexOf(skillButtons, button)] * maximizeButton, 0.2f).SetUpdate(true);
+                AddColor(button.gameObject, buttonEdge);
+            }
+        });
+        trigger.triggers.Add(enterEntry);
+
+        EventTrigger.Entry exitEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+        exitEntry.callback.AddListener((data) =>
+        {
+            if (!isProducing)
+            {
+                button.transform.DOScale(originalScales[System.Array.IndexOf(skillButtons, button)], 0.2f).SetUpdate(true);
+                RemoveColor(button.gameObject);
+            }
+        });
+        trigger.triggers.Add(exitEntry);
+    }
+
+    private void AddColor(GameObject obj, float edgeSize)
+    {
+        Outline outline = obj.GetComponent<Outline>();
+        if (outline == null)
+        {
+            outline = obj.AddComponent<Outline>();
+        }
+        outline.effectColor = Color.white;
+        outline.effectDistance = new Vector2(edgeSize, -edgeSize);
+        outline.useGraphicAlpha = false;
+        outline.enabled = true;
+    }
+
+    private void RemoveColor(GameObject obj)
+    {
+        Outline outline = obj.GetComponent<Outline>();
+        if (outline != null)
+        {
+            outline.enabled = false;
         }
     }
 }

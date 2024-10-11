@@ -45,6 +45,7 @@ public class SkillSelector : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("Test");
         Experience experienceComponent = FindAnyObjectByType<Experience>();
         pauseController = FindAnyObjectByType<PauseController>();
         if (experienceComponent != null)

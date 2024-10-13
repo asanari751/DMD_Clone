@@ -10,26 +10,40 @@ public class BasicEnemy : MonoBehaviour, IDamageable
     [SerializeField] private int expOrbCount;
     [SerializeField] private EnemyStats stats;
 
+    [Header("Attack Settings")]
+    [SerializeField] private GameObject attackAreaPrefab;    // 공격 범위 시각화를 위한 프리팹
+
     public EnemyStats.EnemyType GetEnemyType() => stats.enemyType;
     public float GetMoveSpeed() => stats.MoveSpeed;
     public float GetAttackRange() => stats.AttackRange;
     public float GetRetreatSpeed() => stats.RetreatSpeed;
     public float GetMaxHealth() => stats.MaxHealth;
-
+    public float GetAttackDelay() => stats.attackDelay;
+    public float GetAttackCooldown() => stats.attackCooldown;
+    public float GetAttackDamage() => stats.attackDamage;
+    public bool IsAttacking { get; private set; } = false;
+    public bool CanAttack { get; private set; } = true;
 
     private float currentHealth;
     private SpriteRenderer spriteRenderer;
-    private Color originalColor;
     protected bool isDead = false;
     private ExpOrbPool expOrbPool;
-    private Sequence knockbackSequence;
     private EnemyKnockback enemyKnockback;
     public event System.Action<GameObject> OnEnemyDeath;
+    private Transform playerTransform;
+    private GameObject attackAreaInstance;
+    private SpriteRenderer attackAreaSpriteRenderer;
+    private Vector2 attackDirection;
+    private float attackAngle;
+    private Rigidbody2D rb;
+    private RigidbodyConstraints2D originalConstraints;
+    private Coroutine attackRoutine;
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         enemyKnockback = GetComponent<EnemyKnockback>();
+        rb = GetComponent<Rigidbody2D>();
         DOTween.SetTweensCapacity(1000, 500);
     }
 
@@ -37,7 +51,18 @@ public class BasicEnemy : MonoBehaviour, IDamageable
     {
         ResetEnemy();
         expOrbPool = FindAnyObjectByType<ExpOrbPool>();
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
 
+        if (player != null)
+        {
+            playerTransform = player.transform;
+        }
+
+        if (rb != null)
+        {
+            rb.constraints = rb.constraints | RigidbodyConstraints2D.FreezeRotation;
+            originalConstraints = rb.constraints;
+        }
     }
 
     public void TakeDamage(float damage, Vector2 knockbackDirection)
@@ -70,7 +95,7 @@ public class BasicEnemy : MonoBehaviour, IDamageable
             BossHealthUI bossHealthUI = GetComponent<BossHealthUI>();
             bossHealthUI.UpdateHealthBar(currentHealth, stats.MaxHealth);
         }
-        
+
     }
 
     public bool IsDead()
@@ -88,6 +113,7 @@ public class BasicEnemy : MonoBehaviour, IDamageable
         if (!isDead)
         {
             isDead = true;
+            StopAttack();
             FadeOutAndDestroy();
             OnEnemyDeath?.Invoke(gameObject);
 
@@ -138,13 +164,136 @@ public class BasicEnemy : MonoBehaviour, IDamageable
 
     private void OnDisable()
     {
+        StopAttack();
         DOTween.Kill(spriteRenderer);
+    }
+
+    public void CheckAttack()
+    {
+        if (isDead || playerTransform == null) return;
+
+        float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
+
+        if (distanceToPlayer <= stats.AttackRange && CanAttack)
+        {
+            attackRoutine = StartCoroutine(AttackRoutine());
+        }
+    }
+
+    private IEnumerator AttackRoutine()
+    {
+        IsAttacking = true;
+        CanAttack = false;
+
+        // 공격 시작 시 위치 고정
+        if (rb != null)
+        {
+            rb.constraints = RigidbodyConstraints2D.FreezePosition | RigidbodyConstraints2D.FreezeRotation;
+        }
+
+        // 공격 시작 시 플레이어 방향 저장
+        attackDirection = (playerTransform.position - transform.position).normalized;
+        attackAngle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
+
+        // 공격 범위 표시
+        ShowAttackArea();
+
+        // 공격 딜레이 기다림
+        yield return new WaitForSeconds(stats.attackDelay);
+
+        // 공격 실행
+        ExecuteAttack();
+
+        // 공격 범위 숨기기
+        HideAttackArea();
+
+        // 공격 쿨다운 대기
+        yield return new WaitForSeconds(stats.attackCooldown);
+
+        // 공격 종료 시 위치 고정 해제
+        if (rb != null)
+        {
+            rb.constraints = originalConstraints;
+        }
+
+        IsAttacking = false;
+        CanAttack = true;
+    }
+
+    private void ShowAttackArea()
+    {
+        if (attackAreaPrefab != null)
+        {
+            attackAreaInstance = Instantiate(attackAreaPrefab, transform.position, Quaternion.identity, transform);
+            attackAreaSpriteRenderer = attackAreaInstance.GetComponent<SpriteRenderer>();
+
+            attackAngle -= 90f;
+            // 공격 범위를 고정된 방향으로 회전
+            attackAreaInstance.transform.rotation = Quaternion.Euler(0, 0, attackAngle);
+
+            // 스케일 조정 (필요 시)
+            float range = stats.AttackRange;
+            attackAreaInstance.transform.localScale = new Vector3(range, range, 1);
+
+            // 색상을 빨간색에서 흰색으로 변경
+            attackAreaSpriteRenderer.color = Color.red;
+            attackAreaSpriteRenderer.DOColor(Color.white, stats.attackDelay);
+        }
+    }
+
+    private void HideAttackArea()
+    {
+        if (attackAreaInstance != null)
+        {
+            Destroy(attackAreaInstance);
+        }
+    }
+
+    private void ExecuteAttack()
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, stats.AttackRange);
+        foreach (var hit in hits)
+        {
+            if (hit.CompareTag("Player"))
+            {
+                Vector2 directionToTarget = (hit.transform.position - transform.position).normalized;
+                float angleToTarget = Vector2.Angle(attackDirection, directionToTarget);
+
+                if (angleToTarget <= 30f)
+                {
+                    IDamageable playerDamageable = hit.GetComponent<IDamageable>();
+                    if (playerDamageable != null)
+                    {
+                        playerDamageable.TakeDamage(stats.attackDamage, Vector2.zero);
+                    }
+                }
+            }
+        }
+    }
+
+    private void StopAttack()
+    {
+        if (attackRoutine != null)
+        {
+            StopCoroutine(attackRoutine);
+            attackRoutine = null;
+        }
+        HideAttackArea();
+        if (rb != null)
+        {
+            rb.constraints = originalConstraints;
+        }
+        IsAttacking = false;
+        CanAttack = true;
     }
 
     public void ResetEnemy()
     {
+        StopAttack();
         currentHealth = stats.MaxHealth;
         isDead = false;
+        CanAttack = true;
+        IsAttacking = false;
 
         if (enemyKnockback != null)
         {

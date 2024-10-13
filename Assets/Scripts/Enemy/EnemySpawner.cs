@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -81,6 +82,7 @@ public class EnemySpawner : MonoBehaviour
                 basicEnemy.OnEnemyDeath += ReturnEnemyToPool;
             }
 
+            DOTween.Kill(this);
             enemy.SetActive(true);
             currentEnemyCount++;
         }
@@ -154,6 +156,8 @@ public class EnemySpawner : MonoBehaviour
         {
             basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;
         }
+
+        DOTween.Kill(enemy.transform);
 
         enemy.SetActive(false);
         currentEnemyCount--;

@@ -29,7 +29,7 @@ public class PlayerSkills : MonoBehaviour
         }
         else
         {
-            skillLevels[skillName] = 1;
+            skillLevels[skillName] = 2;
         }
     }
 

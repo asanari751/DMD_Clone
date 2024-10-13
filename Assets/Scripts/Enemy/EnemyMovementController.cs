@@ -14,27 +14,19 @@ public class EnemyMovementController : MonoBehaviour
         flowfield = FindAnyObjectByType<Flowfield>();
         rb = GetComponent<Rigidbody2D>();
         playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
-
-        if (flowfield == null)
-        {
-            Debug.LogError("Flowfield를 찾을 수 없습니다!");
-        }
-
-        if (rb == null)
-        {
-            Debug.LogError("Rigidbody2D 컴포넌트가 없습니다!");
-        }
-
-        if (playerTransform == null)
-        {
-            Debug.LogError("플레이어를 찾을 수 없습니다!");
-        }
     }
 
     private void FixedUpdate()
     {
         if (flowfield != null && rb != null && playerTransform != null && !basicEnemy.IsKnockedBack() && !basicEnemy.IsDead())
         {
+            // 공격 중이거나 넉백 상태면 이동하지 않음
+            if (basicEnemy.IsAttacking || basicEnemy.IsKnockedBack())
+            {
+                rb.linearVelocity = Vector2.zero;
+                return;
+            }
+
             Vector2 movement = Vector2.zero;
 
             switch (basicEnemy.GetEnemyType())
@@ -48,6 +40,7 @@ public class EnemyMovementController : MonoBehaviour
             }
 
             rb.linearVelocity = movement;
+            basicEnemy.CheckAttack();
         }
         else
         {

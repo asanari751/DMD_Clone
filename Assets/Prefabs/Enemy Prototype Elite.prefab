@@ -225,7 +225,11 @@ MonoBehaviour:
     MoveSpeed: 5
     MaxHealth: 50
     AttackRange: 1
+    attackDelay: 1
+    attackCooldown: 2
+    attackDamage: 10
     RetreatSpeed: 1
+  attackAreaPrefab: {fileID: 0}
 --- !u!114 &4706016339872012645
 MonoBehaviour:
   m_ObjectHideFlags: 0

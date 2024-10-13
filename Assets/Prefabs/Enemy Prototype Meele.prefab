@@ -191,8 +191,13 @@ MonoBehaviour:
     enemyType: 0
     MoveSpeed: 3
     MaxHealth: 1
-    AttackRange: 1
+    AttackRange: 3
+    attackDelay: 1
+    attackCooldown: 2
+    attackDamage: 1
     RetreatSpeed: 1
+  attackAreaPrefab: {fileID: 5094983644987885009, guid: e869be970af93c540b757083e85fa8a4,
+    type: 3}
 --- !u!114 &4453743842889480057
 MonoBehaviour:
   m_ObjectHideFlags: 0

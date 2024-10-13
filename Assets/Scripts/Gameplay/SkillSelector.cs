@@ -127,12 +127,6 @@ public class SkillSelector : MonoBehaviour
         isProducing = false;
     }
 
-    // private void MoveButtonDown(Button button, int index) // x2
-    // {
-    //     button.transform.DOMove(originalPositions[index], productionTime)
-    //         .SetEase(Ease.InQuad);
-    // }
-
     private void MoveButtonDown(Button button, int index)
     {
         button.transform.DOMove(originalPositions[index], productionTime)

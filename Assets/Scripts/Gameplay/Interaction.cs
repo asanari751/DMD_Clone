@@ -29,13 +29,33 @@ public class Interaction : MonoBehaviour
     [SerializeField] private TMP_Text characterNameText;
     [SerializeField] private TMP_Text dialogueText;
 
+    [Header("Button Animation")]
+    [SerializeField] private Button[] godChooseButtons;
+    [SerializeField] private float godButtonAnimationDuration = 0.5f;
+    [SerializeField] private float godButtonSpacing = 100f;
+
     [SerializeField] private bool isInRange = false;
     private Tween textTween;
     private bool isDialogueComplete = false;
+    private Vector3[] originalButtonPositions;
+    private bool areButtonsVisible = false;
 
     private void Start()
     {
         SetInteractionUI(false);
+        InitializeGodChooseButtons();
+    }
+
+    private void InitializeGodChooseButtons()
+    {
+        originalButtonPositions = new Vector3[godChooseButtons.Length];
+        for (int i = 0; i < godChooseButtons.Length; i++)
+        {
+            originalButtonPositions[i] = godChooseButtons[i].transform.position;
+            godChooseButtons[i].gameObject.SetActive(false);
+            int index = i;
+            godChooseButtons[i].onClick.AddListener(() => OnGodChooseButtonClicked(index));
+        }
     }
 
     private void OnEnable()
@@ -64,7 +84,6 @@ public class Interaction : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isInRange = true;
-            Debug.Log("접근 감지");
         }
     }
 
@@ -79,26 +98,37 @@ public class Interaction : MonoBehaviour
 
     private void OnInteract(InputAction.CallbackContext context)
     {
-        if (isInRange)
+        if (isInRange && !areButtonsVisible)
         {
-            if (!interactionField.activeSelf)
-            {
-                Debug.Log("상호작용");
-                SetInteractionUI(true);
-                DisplayCharacterData();
-            }
-
-            else if (!isDialogueComplete) // 즉시 완료
-            {
-                if (textTween != null && textTween.IsActive())
-                {
-                    textTween.Kill();
-                }
-                dialogueText.maxVisibleCharacters = dialogueText.text.Length;
-                isDialogueComplete = true;
-            }
+            ShowGodChooseButtons();
         }
     }
+
+    // private void OnInteract(InputAction.CallbackContext context)
+    // {
+    //     if (isInRange)
+    //     {
+    //         if (!areButtonsVisible)
+    //         {
+    //             ShowInteractionButtons();
+    //         }
+    //         else if (!isDialogueComplete)
+    //         {
+    //             if (textTween != null && textTween.IsActive())
+    //             {
+    //                 textTween.Kill();
+    //             }
+    //             dialogueText.maxVisibleCharacters = dialogueText.text.Length;
+    //             isDialogueComplete = true;
+    //         }
+    //         else
+    //         {
+    //             HideInteractionButtons();
+    //             SetInteractionUI(false);
+    //             isDialogueComplete = false;
+    //         }
+    //     }
+    // }
 
     private void SetInteractionUI(bool enable)
     {
@@ -113,30 +143,28 @@ public class Interaction : MonoBehaviour
         }
     }
 
-    private void DisplayCharacterData()
-    {
-        int randomIndex = Random.Range(0, characters.Length);
-        CharacterData selectedCharacter = characters[randomIndex];
 
+    private void DisplayCharacterData(CharacterData characterToDisplay)
+    {
         for (int i = 0; i < characters.Length; i++)
         {
-            characters[i].illustration.gameObject.SetActive(i == randomIndex);
+            characters[i].illustration.gameObject.SetActive(characters[i] == characterToDisplay);
         }
 
-        characterNameText.text = selectedCharacter.characterName;
+        characterNameText.text = characterToDisplay.characterName;
 
         if (textTween != null && textTween.IsActive())
         {
             textTween.Kill();
         }
 
-        dialogueText.text = selectedCharacter.dialogueText;
+        dialogueText.text = characterToDisplay.dialogueText;
         dialogueText.maxVisibleCharacters = 0;
         isDialogueComplete = false;
 
-        float duration = selectedCharacter.dialogueText.Length / typingSpeed;
+        float duration = characterToDisplay.dialogueText.Length / typingSpeed;
 
-        textTween = DOTween.To(() => dialogueText.maxVisibleCharacters, x => dialogueText.maxVisibleCharacters = x, selectedCharacter.dialogueText.Length, duration)
+        textTween = DOTween.To(() => dialogueText.maxVisibleCharacters, x => dialogueText.maxVisibleCharacters = x, characterToDisplay.dialogueText.Length, duration)
             .SetEase(Ease.Linear)
             .OnComplete(() => isDialogueComplete = true);
     }
@@ -152,6 +180,42 @@ public class Interaction : MonoBehaviour
         else
         {
             SetInteractionUI(false);
+        }
+    }
+
+    private void ShowGodChooseButtons()
+    {
+        for (int i = 0; i < godChooseButtons.Length; i++)
+        {
+            godChooseButtons[i].gameObject.SetActive(true);
+            Vector3 startPosition = originalButtonPositions[i] + Vector3.down * godButtonSpacing;
+            godChooseButtons[i].transform.position = startPosition;
+
+            godChooseButtons[i].transform.DOMove(originalButtonPositions[i], godButtonAnimationDuration)
+                .SetEase(Ease.OutBack);
+        }
+        areButtonsVisible = true;
+    }
+
+    private void HideGodChooseButtons()
+    {
+        for (int i = 0; i < godChooseButtons.Length; i++)
+        {
+            Vector3 endPosition = originalButtonPositions[i] + Vector3.down * godButtonSpacing;
+            godChooseButtons[i].transform.DOMove(endPosition, godButtonAnimationDuration)
+                .SetEase(Ease.InBack)
+                .OnComplete(() => godChooseButtons[i].gameObject.SetActive(false));
+        }
+        areButtonsVisible = false;
+    }
+
+    private void OnGodChooseButtonClicked(int index)
+    {
+        if (index < characters.Length)
+        {
+            HideGodChooseButtons();
+            DisplayCharacterData(characters[index]);
+            SetInteractionUI(true);
         }
     }
 }

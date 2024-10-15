@@ -130,7 +130,7 @@ public class SkillSelector : MonoBehaviour
         for (int i = 0; i < skillButtons.Length; i++)
         {
             skillButtons[i].gameObject.SetActive(false);
-            skillButtons[i].transform.position = originalPositions[i] + Vector3.up * 1000f;
+            skillButtons[i].transform.position = originalPositions[i] + Vector3.up * 1200f;
         }
 
         for (int i = 0; i < skillButtons.Length; i++)
@@ -144,10 +144,16 @@ public class SkillSelector : MonoBehaviour
         isProducing = false;
     }
 
+    // private void MoveButtonDown(Button button, int index)
+    // {
+    //     button.transform.DOMove(originalPositions[index], productionTime)
+    //         .SetEase(Ease.OutBack).SetUpdate(true);
+    // }
+
     private void MoveButtonDown(Button button, int index)
     {
         button.transform.DOMove(originalPositions[index], productionTime)
-            .SetEase(Ease.OutBack).SetUpdate(true);
+            .SetEase(Ease.OutQuart).SetUpdate(true);
     }
 
     private void SelectSkill(int index)

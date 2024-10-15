@@ -17,7 +17,6 @@ public class Interaction : MonoBehaviour
 
     [Header("Interaction UI")]
     [SerializeField] private GameObject interactionField;
-    // [SerializeField] private GameObject interactionButton;
     [SerializeField] private Image backgroundOverlay;
     [SerializeField] private float typingSpeed;
     [SerializeField] private GameObject titleImage;
@@ -40,6 +39,8 @@ public class Interaction : MonoBehaviour
     private bool isDialogueComplete = false;
     private Vector3[] originalButtonPositions;
     private bool areButtonsVisible = false;
+    private bool nowInteract = false;
+    private bool maximized = false;
 
     private void Start()
     {
@@ -94,14 +95,16 @@ public class Interaction : MonoBehaviour
         isInRange = false;
         if (isInRange == false)
         {
+            EndInteraction();
             SetInteractionUI(false);
         }
     }
 
     private void OnInteract(InputAction.CallbackContext context)
     {
-        if (isInRange)
+        if (isInRange && !nowInteract)
         {
+            nowInteract = true;
             if (!areButtonsVisible)
             {
                 ShowGodChooseButtons();
@@ -148,7 +151,6 @@ public class Interaction : MonoBehaviour
         if (interactionField != null)
         {
             interactionField.SetActive(enable);
-            // interactionButton.SetActive(enable);
         }
     }
 
@@ -222,7 +224,7 @@ public class Interaction : MonoBehaviour
         for (int i = 0; i < godChooseButtons.Length; i++)
         {
             Button button = godChooseButtons[i];
-            if (i == selectedIndex)
+            if (i == selectedIndex && !maximized)
             {
                 button.transform.DOScale(Vector3.one * 1.2f, 0.3f);
                 button.transform.DOMove(originalButtonPositions[i], 0.3f);
@@ -245,6 +247,7 @@ public class Interaction : MonoBehaviour
                 }
             }
         }
+        nowInteract = false;
     }
 
     private void CompleteDialogue()
@@ -255,6 +258,7 @@ public class Interaction : MonoBehaviour
         }
         dialogueText.maxVisibleCharacters = dialogueText.text.Length;
         isDialogueComplete = true;
+        nowInteract = false;
     }
 
     private void EndInteraction()
@@ -281,5 +285,6 @@ public class Interaction : MonoBehaviour
         backgroundOverlay.gameObject.SetActive(false);
         isDialogueComplete = false;
         areButtonsVisible = false;
+        nowInteract = false;
     }
 }

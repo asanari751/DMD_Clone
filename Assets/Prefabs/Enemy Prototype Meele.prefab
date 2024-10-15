@@ -198,7 +198,7 @@ MonoBehaviour:
     RetreatSpeed: 1
   attackAreaPrefab: {fileID: 5094983644987885009, guid: e869be970af93c540b757083e85fa8a4,
     type: 3}
-  endcolor: {r: 1, g: 0.54901963, b: 0.54901963, a: 0}
+  endcolor: {r: 1, g: 0.54901963, b: 0.54901963, a: 0.47058824}
 --- !u!114 &4453743842889480057
 MonoBehaviour:
   m_ObjectHideFlags: 0

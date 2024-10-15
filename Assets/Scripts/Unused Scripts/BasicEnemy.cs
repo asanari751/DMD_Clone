@@ -38,6 +38,7 @@ public class BasicEnemy : MonoBehaviour, IDamageable
     private Rigidbody2D rb;
     private RigidbodyConstraints2D originalConstraints;
     private Coroutine attackRoutine;
+    [SerializeField] private Color endcolor;
 
     private void Awake()
     {
@@ -228,16 +229,13 @@ public class BasicEnemy : MonoBehaviour, IDamageable
             attackAreaSpriteRenderer = attackAreaInstance.GetComponent<SpriteRenderer>();
 
             attackAngle -= 90f;
-            // 공격 범위를 고정된 방향으로 회전
             attackAreaInstance.transform.rotation = Quaternion.Euler(0, 0, attackAngle);
 
-            // 스케일 조정 (필요 시)
             float range = stats.AttackRange;
             attackAreaInstance.transform.localScale = new Vector3(range, range, 1);
 
-            // 색상을 빨간색에서 흰색으로 변경
             attackAreaSpriteRenderer.color = Color.red;
-            attackAreaSpriteRenderer.DOColor(Color.white, stats.attackDelay);
+            attackAreaSpriteRenderer.DOColor(endcolor, stats.attackDelay);
         }
     }
 

@@ -19,6 +19,7 @@ public class MonsterHealthUI : MonoBehaviour
         canvasRectTransform = canvas.GetComponent<RectTransform>();
 
         healthBarInstance = Instantiate(healthBarPrefab, canvas.transform);
+        healthBarInstance.transform.SetAsFirstSibling();
     }
 
     private void Update()

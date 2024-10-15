@@ -230,6 +230,7 @@ MonoBehaviour:
     attackDamage: 10
     RetreatSpeed: 1
   attackAreaPrefab: {fileID: 0}
+  endcolor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &4706016339872012645
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -17,8 +17,10 @@ public class Interaction : MonoBehaviour
 
     [Header("Interaction UI")]
     [SerializeField] private GameObject interactionField;
+    // [SerializeField] private GameObject interactionButton;
     [SerializeField] private Image backgroundOverlay;
     [SerializeField] private float typingSpeed;
+    [SerializeField] private GameObject titleImage;
 
     [Header("Input Action")]
     [SerializeField] private InputActionReference interactionAction;
@@ -31,8 +33,7 @@ public class Interaction : MonoBehaviour
 
     [Header("Button Animation")]
     [SerializeField] private Button[] godChooseButtons;
-    [SerializeField] private float godButtonAnimationDuration = 0.5f;
-    [SerializeField] private float godButtonSpacing = 100f;
+    [SerializeField] private float animationDuration;
 
     [SerializeField] private bool isInRange = false;
     private Tween textTween;
@@ -44,6 +45,7 @@ public class Interaction : MonoBehaviour
     {
         SetInteractionUI(false);
         InitializeGodChooseButtons();
+        titleImage.SetActive(false);
     }
 
     private void InitializeGodChooseButtons()
@@ -98,9 +100,20 @@ public class Interaction : MonoBehaviour
 
     private void OnInteract(InputAction.CallbackContext context)
     {
-        if (isInRange && !areButtonsVisible)
+        if (isInRange)
         {
-            ShowGodChooseButtons();
+            if (!areButtonsVisible)
+            {
+                ShowGodChooseButtons();
+            }
+            else if (!isDialogueComplete)
+            {
+                CompleteDialogue();
+            }
+            else
+            {
+                EndInteraction();
+            }
         }
     }
 
@@ -135,11 +148,7 @@ public class Interaction : MonoBehaviour
         if (interactionField != null)
         {
             interactionField.SetActive(enable);
-        }
-
-        if (backgroundOverlay != null && backgroundOverlay.gameObject != null)
-        {
-            backgroundOverlay.gameObject.SetActive(enable);
+            // interactionButton.SetActive(enable);
         }
     }
 
@@ -188,34 +197,89 @@ public class Interaction : MonoBehaviour
         for (int i = 0; i < godChooseButtons.Length; i++)
         {
             godChooseButtons[i].gameObject.SetActive(true);
-            Vector3 startPosition = originalButtonPositions[i] + Vector3.down * godButtonSpacing;
-            godChooseButtons[i].transform.position = startPosition;
-
-            godChooseButtons[i].transform.DOMove(originalButtonPositions[i], godButtonAnimationDuration)
-                .SetEase(Ease.OutBack);
+            godChooseButtons[i].transform.position = originalButtonPositions[i];
         }
         areButtonsVisible = true;
-    }
+        titleImage.SetActive(true);
 
-    private void HideGodChooseButtons()
-    {
-        for (int i = 0; i < godChooseButtons.Length; i++)
+        if (backgroundOverlay != null && backgroundOverlay.gameObject != null)
         {
-            Vector3 endPosition = originalButtonPositions[i] + Vector3.down * godButtonSpacing;
-            godChooseButtons[i].transform.DOMove(endPosition, godButtonAnimationDuration)
-                .SetEase(Ease.InBack)
-                .OnComplete(() => godChooseButtons[i].gameObject.SetActive(false));
+            backgroundOverlay.gameObject.SetActive(true);
         }
-        areButtonsVisible = false;
     }
 
     private void OnGodChooseButtonClicked(int index)
     {
         if (index < characters.Length)
         {
-            HideGodChooseButtons();
-            DisplayCharacterData(characters[index]);
-            SetInteractionUI(true);
+            AnimateButtonSelection(index);
+            titleImage.SetActive(false);
         }
+    }
+
+    private void AnimateButtonSelection(int selectedIndex)
+    {
+        for (int i = 0; i < godChooseButtons.Length; i++)
+        {
+            Button button = godChooseButtons[i];
+            if (i == selectedIndex)
+            {
+                button.transform.DOScale(Vector3.one * 1.2f, 0.3f);
+                button.transform.DOMove(originalButtonPositions[i], 0.3f);
+                button.image.DOColor(Color.white, animationDuration).OnComplete(() =>
+                {
+                    button.gameObject.SetActive(false);
+                    DisplayCharacterData(characters[selectedIndex]);
+                    SetInteractionUI(true);
+                });
+            }
+            else
+            {
+                Color targetColor = new Color(0x44 / 255f, 0x44 / 255f, 0x44 / 255f);
+                button.image.DOColor(targetColor, animationDuration).OnComplete(() => button.gameObject.SetActive(false));
+
+                Image[] childImages = button.GetComponentsInChildren<Image>();
+                foreach (Image img in childImages)
+                {
+                    img.DOColor(targetColor, animationDuration);
+                }
+            }
+        }
+    }
+
+    private void CompleteDialogue()
+    {
+        if (textTween != null && textTween.IsActive())
+        {
+            textTween.Kill();
+        }
+        dialogueText.maxVisibleCharacters = dialogueText.text.Length;
+        isDialogueComplete = true;
+    }
+
+    private void EndInteraction()
+    {
+        Debug.Log("End interaction");
+
+        foreach (var button in godChooseButtons)
+        {
+            DOTween.Kill(button.transform);
+            DOTween.Kill(button.image);
+
+            Image[] childImages = button.GetComponentsInChildren<Image>();
+            foreach (Image img in childImages)
+            {
+                DOTween.Kill(img);
+                img.color = Color.white;
+            }
+
+            button.transform.localScale = Vector3.one;
+            button.transform.position = originalButtonPositions[System.Array.IndexOf(godChooseButtons, button)];
+        }
+
+        SetInteractionUI(false);
+        backgroundOverlay.gameObject.SetActive(false);
+        isDialogueComplete = false;
+        areButtonsVisible = false;
     }
 }

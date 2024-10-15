@@ -35,8 +35,8 @@ public class SkillSelector : MonoBehaviour
     public List<Skilldata> availableSkills;
 
     public Transform skillPanel;
-    private List<Image> skillIconImages = new List<Image>();
-    private int currentSkillSlot = 0;
+    public List<Image> skillIconImages = new List<Image>();
+    public int currentSkillSlot = 0;
 
     private Vector3[] originalPositions;
     private Vector3[] originalScales;
@@ -56,9 +56,9 @@ public class SkillSelector : MonoBehaviour
         skillSelectorUI.SetActive(false);
         darkBackground.gameObject.SetActive(false);
 
-        for (int i = 1; i <= 4; i++)
+        for (int j = 1; j <= 4; j++)
         {
-            Transform iconTransform = skillPanel.Find($"Skill Icon {i}");
+            Transform iconTransform = skillPanel.Find($"Skill Icon {j}");
             if (iconTransform != null)
             {
                 Image iconImage = iconTransform.GetComponent<Image>();
@@ -67,16 +67,16 @@ public class SkillSelector : MonoBehaviour
                     skillIconImages.Add(iconImage);
                 }
             }
-        }
 
-        originalPositions = new Vector3[skillButtons.Length];
-        originalScales = new Vector3[skillButtons.Length];
+            originalPositions = new Vector3[skillButtons.Length];
+            originalScales = new Vector3[skillButtons.Length];
 
-        for (int i = 0; i < skillButtons.Length; i++)
-        {
-            originalPositions[i] = skillButtons[i].transform.position;
-            originalScales[i] = skillButtons[i].transform.localScale;
-            AddHoverListeners(skillButtons[i]);
+            for (int i = 0; i < skillButtons.Length; i++)
+            {
+                originalPositions[i] = skillButtons[i].transform.position;
+                originalScales[i] = skillButtons[i].transform.localScale;
+                AddHoverListeners(skillButtons[i]);
+            }
         }
     }
 
@@ -86,8 +86,25 @@ public class SkillSelector : MonoBehaviour
         darkBackground.gameObject.SetActive(true);
         skillSelectorUI.SetActive(true);
         pauseController.TempPause();
+
+        ShuffleSkills();
+
         UpdateSkillUI();
         StartProduction();
+    }
+
+    private void ShuffleSkills() // 순서 섞기
+    {
+        System.Random rng = new System.Random();
+        int n = availableSkills.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = rng.Next(n + 1);
+            Skilldata value = availableSkills[k];
+            availableSkills[k] = availableSkills[n];
+            availableSkills[n] = value;
+        }
     }
 
     private void ResetSkillButtons()

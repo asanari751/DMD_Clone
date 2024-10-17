@@ -35,7 +35,9 @@ public class SkillSelector : MonoBehaviour
     public List<Skilldata> availableSkills;
 
     public Transform skillPanel;
+    public Transform skillInventory;
     public List<Image> skillIconImages = new List<Image>();
+    public List<Image> skillInventoryIcons = new List<Image>();
     public int currentSkillSlot = 0;
 
     private Vector3[] originalPositions;
@@ -65,6 +67,7 @@ public class SkillSelector : MonoBehaviour
                 if (iconImage != null)
                 {
                     skillIconImages.Add(iconImage);
+                    skillInventoryIcons.Add(iconImage);
                 }
             }
 

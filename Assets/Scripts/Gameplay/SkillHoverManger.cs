@@ -28,6 +28,14 @@ public class SkillHoverManager : MonoBehaviour
                 AddHoverEffect(child.gameObject);
             }
         }
+
+        foreach (Transform child in skillSelector.skillInventory)
+        {
+            if (child.name.StartsWith("Inventory Icon"))
+            {
+                AddHoverEffect(child.gameObject);
+            }
+        }
     }
 
     private void AddHoverEffect(GameObject iconObject)

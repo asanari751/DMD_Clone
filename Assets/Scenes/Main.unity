@@ -42,7 +42,8 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 12
+  serializedVersion: 13
+  m_BakeOnSceneLoad: 0
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -577,7 +578,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 7.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -6040,7 +6041,6 @@ MonoBehaviour:
   - {fileID: 1163814308}
   - {fileID: 1224314187}
   animationDuration: 1
-  isInRange: 0
 --- !u!61 &1536488365
 BoxCollider2D:
   m_ObjectHideFlags: 0

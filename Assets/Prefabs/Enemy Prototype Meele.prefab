@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 8803329705486930600}
   - component: {fileID: 1334247076841853299}
   - component: {fileID: 4453743842889480057}
+  - component: {fileID: 4674724632027795859}
+  - component: {fileID: 8943113403550105905}
   m_Layer: 6
   m_Name: Enemy Prototype Meele
   m_TagString: Untagged
@@ -83,7 +85,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 7812820661483254461, guid: 215687feeab0b7445b4a1cd86c82c2e1,
+  m_Sprite: {fileID: -3315592134070217122, guid: 72002d18b4a89ba468d26094a598e5ec,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -156,8 +158,8 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.0020337503, y: -0.020674746}
-  m_Radius: 0.3071772
+  m_Offset: {x: 0.0020337105, y: 0.34933418}
+  m_Radius: 0.3160924
 --- !u!114 &8803329705486930600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,7 +192,7 @@ MonoBehaviour:
   stats:
     enemyType: 0
     MoveSpeed: 3
-    MaxHealth: 1
+    MaxHealth: 5
     AttackRange: 3
     attackDelay: 1
     attackCooldown: 2
@@ -198,7 +200,7 @@ MonoBehaviour:
     RetreatSpeed: 1
   attackAreaPrefab: {fileID: 5094983644987885009, guid: e869be970af93c540b757083e85fa8a4,
     type: 3}
-  endcolor: {r: 1, g: 0.54901963, b: 0.54901963, a: 0.47058824}
+  endcolor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &4453743842889480057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,6 +216,46 @@ MonoBehaviour:
   knockbackDistance: 1
   knockbackDuration: 0.5
   knockbackColor: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
+--- !u!95 &4674724632027795859
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4976483147096513540}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 24a5f765b6086a14fb7f007f1e55a290, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8943113403550105905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4976483147096513540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c203f6661cacc1c45a6b323a29cf4867, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 4674724632027795859}
+  spriteRenderer: {fileID: 662584177183261202}
+  moveThreshold: 1
+  idleStateName: M_Enemy_Idle
+  walkSideStateName: M_Enemy_Side
+  attackStateName: M_Enemy_Attack
 --- !u!1 &5223107067649577173
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,7 +282,7 @@ Transform:
   m_GameObject: {fileID: 5223107067649577173}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: -0.2559, z: 0}
+  m_LocalPosition: {x: 0.026, y: -0.01, z: 0}
   m_LocalScale: {x: 0.61409646, y: 0.9312, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -34,13 +34,12 @@ public class Interaction : MonoBehaviour
     [SerializeField] private Button[] godChooseButtons;
     [SerializeField] private float animationDuration;
 
-    [SerializeField] private bool isInRange = false;
+    private bool isInRange = false;
     private Tween textTween;
     private bool isDialogueComplete = false;
     private Vector3[] originalButtonPositions;
     private bool areButtonsVisible = false;
     private bool nowInteract = false;
-    private bool maximized = false;
 
     private void Start()
     {
@@ -154,7 +153,6 @@ public class Interaction : MonoBehaviour
         }
     }
 
-
     private void DisplayCharacterData(CharacterData characterToDisplay)
     {
         for (int i = 0; i < characters.Length; i++)
@@ -214,6 +212,7 @@ public class Interaction : MonoBehaviour
     {
         if (index < characters.Length)
         {
+            DisableAllButtonComponents();
             AnimateButtonSelection(index);
             titleImage.SetActive(false);
         }
@@ -224,7 +223,7 @@ public class Interaction : MonoBehaviour
         for (int i = 0; i < godChooseButtons.Length; i++)
         {
             Button button = godChooseButtons[i];
-            if (i == selectedIndex && !maximized)
+            if (i == selectedIndex)
             {
                 button.transform.DOScale(Vector3.one * 1.2f, 0.3f);
                 button.transform.DOMove(originalButtonPositions[i], 0.3f);
@@ -248,6 +247,8 @@ public class Interaction : MonoBehaviour
             }
         }
         nowInteract = false;
+
+        DOVirtual.DelayedCall(animationDuration, () => { EnableAllButtonComponents(); });
     }
 
     private void CompleteDialogue()
@@ -267,24 +268,46 @@ public class Interaction : MonoBehaviour
 
         foreach (var button in godChooseButtons)
         {
-            DOTween.Kill(button.transform);
-            DOTween.Kill(button.image);
-
-            Image[] childImages = button.GetComponentsInChildren<Image>();
-            foreach (Image img in childImages)
+            if (button != null && button.gameObject != null)
             {
-                DOTween.Kill(img);
-                img.color = Color.white;
+                DOTween.Kill(button.transform);
+                DOTween.Kill(button.image);
+
+                Image[] childImages = button.GetComponentsInChildren<Image>();
+                foreach (Image img in childImages)
+                {
+                    if (img != null)
+                    {
+                        DOTween.Kill(img);
+                        img.color = Color.white;
+                    }
+                }
+
+                button.transform.localScale = Vector3.one;
+                button.transform.position = originalButtonPositions[System.Array.IndexOf(godChooseButtons, button)];
             }
 
-            button.transform.localScale = Vector3.one;
-            button.transform.position = originalButtonPositions[System.Array.IndexOf(godChooseButtons, button)];
+            SetInteractionUI(false);
+            backgroundOverlay.gameObject.SetActive(false);
+            isDialogueComplete = false;
+            areButtonsVisible = false;
+            nowInteract = false;
         }
+    }
 
-        SetInteractionUI(false);
-        backgroundOverlay.gameObject.SetActive(false);
-        isDialogueComplete = false;
-        areButtonsVisible = false;
-        nowInteract = false;
+    private void DisableAllButtonComponents()
+    {
+        foreach (var button in godChooseButtons)
+        {
+            button.enabled = false;
+        }
+    }
+
+    private void EnableAllButtonComponents()
+    {
+        foreach (var button in godChooseButtons)
+        {
+            button.enabled = true;
+        }
     }
 }

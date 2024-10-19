@@ -23,7 +23,7 @@ public class EnemySpawner : MonoBehaviour
     private Camera mainCamera;
     private List<GameObject> enemyPool;
     private int currentEnemyCount = 0;
-    
+
 
     private void Start()
     {
@@ -67,26 +67,33 @@ public class EnemySpawner : MonoBehaviour
     }
 
     private void SpawnEnemy()
+{
+    GameObject enemy = GetEnemyFromPool();
+    if (enemy != null)
     {
-        GameObject enemy = GetEnemyFromPool();
-        if (enemy != null)
+        Vector2 spawnPosition = GetRandomSpawnPosition();
+        enemy.transform.position = spawnPosition;
+
+        BasicEnemy basicEnemy = enemy.GetComponent<BasicEnemy>();
+        if (basicEnemy != null)
         {
-            Vector2 spawnPosition = GetRandomSpawnPosition();
-            enemy.transform.position = spawnPosition;
-
-            BasicEnemy basicEnemy = enemy.GetComponent<BasicEnemy>();
-            if (basicEnemy != null)
-            {
-                basicEnemy.ResetEnemy();
-                basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;
-                basicEnemy.OnEnemyDeath += ReturnEnemyToPool;
-            }
-
-            DOTween.Kill(this);
-            enemy.SetActive(true);
-            currentEnemyCount++;
+            basicEnemy.ResetEnemy();
+            basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;
+            basicEnemy.OnEnemyDeath += ReturnEnemyToPool;
         }
+
+        DOTween.Kill(this);
+        enemy.SetActive(true);
+
+        EnemyAnimationController animController = enemy.GetComponent<EnemyAnimationController>();
+        if (animController != null)
+        {
+            animController.ResetAnimationState();
+        }
+
+        currentEnemyCount++;
     }
+}
 
     private void SpawnEliteEnemy()
     {

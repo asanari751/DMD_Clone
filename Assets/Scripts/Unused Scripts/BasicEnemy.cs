@@ -38,6 +38,7 @@ public class BasicEnemy : MonoBehaviour, IDamageable
     private Rigidbody2D rb;
     private RigidbodyConstraints2D originalConstraints;
     private Coroutine attackRoutine;
+    private EnemyAnimationController animationController;
     [SerializeField] private Color endcolor;
 
     private void Awake()
@@ -53,6 +54,7 @@ public class BasicEnemy : MonoBehaviour, IDamageable
         ResetEnemy();
         expOrbPool = FindAnyObjectByType<ExpOrbPool>();
         GameObject player = GameObject.FindGameObjectWithTag("Player");
+        animationController = GetComponent<EnemyAnimationController>();
 
         if (player != null)
         {
@@ -154,13 +156,26 @@ public class BasicEnemy : MonoBehaviour, IDamageable
 
     private void FadeOutAndDestroy()
     {
-        Color startColor = spriteRenderer.color;
+        if (spriteRenderer != null)
+        {
+            Color startColor = spriteRenderer.color;
+            spriteRenderer.DOColor(new Color(startColor.r, startColor.g, startColor.b, 0f), deathTime)
+                .SetAutoKill(false)
+                .OnComplete(() =>
+                {
+                    if (gameObject != null && gameObject.activeInHierarchy)
+                    {
+                        ReturnToPool();
+                    }
+                });
+        }
+    }
 
-        spriteRenderer.DOColor(new Color(startColor.r, startColor.g, startColor.b, 0f), deathTime)
-            .OnComplete(() =>
-            {
-                gameObject.SetActive(false);
-            });
+    private void ReturnToPool()
+    {
+        // 오브젝트를 풀로 반환하는 로직
+        gameObject.SetActive(false);
+        OnEnemyDeath?.Invoke(gameObject);
     }
 
     private void OnDisable()
@@ -201,12 +216,10 @@ public class BasicEnemy : MonoBehaviour, IDamageable
 
         // 공격 딜레이 기다림
         yield return new WaitForSeconds(stats.attackDelay);
+        animationController.PlayAttackAnimation();
 
         // 공격 실행
         ExecuteAttack();
-
-        // 공격 범위 숨기기
-        HideAttackArea();
 
         // 공격 쿨다운 대기
         yield return new WaitForSeconds(stats.attackCooldown);
@@ -222,30 +235,32 @@ public class BasicEnemy : MonoBehaviour, IDamageable
     }
 
     private void ShowAttackArea()
+{
+    if (attackAreaPrefab != null)
     {
-        if (attackAreaPrefab != null)
+        if (attackAreaInstance == null)
         {
             attackAreaInstance = Instantiate(attackAreaPrefab, transform.position, Quaternion.identity, transform);
             attackAreaSpriteRenderer = attackAreaInstance.GetComponent<SpriteRenderer>();
-
-            attackAngle -= 90f;
-            attackAreaInstance.transform.rotation = Quaternion.Euler(0, 0, attackAngle);
-
-            float range = stats.AttackRange;
-            attackAreaInstance.transform.localScale = new Vector3(range, range, 1);
-
-            attackAreaSpriteRenderer.color = Color.red;
-            attackAreaSpriteRenderer.DOColor(endcolor, stats.attackDelay);
         }
-    }
-
-    private void HideAttackArea()
-    {
-        if (attackAreaInstance != null)
+        else
         {
-            Destroy(attackAreaInstance);
+            attackAreaInstance.SetActive(true);
         }
+
+        attackAngle -= 90f;
+        attackAreaInstance.transform.rotation = Quaternion.Euler(0, 0, attackAngle);
+
+        float range = stats.AttackRange;
+        attackAreaInstance.transform.localScale = new Vector3(range, range, 1);
+
+        attackAreaSpriteRenderer.color = Color.red;
+        attackAreaSpriteRenderer.DOColor(endcolor, stats.attackDelay)
+            .OnComplete(() => {
+                attackAreaInstance.SetActive(false);
+            });
     }
+}
 
     private void ExecuteAttack()
     {
@@ -276,7 +291,7 @@ public class BasicEnemy : MonoBehaviour, IDamageable
             StopCoroutine(attackRoutine);
             attackRoutine = null;
         }
-        HideAttackArea();
+
         if (rb != null)
         {
             rb.constraints = originalConstraints;

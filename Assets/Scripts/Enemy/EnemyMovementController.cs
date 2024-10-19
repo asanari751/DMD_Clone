@@ -7,6 +7,7 @@ public class EnemyMovementController : MonoBehaviour
     private Flowfield flowfield;
     private Rigidbody2D rb;
     private Transform playerTransform;
+    private EnemyAnimationController animationController;
 
     private void Start()
     {
@@ -14,6 +15,7 @@ public class EnemyMovementController : MonoBehaviour
         flowfield = FindAnyObjectByType<Flowfield>();
         rb = GetComponent<Rigidbody2D>();
         playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
+        animationController = GetComponent<EnemyAnimationController>();
     }
 
     private void FixedUpdate()
@@ -24,6 +26,7 @@ public class EnemyMovementController : MonoBehaviour
             if (basicEnemy.IsAttacking || basicEnemy.IsKnockedBack())
             {
                 rb.linearVelocity = Vector2.zero;
+                if (animationController != null) animationController.UpdateMovement(Vector2.zero);
                 return;
             }
 
@@ -40,11 +43,13 @@ public class EnemyMovementController : MonoBehaviour
             }
 
             rb.linearVelocity = movement;
+            if (animationController != null) animationController.UpdateMovement(movement);
             basicEnemy.CheckAttack();
         }
         else
         {
             rb.linearVelocity = Vector2.zero;
+            if (animationController != null) animationController.UpdateMovement(Vector2.zero);
         }
     }
 
@@ -58,7 +63,7 @@ public class EnemyMovementController : MonoBehaviour
     {
         Vector2 directionToPlayer = (playerTransform.position - transform.position).normalized;
         float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
-        
+
         if (Mathf.Abs(distanceToPlayer - basicEnemy.GetAttackRange()) < 0.1f)
         {
             return Vector2.zero;

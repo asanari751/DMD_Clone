@@ -9,11 +9,13 @@ public class AnimationController : MonoBehaviour
     [Header("Animation States")]
     [SerializeField] private string idleStateName = "Idle";
     [SerializeField] private string walkSideStateName = "Walk_Side";
-    [SerializeField] private string walkUpStateName = "Walk_Up";
-    [SerializeField] private string walkDownStateName = "Walk_Down";
+    // [SerializeField] private string walkUpStateName = "Walk_Up";
+    // [SerializeField] private string walkDownStateName = "Walk_Down";
 
     private Vector2 movement;
     private string currentStateName;
+    private bool lastHorizontalDirectionWasLeft = false;
+
     private void Start()
     {
         if (animator == null)
@@ -26,6 +28,11 @@ public class AnimationController : MonoBehaviour
     {
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
+
+        if (Mathf.Abs(movement.x) > 0)
+        {
+            lastHorizontalDirectionWasLeft = movement.x < 0;
+        }
 
         UpdateAnimation();
     }
@@ -41,22 +48,33 @@ public class AnimationController : MonoBehaviour
 
             if (isMoving)
             {
-                if (Mathf.Abs(movement.x) > Mathf.Abs(movement.y))
+                newStateName = walkSideStateName;
+                
+                if (Mathf.Abs(movement.x) > 0)
                 {
-                    newStateName = walkSideStateName;
                     spriteRenderer.flipX = (movement.x < 0);
                 }
                 else
                 {
-                    newStateName = (movement.y > 0) ? walkUpStateName : walkDownStateName;
+                    spriteRenderer.flipX = lastHorizontalDirectionWasLeft;
                 }
+
+                // if (Mathf.Abs(movement.x) > Mathf.Abs(movement.y))
+                // {
+                //     newStateName = walkSideStateName;
+                //     spriteRenderer.flipX = (movement.x < 0);
+                // }
+                // else
+                // {
+                //     newStateName = (movement.y > 0) ? walkUpStateName : walkDownStateName;
+                // }
             }
+
             else
             {
                 newStateName = idleStateName;
             }
 
-            // 새로운 상태가 현재 상태와 다를 경우에만 재생
             if (newStateName != currentStateName)
             {
                 animator.Play(newStateName, 0, 0f);

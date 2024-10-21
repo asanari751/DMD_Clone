@@ -898,7 +898,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 4204462825853213970, guid: 2096c209cf44b4a47bc93be88d47d929,
+      objectReference: {fileID: -1784782533756910241, guid: 57a6fef20a012084199d5d562ac35f00,
         type: 3}
     - target: {fileID: 4328413215920075902, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
@@ -2837,7 +2837,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &728383254
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5538,8 +5538,6 @@ MonoBehaviour:
   moveThreshold: 0.1
   idleStateName: Idle
   walkSideStateName: Walk_Side
-  walkUpStateName: Walk_Up
-  walkDownStateName: Walk_Down
 --- !u!95 &1413334490
 Animator:
   serializedVersion: 7

@@ -8,9 +8,10 @@ using System;
 public class SkillHoverManager : MonoBehaviour
 {
     [SerializeField] private Image skillInfoImage;
-    [SerializeField] private Vector3 infoThreshold;
+    [SerializeField] private Vector3 skillIconInfoThreshold;
+    [SerializeField] private Vector3 inventoryIconInfoThreshold;
     [SerializeField] private TextMeshProUGUI skillOrderText;
-     private SkillSelector skillSelector;
+    private SkillSelector skillSelector;
     private string currentHoveredSkillName;
 
     private void Start()
@@ -25,7 +26,7 @@ public class SkillHoverManager : MonoBehaviour
         {
             if (child.name.StartsWith("Skill Icon"))
             {
-                AddHoverEffect(child.gameObject);
+                AddHoverEffect(child.gameObject, true);
             }
         }
 
@@ -33,19 +34,20 @@ public class SkillHoverManager : MonoBehaviour
         {
             if (child.name.StartsWith("Inventory Icon"))
             {
-                AddHoverEffect(child.gameObject);
+                AddHoverEffect(child.gameObject, false);
             }
         }
     }
 
-    private void AddHoverEffect(GameObject iconObject)
+    private void AddHoverEffect(GameObject iconObject, bool isSkillIcon)
     {
         EventTrigger trigger = iconObject.GetComponent<EventTrigger>() ?? iconObject.AddComponent<EventTrigger>();
 
         EventTrigger.Entry enterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
-        enterEntry.callback.AddListener((data) => { 
+        enterEntry.callback.AddListener((data) =>
+        {
             currentHoveredSkillName = iconObject.name;
-            ShowHoverUI(); 
+            ShowHoverUI(isSkillIcon);
         });
         trigger.triggers.Add(enterEntry);
 
@@ -54,11 +56,11 @@ public class SkillHoverManager : MonoBehaviour
         trigger.triggers.Add(exitEntry);
     }
 
-    private void ShowHoverUI()
+    private void ShowHoverUI(bool isSkillIcon)
     {
         skillInfoImage.gameObject.SetActive(true);
         skillOrderText.text = currentHoveredSkillName;
-        StartCoroutine(UpdateHoverUIPosition());
+        StartCoroutine(UpdateHoverUIPosition(isSkillIcon));
     }
 
     private void HideHoverUI()
@@ -67,11 +69,37 @@ public class SkillHoverManager : MonoBehaviour
         StopAllCoroutines();
     }
 
-    private IEnumerator UpdateHoverUIPosition()
+    private IEnumerator UpdateHoverUIPosition(bool isSkillIcon)
     {
+        RectTransform canvasRect = skillInfoImage.canvas.GetComponent<RectTransform>();
+        float minYPosition = -270f;
+        bool isYFixed = false;
+
         while (skillInfoImage.gameObject.activeSelf)
         {
-            skillInfoImage.rectTransform.position = Input.mousePosition + infoThreshold;
+            Vector3 threshold = isSkillIcon ? skillIconInfoThreshold : inventoryIconInfoThreshold;
+            Vector2 localPoint;
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, Input.mousePosition, null, out localPoint);
+            Vector2 desiredPosition = localPoint + (Vector2)threshold;
+
+            if (desiredPosition.y <= minYPosition)
+            {
+                desiredPosition.y = minYPosition;
+                isYFixed = true;
+            }
+
+            if (isYFixed && localPoint.y + threshold.y > minYPosition)
+            {
+                isYFixed = false;
+            }
+
+            if (isYFixed)
+            {
+                desiredPosition.y = skillInfoImage.rectTransform.anchoredPosition.y;
+            }
+
+            skillInfoImage.rectTransform.anchoredPosition = desiredPosition;
             yield return null;
         }
     }

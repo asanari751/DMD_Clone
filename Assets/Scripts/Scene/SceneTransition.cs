@@ -21,17 +21,6 @@ public class SceneTransition : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
-        StartCoroutine(TransitionScene(sceneName));
-    }
-
-    private IEnumerator TransitionScene(string sceneName)
-    {
-        fadePanel.gameObject.SetActive(true);
-        fadePanel.color = new Color(0, 0, 0, 0);
-
-        yield return fadePanel.DOFade(1, fadeDuration).WaitForCompletion();
-        yield return new WaitForSeconds(transitionDelay - fadeDuration);
-        
-        SceneManager.LoadScene(sceneName);
+        SceneTransitionManager.Instance.LoadSceneWithFade(sceneName);
     }
 }

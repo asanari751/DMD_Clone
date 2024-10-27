@@ -4,6 +4,7 @@ using TMPro;
 using DG.Tweening;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -18,16 +19,27 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform controlsUI;
     [SerializeField] private float bindingTime = 3f;
     [SerializeField] private float fadeDuration = 0.5f;
-    
+
     [Header("Image")]
     [SerializeField] private GameObject pauseOverlay;
     [SerializeField] private TextMeshProUGUI pausedText;
 
+    [Header("Stage Clear")]
+    [SerializeField] private string hubSceneName = "1_Hub";
+    [SerializeField] private GameObject stageClearUI;
+    [SerializeField] private Button endGameButton;
+
     private CanvasGroup controlsCanvasGroup;
+    private PauseController pauseController;
+    private SceneTransitionManager sceneTransitionManager;
 
     private void Start()
     {
         resumeButton.SetActive(false);
+        stageClearUI.SetActive(false);
+
+        pauseController = FindAnyObjectByType<PauseController>();
+        sceneTransitionManager = FindAnyObjectByType<SceneTransitionManager>();
 
         if (controlsUI != null)
         {
@@ -106,5 +118,25 @@ public class UIManager : MonoBehaviour
     {
         pauseOverlay.SetActive(isVisible);
         pausedText.gameObject.SetActive(isVisible);
+    }
+
+    public void ShowStageClearUI()
+    {
+        stageClearUI.SetActive(true);
+        endGameButton.onClick.AddListener(() =>
+        {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneTransitionManager.Instance.LoadSceneWithFade(hubSceneName);
+            Debug.Log("씬 변경: Hub");
+        });
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "1_Hub")
+        {
+            pauseController.ResumeForGameClear();
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
     }
 }

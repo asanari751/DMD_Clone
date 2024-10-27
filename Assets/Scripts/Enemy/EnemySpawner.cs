@@ -11,7 +11,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private BossHealthUI bossHealthUI;
 
     [Header("Enemy Prefabs")]
-    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private List<GameObject> enemyPrefabs;
     [SerializeField] private GameObject eliteEnemyPrefab;
     [SerializeField] private GameObject bossEnemyPrefab;
 
@@ -21,8 +21,9 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private Transform parent;
 
     private Camera mainCamera;
-    private List<GameObject> enemyPool;
+    private List<List<GameObject>> enemyPool;
     private int currentEnemyCount = 0;
+    private int currentEnemyType = 0;
 
 
     private void Start()
@@ -45,12 +46,17 @@ public class EnemySpawner : MonoBehaviour
 
     private void InitializeEnemyPool()
     {
-        enemyPool = new List<GameObject>();
-        for (int i = 0; i < maxEnemies; i++)
+        enemyPool = new List<List<GameObject>>();
+        for (int i = 0; i < enemyPrefabs.Count; i++)
         {
-            GameObject enemy = Instantiate(enemyPrefab, parent);
-            enemy.SetActive(false);
-            enemyPool.Add(enemy);
+            List<GameObject> typePool = new List<GameObject>();
+            for (int j = 0; j < maxEnemies / enemyPrefabs.Count; j++)
+            {
+                GameObject enemy = Instantiate(enemyPrefabs[i], parent);
+                enemy.SetActive(false);
+                typePool.Add(enemy);
+            }
+            enemyPool.Add(typePool);
         }
     }
 
@@ -67,33 +73,34 @@ public class EnemySpawner : MonoBehaviour
     }
 
     private void SpawnEnemy()
-{
-    GameObject enemy = GetEnemyFromPool();
-    if (enemy != null)
     {
-        Vector2 spawnPosition = GetRandomSpawnPosition();
-        enemy.transform.position = spawnPosition;
-
-        BasicEnemy basicEnemy = enemy.GetComponent<BasicEnemy>();
-        if (basicEnemy != null)
+        GameObject enemy = GetEnemyFromPool(currentEnemyType);
+        if (enemy != null)
         {
-            basicEnemy.ResetEnemy();
-            basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;
-            basicEnemy.OnEnemyDeath += ReturnEnemyToPool;
+            Vector2 spawnPosition = GetRandomSpawnPosition();
+            enemy.transform.position = spawnPosition;
+
+            BasicEnemy basicEnemy = enemy.GetComponent<BasicEnemy>();
+            if (basicEnemy != null)
+            {
+                basicEnemy.ResetEnemy();
+                basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;
+                basicEnemy.OnEnemyDeath += ReturnEnemyToPool;
+            }
+
+            DOTween.Kill(this);
+            enemy.SetActive(true);
+
+            EnemyAnimationController animController = enemy.GetComponent<EnemyAnimationController>();
+            if (animController != null)
+            {
+                animController.ResetAnimationState();
+            }
+
+            currentEnemyCount++;
+            currentEnemyType = (currentEnemyType + 1) % enemyPrefabs.Count;
         }
-
-        DOTween.Kill(this);
-        enemy.SetActive(true);
-
-        EnemyAnimationController animController = enemy.GetComponent<EnemyAnimationController>();
-        if (animController != null)
-        {
-            animController.ResetAnimationState();
-        }
-
-        currentEnemyCount++;
     }
-}
 
     private void SpawnEliteEnemy()
     {
@@ -144,9 +151,9 @@ public class EnemySpawner : MonoBehaviour
         return null;
     }
 
-    private GameObject GetEnemyFromPool()
+    private GameObject GetEnemyFromPool(int type)
     {
-        foreach (GameObject enemy in enemyPool)
+        foreach (GameObject enemy in enemyPool[type])
         {
             if (!enemy.activeInHierarchy)
             {

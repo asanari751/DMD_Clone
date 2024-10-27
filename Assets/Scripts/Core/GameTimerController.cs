@@ -28,6 +28,7 @@ public class GameTimerController : MonoBehaviour
 
     public event System.Action OnEliteTime;
     public event System.Action OnBossTime;
+    public event System.Action OnBossDefeated;
 
     private void Awake()
     {
@@ -37,6 +38,7 @@ public class GameTimerController : MonoBehaviour
     private void Start()
     {
         UpdateTimerDisplay();
+        OnBossDefeated += HandleStageClear;
     }
     private void Update()
     {
@@ -90,7 +92,6 @@ public class GameTimerController : MonoBehaviour
             {
                 uiManager.ShowResumeButton();
             }
-            pauseController.SetGameEnded(true);
         }
         currentPauseIndex++;
     }
@@ -129,5 +130,17 @@ public class GameTimerController : MonoBehaviour
             bool currentRunningState = pauseController.IsRunning();
             pauseController.SetRunning(!currentRunningState);
         }
+    }
+
+    public void TriggerBossDefeated()
+    {
+        OnBossDefeated?.Invoke();
+    }
+
+    private void HandleStageClear()
+    {
+        pauseController.PauseForGameClear();
+        uiManager.ShowStageClearUI();
+        RemoveCombatAreaLimits();
     }
 }

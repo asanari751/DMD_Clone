@@ -9,12 +9,14 @@ public class AnimationController : MonoBehaviour
     [Header("Animation States")]
     [SerializeField] private string idleStateName = "Idle";
     [SerializeField] private string walkSideStateName = "Walk_Side";
+    [SerializeField] private string deathStateName = "Death";
     // [SerializeField] private string walkUpStateName = "Walk_Up";
     // [SerializeField] private string walkDownStateName = "Walk_Down";
 
     private Vector2 movement;
     private string currentStateName;
     private bool lastHorizontalDirectionWasLeft = false;
+    private bool isDead = false;
 
     private void Start()
     {
@@ -39,7 +41,7 @@ public class AnimationController : MonoBehaviour
 
     private void UpdateAnimation()
     {
-        if (PauseController.Paused == true) return;
+        if (PauseController.Paused == true || isDead) return;
         if (animator != null && spriteRenderer != null)
         {
             bool isMoving = movement.magnitude > moveThreshold;
@@ -49,7 +51,7 @@ public class AnimationController : MonoBehaviour
             if (isMoving)
             {
                 newStateName = walkSideStateName;
-                
+
                 if (Mathf.Abs(movement.x) > 0)
                 {
                     spriteRenderer.flipX = (movement.x < 0);
@@ -81,5 +83,27 @@ public class AnimationController : MonoBehaviour
                 currentStateName = newStateName;
             }
         }
+    }
+
+    public void PlayDeathAnimation()
+    {
+        isDead = true;
+        if (animator != null)
+        {
+            animator.Play(deathStateName);
+        }
+    }
+
+    public float GetDeathAnimationLength() // PlayerHealthUI.Die()
+    {
+        if (animator != null)
+        {
+            AnimatorClipInfo[] clipInfo = animator.GetCurrentAnimatorClipInfo(0);
+            if (clipInfo.Length > 0)
+            {
+                return clipInfo[0].clip.length;
+            }
+        }
+        return 1f;
     }
 }

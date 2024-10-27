@@ -45,11 +45,11 @@ public class CharacterInfo : MonoBehaviour
 
         if (InfoVisible)
         {
-            pauseController.TempPause();
+            pauseController.ToggleUIState();
         }
         else
         {
-            pauseController.TempResume();
+            pauseController.ToggleUIState();
         }
     }
 

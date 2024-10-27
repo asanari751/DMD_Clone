@@ -9,39 +9,24 @@ public class PauseController : MonoBehaviour
     private bool isGameEnded;
     private bool tempRunning = true;
 
-    public void PauseGame()
+    public void ToggleUIState()
     {
-        isRunning = false;
+        tempRunning = !tempRunning;
+        Time.timeScale = tempRunning ? 1f : 0f;
+        Paused = !tempRunning;
+        uiManager.SetPauseUIVisibility(!tempRunning);
+    }
+
+    public void PauseForGameClear()
+    {
         Paused = true;
         Time.timeScale = 0f;
-        uiManager.SetPauseUIVisibility(true);
     }
 
-    public void ResumeGame()
+    public void ResumeForGameClear()
     {
-        if (!isGameEnded)
-        {
-            isRunning = true;
-            Paused = false;
-            Time.timeScale = 1f;
-            uiManager.SetPauseUIVisibility(false);
-        }
-    }
-
-    public void TempPause()
-    {
-        tempRunning = false;
-        Time.timeScale = 0f;
-        Paused = true;
-        uiManager.SetPauseUIVisibility(true);
-    }
-
-    public void TempResume()
-    {
-        tempRunning = true;
-        Time.timeScale = 1f;
         Paused = false;
-        uiManager.SetPauseUIVisibility(false);
+        Time.timeScale = 1f;
     }
 
     private void Update()
@@ -50,15 +35,17 @@ public class PauseController : MonoBehaviour
         {
             if (tempRunning)
             {
-                TempPause();
+                ToggleUIState();
             }
 
             else
             {
-                TempResume();
+                ToggleUIState();
             }
         }
     }
+
+    // ===================================================
 
     public bool IsRunning()
     {

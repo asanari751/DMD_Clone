@@ -6,15 +6,26 @@ public class MonsterHealthUI : MonoBehaviour
     [SerializeField] private GameObject healthBarPrefab;
     [SerializeField] private float yOffset = 1f;
     [SerializeField] private bool isActive = true;
+    [SerializeField] private Canvas targetCanvas;
 
     private GameObject healthBarInstance;
     private Canvas canvas;
+
     private Camera mainCamera;
     private RectTransform canvasRectTransform;
 
     private void Start()
     {
-        canvas = FindAnyObjectByType<Canvas>();
+        Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
+        foreach (Canvas c in canvases)
+        {
+            // DontDestroyOnLoad가 아닌 캔버스를 찾습니다
+            if (c.gameObject.scene.name != "DontDestroyOnLoad")
+            {
+                canvas = c;
+                break;
+            }
+        }
         mainCamera = Camera.main;
         canvasRectTransform = canvas.GetComponent<RectTransform>();
 
@@ -49,7 +60,7 @@ public class MonsterHealthUI : MonoBehaviour
         isActive = active;
         healthBarInstance.SetActive(active);
     }
-    
+
     public void UpdateHealthBar(float currentHealth, float maxHealth)
     {
         Image fillImage = healthBarInstance.GetComponent<Image>();

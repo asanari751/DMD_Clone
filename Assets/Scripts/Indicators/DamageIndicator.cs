@@ -89,23 +89,29 @@ public class DamageIndicator : MonoBehaviour
 
     private IEnumerator AnimateText(GameObject damageText)
     {
+        if (damageText == null) yield break;
+
         TextMeshProUGUI textMesh = damageText.GetComponent<TextMeshProUGUI>();
         float elapsedTime = 0f;
         Vector3 startPosition = damageText.transform.position;
         Vector3 startScale = damageText.transform.localScale;
         Color startColor = textMesh.color;
 
-        while (elapsedTime < lifetime)
+        while (elapsedTime < lifetime && damageText != null)
         {
             UpdateTextAnimation(damageText, textMesh, startPosition, startScale, startColor, elapsedTime);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        Destroy(damageText);
+        if (damageText != null)
+            Destroy(damageText);
     }
+
     private void UpdateTextAnimation(GameObject damageText, TextMeshProUGUI textMesh, Vector3 startPosition, Vector3 startScale, Color startColor, float elapsedTime)
     {
+        if (damageText == null) return;
+
         float t = elapsedTime / lifetime;
         float scale = Mathf.Lerp(1f, minScale, scaleCurve.Evaluate(t));
         float alpha = Mathf.Lerp(1f, minAlpha, alphaCurve.Evaluate(t));

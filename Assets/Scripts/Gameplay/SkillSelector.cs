@@ -54,7 +54,7 @@ public class SkillSelector : MonoBehaviour
         {
             experienceComponent.onLevelUp.AddListener(ShowSkillSelector);
         }
-
+        
         skillSelectorUI.SetActive(false);
         darkBackground.gameObject.SetActive(false);
 
@@ -88,7 +88,7 @@ public class SkillSelector : MonoBehaviour
         ResetSkillButtons();
         darkBackground.gameObject.SetActive(true);
         skillSelectorUI.SetActive(true);
-        pauseController.TempPause();
+        pauseController.ToggleUIState();
 
         ShuffleSkills();
 
@@ -181,7 +181,7 @@ public class SkillSelector : MonoBehaviour
             currentSkillSlot++;
         }
 
-        pauseController.TempResume();
+        pauseController.ToggleUIState();
         skillSelectorUI.SetActive(false);
         darkBackground.gameObject.SetActive(false);
     }

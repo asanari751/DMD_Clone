@@ -88,6 +88,6 @@ public class UIManagerTitle : MonoBehaviour
 
     private void OnExitButtonClick()
     {
-        // Application.Quit();
+        Application.Quit();
     }
 }

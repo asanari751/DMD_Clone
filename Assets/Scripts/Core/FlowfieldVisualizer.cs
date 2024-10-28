@@ -1,5 +1,9 @@
 using UnityEngine;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public class FlowFieldVisualizer : MonoBehaviour
 {
     public bool showGrid = true;
@@ -70,7 +74,9 @@ public class FlowFieldVisualizer : MonoBehaviour
         {
             label += $"D:{flowfield.Grid[x, y].bestDirection}";
         }
+#if UNITY_EDITOR
         UnityEditor.Handles.Label(position, label);
+#endif
     }
 
     private void DrawDirectionArrow(Vector3 start, Vector2 direction)

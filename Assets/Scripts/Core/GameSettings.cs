@@ -162,12 +162,11 @@ public class GameSettings : MonoBehaviour
         {
             Resolution res = availableResolutions[index];
             resolutionText.text = $"해상도        {res}";
-            Screen.SetResolution(
-                res.width,
-                res.height,
-                Screen.fullScreenMode,
-                new RefreshRate() { numerator = (uint)res.refreshRate, denominator = 1 }
-            );
+
+            FullScreenMode fullScreenMode = fullscreenToggle.isOn ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
+
+            Screen.SetResolution(res.width, res.height, fullScreenMode);
+
             Debug.Log($"해상도 변경: {res.width}x{res.height} @{res.refreshRate}Hz");
             PlayerPrefs.SetFloat("ResolutionIndex", value);
         }

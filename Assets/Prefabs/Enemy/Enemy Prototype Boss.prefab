@@ -192,7 +192,7 @@ MonoBehaviour:
   stats:
     enemyType: 0
     MoveSpeed: 5
-    MaxHealth: 50
+    MaxHealth: 500
     AttackRange: 1
     attackDelay: 1
     attackCooldown: 2

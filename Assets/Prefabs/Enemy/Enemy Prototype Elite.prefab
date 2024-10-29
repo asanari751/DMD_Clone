@@ -223,7 +223,7 @@ MonoBehaviour:
   stats:
     enemyType: 0
     MoveSpeed: 5
-    MaxHealth: 50
+    MaxHealth: 10
     AttackRange: 1
     attackDelay: 1
     attackCooldown: 2
@@ -264,6 +264,7 @@ MonoBehaviour:
     type: 3}
   yOffset: 1
   isActive: 1
+  targetCanvas: {fileID: 0}
 --- !u!1 &5223107067649577173
 GameObject:
   m_ObjectHideFlags: 0

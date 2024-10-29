@@ -31,6 +31,7 @@ public class Interaction : MonoBehaviour
     [SerializeField] private TMP_Text dialogueText;
 
     [Header("Button Animation")]
+    [SerializeField] private GameObject godChoosePanel;
     [SerializeField] private Button[] godChooseButtons;
     [SerializeField] private float animationDuration;
 
@@ -44,8 +45,10 @@ public class Interaction : MonoBehaviour
     private void Start()
     {
         SetInteractionUI(false);
-        InitializeGodChooseButtons();
         titleImage.SetActive(false);
+        godChoosePanel.SetActive(false);
+
+        InitializeGodChooseButtons();
     }
 
     private void InitializeGodChooseButtons()
@@ -194,6 +197,8 @@ public class Interaction : MonoBehaviour
 
     private void ShowGodChooseButtons()
     {
+        godChoosePanel.SetActive(true);
+
         for (int i = 0; i < godChooseButtons.Length; i++)
         {
             godChooseButtons[i].gameObject.SetActive(true);
@@ -264,7 +269,7 @@ public class Interaction : MonoBehaviour
 
     private void EndInteraction()
     {
-        Debug.Log("End interaction");
+        godChoosePanel.SetActive(false);
 
         foreach (var button in godChooseButtons)
         {

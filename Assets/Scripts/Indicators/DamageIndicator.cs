@@ -7,6 +7,7 @@ public class DamageIndicator : MonoBehaviour
     [Header("Damage Indicator")]
     [SerializeField] private GameObject textPrefab;
     [SerializeField] private Canvas canvas;
+    [SerializeField] private Transform damageTextParent;
 
     [Header("Properties")]
     [SerializeField] private float lifetime = 1f;
@@ -61,9 +62,10 @@ public class DamageIndicator : MonoBehaviour
         SetDamageTextProperties(damageText, amount);
         StartCoroutine(AnimateText(damageText));
     }
+
     private GameObject CreateDamageText(Vector3 position)
     {
-        GameObject damageText = Instantiate(textPrefab, canvas.transform);
+        GameObject damageText = Instantiate(textPrefab, damageTextParent != null ? damageTextParent : canvas.transform);
         RectTransform rectTransform = damageText.GetComponent<RectTransform>();
         Vector2 viewportPosition = Camera.main.WorldToViewportPoint(position + offset);
         Vector2 worldObjectScreenPosition = new Vector2(

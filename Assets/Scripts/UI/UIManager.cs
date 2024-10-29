@@ -28,6 +28,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private string hubSceneName = "1_Hub";
     [SerializeField] private GameObject stageClearUI;
     [SerializeField] private Button endGameButton;
+    [SerializeField] private Scene hubScene;
 
     private CanvasGroup controlsCanvasGroup;
     private PauseController pauseController;
@@ -123,8 +124,11 @@ public class UIManager : MonoBehaviour
     public void ShowStageClearUI()
     {
         stageClearUI.SetActive(true);
+        stageClearUI.transform.SetAsLastSibling();
+        
         endGameButton.onClick.AddListener(() =>
         {
+            Time.timeScale = 1f;
             SceneManager.sceneLoaded += OnSceneLoaded;
             SceneTransitionManager.Instance.LoadSceneWithFade(hubSceneName);
             Debug.Log("씬 변경: Hub");

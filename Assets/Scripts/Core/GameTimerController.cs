@@ -40,6 +40,7 @@ public class GameTimerController : MonoBehaviour
         UpdateTimerDisplay();
         OnBossDefeated += HandleStageClear;
     }
+    
     private void Update()
     {
         if (!PauseController.Paused && !pauseController.IsGameEnded() && pauseController.IsRunning())

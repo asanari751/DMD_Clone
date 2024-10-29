@@ -578,7 +578,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 7.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -603,7 +603,7 @@ Transform:
   m_GameObject: {fileID: 47327756}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.00001335144, y: 0.0000009536743, z: -10}
+  m_LocalPosition: {x: -0.000041200838, y: -0.000009413205, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -650,7 +650,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &81171109
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2974,7 +2974,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &728383254
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4742,7 +4742,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1223663544
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6809,6 +6809,7 @@ MonoBehaviour:
       Text Text Text Text Text"
   characterNameText: {fileID: 565596747}
   dialogueText: {fileID: 761316500}
+  godChoosePanel: {fileID: 728383253}
   godChooseButtons:
   - {fileID: 617554106}
   - {fileID: 1163814308}

@@ -35,6 +35,9 @@ public class Interaction : MonoBehaviour
     [SerializeField] private Button[] godChooseButtons;
     [SerializeField] private float animationDuration;
 
+    [Header("Close Button")]
+    [SerializeField] private Button closeButton;
+
     private bool isInRange = false;
     private Tween textTween;
     private bool isDialogueComplete = false;
@@ -49,6 +52,7 @@ public class Interaction : MonoBehaviour
         godChoosePanel.SetActive(false);
 
         InitializeGodChooseButtons();
+        InitializeCloseButton();
     }
 
     private void InitializeGodChooseButtons()
@@ -61,6 +65,14 @@ public class Interaction : MonoBehaviour
             int index = i;
             godChooseButtons[i].onClick.AddListener(() => OnGodChooseButtonClicked(index));
         }
+    }
+
+    private void InitializeCloseButton()
+    {
+        closeButton.onClick.AddListener(() =>
+        {
+            EndInteraction();
+        });
     }
 
     private void OnEnable()
@@ -177,8 +189,7 @@ public class Interaction : MonoBehaviour
         float duration = characterToDisplay.dialogueText.Length / typingSpeed;
 
         textTween = DOTween.To(() => dialogueText.maxVisibleCharacters, x => dialogueText.maxVisibleCharacters = x, characterToDisplay.dialogueText.Length, duration)
-            .SetEase(Ease.Linear)
-            .OnComplete(() => isDialogueComplete = true);
+            .SetEase(Ease.Linear).SetUpdate(true).OnComplete(() => isDialogueComplete = true);
     }
 
     private void OnCancel(InputAction.CallbackContext context)
@@ -197,6 +208,8 @@ public class Interaction : MonoBehaviour
 
     private void ShowGodChooseButtons()
     {
+        PauseController.Paused = true;
+        Time.timeScale = 0f;
         godChoosePanel.SetActive(true);
 
         for (int i = 0; i < godChooseButtons.Length; i++)
@@ -230,9 +243,9 @@ public class Interaction : MonoBehaviour
             Button button = godChooseButtons[i];
             if (i == selectedIndex)
             {
-                button.transform.DOScale(Vector3.one * 1.2f, 0.3f);
-                button.transform.DOMove(originalButtonPositions[i], 0.3f);
-                button.image.DOColor(Color.white, animationDuration).OnComplete(() =>
+                button.transform.DOScale(Vector3.one * 1.2f, 0.3f).SetUpdate(true);
+                button.transform.DOMove(originalButtonPositions[i], 0.3f).SetUpdate(true);
+                button.image.DOColor(Color.white, animationDuration).SetUpdate(true).OnComplete(() =>
                 {
                     button.gameObject.SetActive(false);
                     DisplayCharacterData(characters[selectedIndex]);
@@ -242,18 +255,18 @@ public class Interaction : MonoBehaviour
             else
             {
                 Color targetColor = new Color(0x44 / 255f, 0x44 / 255f, 0x44 / 255f);
-                button.image.DOColor(targetColor, animationDuration).OnComplete(() => button.gameObject.SetActive(false));
+                button.image.DOColor(targetColor, animationDuration).OnComplete(() => button.gameObject.SetActive(false)).SetUpdate(true);
 
                 Image[] childImages = button.GetComponentsInChildren<Image>();
                 foreach (Image img in childImages)
                 {
-                    img.DOColor(targetColor, animationDuration);
+                    img.DOColor(targetColor, animationDuration).SetUpdate(true);
                 }
             }
         }
         nowInteract = false;
 
-        DOVirtual.DelayedCall(animationDuration, () => { EnableAllButtonComponents(); });
+        DOVirtual.DelayedCall(animationDuration, () => { EnableAllButtonComponents(); }).SetUpdate(true);
     }
 
     private void CompleteDialogue()
@@ -269,6 +282,8 @@ public class Interaction : MonoBehaviour
 
     private void EndInteraction()
     {
+        PauseController.Paused = false;
+        Time.timeScale = 1f;
         godChoosePanel.SetActive(false);
 
         foreach (var button in godChooseButtons)

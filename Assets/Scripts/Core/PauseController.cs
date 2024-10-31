@@ -13,7 +13,7 @@ public class PauseController : MonoBehaviour
     [SerializeField] private Button returnToTitleButton;
 
     private bool isRunning = true;
-    public static bool Paused { get; private set; } = false;
+    public static bool Paused { get; set; } = false;
     private bool isGameEnded;
     private bool tempRunning = true;
 

@@ -10,10 +10,10 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private UIManager uiManager;
     [SerializeField] private BossHealthUI bossHealthUI;
 
-    [Header("Enemy Prefabs")]
+    [Header("Enemys")]
     [SerializeField] private List<GameObject> enemyPrefabs;
-    [SerializeField] private GameObject eliteEnemyPrefab;
-    [SerializeField] private GameObject bossEnemyPrefab;
+    [SerializeField] private GameObject eliteEnemy;
+    [SerializeField] private GameObject bossEnemy;
 
     [Header("Spawn Settings")]
     [SerializeField] private float spawnInterval;
@@ -29,10 +29,7 @@ public class EnemySpawner : MonoBehaviour
     private void Start()
     {
         mainCamera = Camera.main;
-        if (mainCamera == null)
-        {
-            return;
-        }
+        if (mainCamera == null) return;
 
         InitializeEnemyPool();
         StartCoroutine(SpawnEnemies());
@@ -42,6 +39,9 @@ public class EnemySpawner : MonoBehaviour
             gameTimerController.OnEliteTime += SpawnEliteEnemy;
             gameTimerController.OnBossTime += SpawnBossEnemy;
         }
+
+        eliteEnemy.SetActive(false);
+        bossEnemy.SetActive(false);
     }
 
     private void InitializeEnemyPool()
@@ -104,9 +104,11 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEliteEnemy()
     {
-        GameObject eliteEnemy = SpawnSpecialEnemy(eliteEnemyPrefab);
         if (eliteEnemy != null)
         {
+            eliteEnemy.transform.position = GetRandomSpawnPosition();
+            eliteEnemy.SetActive(true);
+
             EliteEnemy eliteEnemyScript = eliteEnemy.GetComponent<EliteEnemy>();
             if (eliteEnemyScript != null)
             {
@@ -118,15 +120,15 @@ public class EnemySpawner : MonoBehaviour
     private void OnEliteEnemyDeath()
     {
         gameTimerController.RemoveCombatAreaLimits();
-        uiManager.OnResumeButtonClick();
     }
 
     private void SpawnBossEnemy()
     {
-        GameObject bossEnemy = SpawnSpecialEnemy(bossEnemyPrefab);
-        // bossHealthUI.SetActive(true);
         if (bossEnemy != null)
         {
+            bossEnemy.transform.position = GetRandomSpawnPosition();
+            bossEnemy.SetActive(true);
+
             EnemyBoss bossEnemyScript = bossEnemy.GetComponent<EnemyBoss>();
             if (bossEnemyScript != null)
             {
@@ -138,7 +140,6 @@ public class EnemySpawner : MonoBehaviour
     private void OnBossEnemyDeath()
     {
         gameTimerController.RemoveCombatAreaLimits();
-        uiManager.OnResumeButtonClick();
     }
 
     private GameObject SpawnSpecialEnemy(GameObject specialEnemyPrefab)

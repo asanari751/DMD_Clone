@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine.EventSystems;
+using System.Linq;
 
 public class SkillSelector : MonoBehaviour
 {
@@ -23,11 +24,17 @@ public class SkillSelector : MonoBehaviour
         public Color color;
     }
 
-    [SerializeField] private GameObject darkBackground;
+    // [SerializeField] private GameObject darkBackground;
     [SerializeField] private float productionTime = 1f;
     [SerializeField] private float maximizeButton = 1.1f;
     [SerializeField] private float buttonEdge = 10f;
     [SerializeField] private SkillLevelColor[] skillLevelColors = new SkillLevelColor[3];
+
+    [Header("Dices")]
+    [SerializeField] private Button redDiceButton;
+    [SerializeField] private Button blueDiceButton;
+    [SerializeField] private TextMeshProUGUI redDiceCountText;
+    [SerializeField] private TextMeshProUGUI blueDiceCountText;
 
     public GameObject skillSelectorUI;
     public Button[] skillButtons;
@@ -39,6 +46,12 @@ public class SkillSelector : MonoBehaviour
     public List<Image> skillIconImages = new List<Image>();
     public List<Image> skillInventoryIcons = new List<Image>();
     public int currentSkillSlot = 0;
+
+    private int maxRedDiceCount = 3;
+    private int maxBlueDiceCount = 3;
+    private int currentRedDiceCount;
+    private int currentBlueDiceCount;
+    private List<Skilldata> currentSkillSet = new List<Skilldata>();
 
     private Vector3[] originalPositions;
     private Vector3[] originalScales;
@@ -54,9 +67,17 @@ public class SkillSelector : MonoBehaviour
         {
             experienceComponent.onLevelUp.AddListener(ShowSkillSelector);
         }
-        
+
         skillSelectorUI.SetActive(false);
-        darkBackground.gameObject.SetActive(false);
+        // darkBackground.gameObject.SetActive(false);
+
+        currentRedDiceCount = maxRedDiceCount;
+        currentBlueDiceCount = maxBlueDiceCount;
+
+        redDiceButton.onClick.AddListener(() => RollDice(true));
+        blueDiceButton.onClick.AddListener(() => RollDice(false));
+
+        UpdateDiceUI();
 
         for (int j = 1; j <= 4; j++)
         {
@@ -86,13 +107,17 @@ public class SkillSelector : MonoBehaviour
     private void ShowSkillSelector()
     {
         ResetSkillButtons();
-        darkBackground.gameObject.SetActive(true);
         skillSelectorUI.SetActive(true);
         pauseController.ToggleUIState();
 
+        currentRedDiceCount = maxRedDiceCount;
+        currentBlueDiceCount = maxBlueDiceCount;
+
         ShuffleSkills();
+        currentSkillSet = new List<Skilldata>(availableSkills.Take(3));
 
         UpdateSkillUI();
+        UpdateDiceUI();
         StartProduction();
     }
 
@@ -159,6 +184,14 @@ public class SkillSelector : MonoBehaviour
             .SetEase(Ease.OutQuart).SetUpdate(true);
     }
 
+    private void KillAllButtonAnimations()
+    {
+        for (int i = 0; i < skillButtons.Length; i++)
+        {
+            skillButtons[i].transform.DOKill();
+        }
+    }
+
     private void SelectSkill(int index)
     {
         Skilldata selectedSkill = availableSkills[index];
@@ -183,7 +216,7 @@ public class SkillSelector : MonoBehaviour
 
         pauseController.ToggleUIState();
         skillSelectorUI.SetActive(false);
-        darkBackground.gameObject.SetActive(false);
+        // darkBackground.gameObject.SetActive(false);
     }
 
     private void UpdateSkillUI()
@@ -297,4 +330,75 @@ public class SkillSelector : MonoBehaviour
             outline.enabled = false;
         }
     }
+
+    // ============================== Dice
+
+    private void RollDice(bool isRed)
+    {
+        if ((isRed && currentRedDiceCount <= 0) || (!isRed && currentBlueDiceCount <= 0))
+            return;
+
+        if (isRed)
+            currentRedDiceCount--;
+        else
+            currentBlueDiceCount--;
+
+        currentSkillSet = new List<Skilldata>(availableSkills.Take(3));
+
+        StartCoroutine(RollDiceAnimation());
+    }
+
+    private IEnumerator RollDiceAnimation()
+    {
+        isProducing = true;
+        KillAllButtonAnimations();
+
+        for (int i = 0; i < skillButtons.Length; i++)
+        {
+            skillButtons[i].transform.position = originalPositions[i] + Vector3.up * 1200f;
+        }
+
+        int maxAttempts = 10;
+        int currentAttempt = 0;
+        do
+        {
+            ShuffleSkills();
+            currentAttempt++;
+            if (currentAttempt >= maxAttempts)
+            {
+                Debug.Log($"주사위 굴리기 최대 시도 횟수({maxAttempts}회) 도달");
+                break;
+            }
+        } while (IsIdenticalSkillSet());
+
+        UpdateSkillUI();
+        UpdateDiceUI();
+
+        for (int i = 0; i < skillButtons.Length; i++)
+        {
+            MoveButtonDown(skillButtons[i], i);
+            yield return new WaitForSecondsRealtime(productionTime / skillButtons.Length);
+        }
+
+        yield return new WaitForSecondsRealtime(productionTime);
+        isProducing = false;
+    }
+
+    private bool IsIdenticalSkillSet()
+    {
+        // 현재 보여지는 3개의 스킬이 이전과 동일한지 확인
+        var newSkillSet = availableSkills.Take(3);
+        return currentSkillSet.All(skill => newSkillSet.Any(s => s.skillName == skill.skillName))
+               && newSkillSet.All(skill => currentSkillSet.Any(s => s.skillName == skill.skillName));
+    }
+
+    private void UpdateDiceUI()
+    {
+        redDiceCountText.text = $"{currentRedDiceCount}/{maxRedDiceCount}";
+        blueDiceCountText.text = $"{currentBlueDiceCount}/{maxBlueDiceCount}";
+
+        redDiceButton.interactable = currentRedDiceCount > 0;
+        blueDiceButton.interactable = currentBlueDiceCount > 0;
+    }
+
 }

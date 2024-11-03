@@ -12,8 +12,8 @@ public class UIManager : MonoBehaviour
     [Header("Scripts")]
     [SerializeField] private GameTimerController gameTimerController;
 
-    [Header("Button")]
-    [SerializeField] private GameObject resumeButton;
+    // [Header("Button")]
+    // [SerializeField] private GameObject resumeButton;
 
     [Header("Key Binding")]
     [SerializeField] private RectTransform controlsUI;
@@ -36,7 +36,7 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        resumeButton.SetActive(false);
+        // resumeButton.SetActive(false);
         stageClearUI.SetActive(false);
 
         pauseController = FindAnyObjectByType<PauseController>();
@@ -52,37 +52,37 @@ public class UIManager : MonoBehaviour
             ShowControlsUI();
         }
 
-        if (resumeButton != null)
-        {
-            resumeButton.GetComponent<Button>().onClick.AddListener(OnResumeButtonClick);
-        }
+        // if (resumeButton != null)
+        // {
+        //     resumeButton.GetComponent<Button>().onClick.AddListener(OnResumeButtonClick);
+        // }
     }
 
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            CheckButtonClick();
-        }
-    }
+    // private void Update()
+    // {
+    //     if (Input.GetMouseButtonDown(0))
+    //     {
+    //         CheckButtonClick();
+    //     }
+    // }
 
-    private void CheckButtonClick()
-    {
-        PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
-        pointerEventData.position = Input.mousePosition;
+    // private void CheckButtonClick()
+    // {
+    //     PointerEventData pointerEventData = new PointerEventData(EventSystem.current);
+    //     pointerEventData.position = Input.mousePosition;
 
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(pointerEventData, results);
+    //     List<RaycastResult> results = new List<RaycastResult>();
+    //     EventSystem.current.RaycastAll(pointerEventData, results);
 
-        foreach (RaycastResult result in results)
-        {
-            if (result.gameObject == resumeButton)
-            {
-                OnResumeButtonClick();
-                break;
-            }
-        }
-    }
+    //     foreach (RaycastResult result in results)
+    //     {
+    //         if (result.gameObject == resumeButton)
+    //         {
+    //             OnResumeButtonClick();
+    //             break;
+    //         }
+    //     }
+    // }
 
     private void ShowControlsUI()
     {
@@ -97,23 +97,23 @@ public class UIManager : MonoBehaviour
         showSequence.Play();
     }
 
-    public void OnResumeButtonClick()
-    {
-        if (gameTimerController != null)
-        {
-            gameTimerController.ResumeTimer();
-            gameTimerController.RemoveCombatAreaLimits();
-            resumeButton.SetActive(false);
-        }
-    }
+    // public void OnResumeButtonClick()
+    // {
+    //     if (gameTimerController != null)
+    //     {
+    //         gameTimerController.ResumeTimer();
+    //         gameTimerController.RemoveCombatAreaLimits();
+    //         resumeButton.SetActive(false);
+    //     }
+    // }
 
-    public void ShowResumeButton()
-    {
-        if (resumeButton != null)
-        {
-            resumeButton.SetActive(true);
-        }
-    }
+    // public void ShowResumeButton()
+    // {
+    //     if (resumeButton != null)
+    //     {
+    //         resumeButton.SetActive(true);
+    //     }
+    // }
 
     public void SetPauseUIVisibility(bool isVisible)
     {

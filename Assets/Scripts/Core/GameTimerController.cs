@@ -80,19 +80,11 @@ public class GameTimerController : MonoBehaviour
         {
             OnEliteTime?.Invoke();
             LimitsCombatArea();
-            if (uiManager != null)
-            {
-                uiManager.ShowResumeButton();
-            }
         }
         else if (currentPauseIndex == 1) // 보스
         {
             OnBossTime?.Invoke();
             LimitsCombatArea();
-            if (uiManager != null)
-            {
-                uiManager.ShowResumeButton();
-            }
         }
         currentPauseIndex++;
     }

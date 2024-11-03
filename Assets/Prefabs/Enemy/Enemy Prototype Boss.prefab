@@ -229,9 +229,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a116517e16ff1c3429bd960c924f2056, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bossHealthBarPrefab: {fileID: 3313146955159993653, guid: 0384eae08ca0e74459f7b0491957999c,
-    type: 3}
-  isActive: 1
+  healthBarRoot: {fileID: 0}
+  healthFillImage: {fileID: 0}
+  healthBackground: {fileID: 0}
+  healthDelayedImage: {fileID: 0}
+  colorChangeDuration: 0
+  delayedDuration: 0
 --- !u!1 &5223107067649577173
 GameObject:
   m_ObjectHideFlags: 0

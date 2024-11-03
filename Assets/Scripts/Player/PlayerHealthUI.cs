@@ -6,72 +6,51 @@ using System.Collections;
 
 public class PlayerHealthUI : MonoBehaviour
 {
-    [SerializeField] private GameObject healthBarPrefab;
-    [SerializeField] private Transform playerTransform;
-    [SerializeField] private float yOffset = 0f;
-    [SerializeField] private bool InCombatArea = false;
-    [SerializeField] private float maxHealth = 100f;
-    [SerializeField] private Canvas targetCanvas;
-    private float currentHealth;
-    [SerializeField] private SpriteRenderer playerSpriteRenderer;
-    private Color originalPlayerColor;
-    private Color originalHealthBarColor;
+    [Header("Health Bar")]
+    [SerializeField] private GameObject healthBarRoot;
+    [SerializeField] private Image healthFillImage;
+    [SerializeField] private Image healthBackground;
+    [SerializeField] private Image healthDelayedImage;
+    [SerializeField] private float deathAnimationDuration;
+    [SerializeField] private float colorChangeDuration;
+    [SerializeField] private float delayedDuration;
+    [SerializeField] private float maxHealth;
+    [SerializeField] private float yOffset;
 
-    private GameObject healthBarInstance;
-    private Canvas canvas;
-    private Image healthFillImage;
+    [Header("Ref")]
+    [SerializeField] private Transform playerTransform;
+    [SerializeField] private string hubScene = "1_Hub";
+    [SerializeField] private bool InCombatArea = false;
+
+    private float currentHealth;
+    private Color originalHealthBarColor;
     private bool isDead = false;
 
     private void Start()
     {
-        if (SceneManager.GetActiveScene().name != "1_Hub")
+        if (SceneManager.GetActiveScene().name != hubScene)
         {
-            canvas = targetCanvas;
-            healthBarInstance = Instantiate(healthBarPrefab, canvas.transform);
-            healthBarInstance.SetActive(InCombatArea);
-            healthBarInstance.transform.SetAsFirstSibling();
-
-            healthFillImage = healthBarInstance.GetComponentInChildren<Image>();
+            healthBarRoot.SetActive(InCombatArea);
             currentHealth = maxHealth;
             UpdateHealthBar(currentHealth, maxHealth);
-
-            originalPlayerColor = playerSpriteRenderer.color;
             originalHealthBarColor = healthFillImage.color;
+            healthDelayedImage.fillAmount = healthFillImage.fillAmount;
+        }
+        else
+        {
+            healthBarRoot.SetActive(false);
         }
     }
 
     private void Update()
     {
-        if (playerTransform != null && SceneManager.GetActiveScene().name != "1_Hub")
+        if (playerTransform != null && SceneManager.GetActiveScene().name != hubScene)
         {
-            healthBarInstance.SetActive(InCombatArea);
+            healthBarRoot.SetActive(InCombatArea);
             if (InCombatArea)
             {
-                Vector3 playerPosition = playerTransform.position;
-                healthBarInstance.transform.position = Camera.main.WorldToScreenPoint(new Vector3(playerPosition.x, playerPosition.y + yOffset, playerPosition.z));
+                HandleHealthBarPosition();
             }
-        }
-    }
-
-    public void TakeDamage(float damage)
-    {
-        currentHealth -= damage;
-        currentHealth = Mathf.Max(currentHealth, 0);
-        UpdateHealthBar(currentHealth, maxHealth);
-
-        // playerSpriteRenderer.DOColor(Color.white, 0.1f).OnComplete(() =>
-        // {
-        //     playerSpriteRenderer.color = originalPlayerColor;
-        // });
-
-        healthFillImage.DOColor(Color.white, 0.1f).OnComplete(() =>
-        {
-            healthFillImage.color = originalHealthBarColor;
-        });
-
-        if (currentHealth <= 0)
-        {
-            Die();
         }
     }
 
@@ -79,8 +58,25 @@ public class PlayerHealthUI : MonoBehaviour
     {
         if (healthFillImage != null)
         {
-            healthFillImage.fillAmount = currentHealth / maxHealth;
+            float targetFillAmount = currentHealth / maxHealth;
+
+            // 메인 체력바는 즉시 갱신
+            healthFillImage.fillAmount = targetFillAmount;
+
+            // 지연 체력바는 천천히 따라오도록 설정
+            healthDelayedImage.DOFillAmount(targetFillAmount, delayedDuration)
+                .SetEase(Ease.InOutSine);
         }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currentHealth = Mathf.Max(currentHealth - damage, 0);
+        UpdateHealthBar(currentHealth, maxHealth);
+        HandleDamageVisuals();
+
+        if (currentHealth <= 0)
+            Die();
     }
 
     public bool IsDead()
@@ -88,51 +84,60 @@ public class PlayerHealthUI : MonoBehaviour
         return isDead;
     }
 
+    private void DisablePlayerComponents()
+    {
+        var components = new Behaviour[]
+        {
+        GetComponent<PlayerStateManager>(),
+        GetComponent<PlayerController>()
+        };
+
+        foreach (var component in components)
+        {
+            if (component != null)
+                component.enabled = false;
+        }
+
+        var rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+            rb.bodyType = RigidbodyType2D.Static;
+    }
+
+    public void HandleDamageVisuals()
+    {
+        healthFillImage.DOColor(Color.white, colorChangeDuration).OnComplete(() =>
+        {
+            healthFillImage.color = originalHealthBarColor;
+        });
+    }
+
+    private void HandleHealthBarPosition()
+    {
+        Vector3 playerPosition = playerTransform.position;
+        Vector3 healthBarPosition = new Vector3(playerPosition.x, playerPosition.y + yOffset, playerPosition.z);
+        healthBarRoot.transform.position = Camera.main.WorldToScreenPoint(healthBarPosition);
+    }
+
     private void Die()
     {
-        // 체력바 비활성화
-        if (healthBarInstance != null)
-        {
-            healthBarInstance.SetActive(false);
-        }
+        isDead = true;
+        DisablePlayerComponents();
 
-        // 플레이어 상태 관리자 비활성화
-        PlayerStateManager playerStateManager = GetComponent<PlayerStateManager>();
-        if (playerStateManager != null)
-        {
-            playerStateManager.enabled = false;
-        }
-
-        // 플레이어 이동 제한
-        PlayerController playerController = GetComponent<PlayerController>();
-        if (playerController != null)
-        {
-            playerController.enabled = false;
-        }
-
-        // Rigidbody2D 정적으로 설정
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        if (rb != null)
-        {
-            rb.bodyType = RigidbodyType2D.Static;
-        }
-
-        // 애니메이션 컨트롤러를 통해 사망 애니메이션 재생
-        AnimationController animController = GetComponent<AnimationController>();
+        var animController = GetComponent<AnimationController>();
         if (animController != null)
         {
             animController.PlayDeathAnimation();
-            StartCoroutine(TransitionAfterAnimation(2f)); // 사망 애니메이션 재생 시간을 2초로 고정
+            StartCoroutine(TransitionAfterAnimation(deathAnimationDuration));
         }
         else
         {
-            SceneTransitionManager.Instance.LoadSceneWithFade("1_Hub");
+            SceneTransitionManager.Instance.LoadSceneWithFade(hubScene);
         }
     }
 
     private IEnumerator TransitionAfterAnimation(float delay)
     {
         yield return new WaitForSeconds(delay);
-        SceneTransitionManager.Instance.LoadSceneWithFade("1_Hub");
+        SceneTransitionManager.Instance.LoadSceneWithFade(hubScene);
     }
 }

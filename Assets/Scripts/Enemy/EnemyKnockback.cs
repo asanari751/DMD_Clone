@@ -21,15 +21,16 @@ public class EnemyKnockback : MonoBehaviour
         }
     }
 
-    public void ApplyKnockback(Vector2 knockbackDirection)
+    public void ApplyKnockback(Vector2 hitDirection)
     {
-        isKnockedBack = true;
-        Vector2 knockbackTarget = (Vector2)transform.position + knockbackDirection.normalized * knockbackDistance;
-
+        // 이전 넉백 시퀀스 정리
         if (knockbackSequence != null && knockbackSequence.IsActive())
         {
             knockbackSequence.Kill();
         }
+
+        isKnockedBack = true;
+        Vector2 knockbackTarget = (Vector2)transform.position + (-hitDirection.normalized * knockbackDistance);
 
         knockbackSequence = DOTween.Sequence();
         knockbackSequence.Append(spriteRenderer.DOColor(knockbackColor, knockbackDuration * 0.5f));

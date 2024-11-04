@@ -28884,7 +28884,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 11.25
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -48271,8 +48271,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f0d8f957b467394bb15ee2b43404f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalCursor: {fileID: 2800000, guid: 79a61cc3f4a695e40a07f0ec11925922, type: 3}
-  combatCursor: {fileID: 2800000, guid: 60be10966eead64469750420208ec576, type: 3}
+  normalCursor: {fileID: 2800000, guid: cd6587109fea76041befe653240ddd33, type: 3}
+  combatCursor: {fileID: 2800000, guid: ca1b29514a23a804da545331328a2fd9, type: 3}
   cursorHotspot: {x: 0, y: 0}
   combatScenes:
   - 2_Stage_Test

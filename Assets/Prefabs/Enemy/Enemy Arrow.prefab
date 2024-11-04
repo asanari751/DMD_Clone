@@ -215,7 +215,7 @@ MonoBehaviour:
   stats:
     enemyType: 1
     MoveSpeed: 2
-    MaxHealth: 1
+    MaxHealth: 3
     AttackRange: 3
     attackDelay: 2
     attackCooldown: 3
@@ -237,9 +237,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 605f792aaaab51641bbf76e3aace2bb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  knockbackDistance: 1
+  knockbackDistance: 0.5
   knockbackDuration: 0.5
-  knockbackColor: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
+  knockbackColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &8943113403550105905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,6 +258,8 @@ MonoBehaviour:
   idleStateName: Elf Idle
   walkSideStateName: Elf Walk
   attackStateName: Elf Attack
+  hitStateName: Elf Hit
+  hitAnimationDuration: 0.5
 --- !u!1 &5223107067649577173
 GameObject:
   m_ObjectHideFlags: 0

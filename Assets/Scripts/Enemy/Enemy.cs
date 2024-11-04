@@ -90,6 +90,11 @@ public class BasicEnemy : MonoBehaviour, IDamageable
     {
         currentHealth -= damage;
 
+        if (animationController != null)
+        {
+            animationController.PlayHitAnimation();
+        }
+
         if (currentHealth <= 0 && !isDead)
         {
             Die();

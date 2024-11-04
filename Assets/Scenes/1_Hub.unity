@@ -5282,6 +5282,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1226895859}
+  - component: {fileID: 1226895860}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -5306,6 +5307,23 @@ Transform:
   - {fileID: 1970048008}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1226895860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1226895858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f0d8f957b467394bb15ee2b43404f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  normalCursor: {fileID: 2800000, guid: cd6587109fea76041befe653240ddd33, type: 3}
+  combatCursor: {fileID: 2800000, guid: ca1b29514a23a804da545331328a2fd9, type: 3}
+  cursorHotspot: {x: 0, y: 0}
+  combatScenes:
+  - 2_Stage_Test
 --- !u!1 &1242762795
 GameObject:
   m_ObjectHideFlags: 0

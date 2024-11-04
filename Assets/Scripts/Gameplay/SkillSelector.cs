@@ -57,10 +57,11 @@ public class SkillSelector : MonoBehaviour
     private Vector3[] originalScales;
     private bool isProducing = false;
     private PauseController pauseController;
+    private ChangeCursor cursorManager;
 
     private void Start()
     {
-        Debug.Log("Test");
+        cursorManager = FindAnyObjectByType<ChangeCursor>();
         Experience experienceComponent = FindAnyObjectByType<Experience>();
         pauseController = FindAnyObjectByType<PauseController>();
         if (experienceComponent != null)
@@ -109,6 +110,8 @@ public class SkillSelector : MonoBehaviour
         ResetSkillButtons();
         skillSelectorUI.SetActive(true);
         pauseController.ToggleUIState();
+
+        cursorManager.SetNormalCursor();
 
         currentRedDiceCount = maxRedDiceCount;
         currentBlueDiceCount = maxBlueDiceCount;
@@ -216,6 +219,7 @@ public class SkillSelector : MonoBehaviour
 
         pauseController.ToggleUIState();
         skillSelectorUI.SetActive(false);
+        cursorManager.SetCombatCursor();
         // darkBackground.gameObject.SetActive(false);
     }
 

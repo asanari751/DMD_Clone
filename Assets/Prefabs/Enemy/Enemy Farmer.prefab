@@ -215,7 +215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 605f792aaaab51641bbf76e3aace2bb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  knockbackDistance: 1
+  knockbackDistance: 0.5
   knockbackDuration: 0.5
   knockbackColor: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
 --- !u!95 &4674724632027795859
@@ -258,6 +258,8 @@ MonoBehaviour:
   idleStateName: M_Enemy_Idle
   walkSideStateName: M_Enemy_Side
   attackStateName: M_Enemy_Attack
+  hitStateName: M_Enemy_Hit
+  hitAnimationDuration: 0.5
 --- !u!1 &5223107067649577173
 GameObject:
   m_ObjectHideFlags: 0

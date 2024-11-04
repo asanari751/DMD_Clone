@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections;
 
+// ================================
+// 우선순위 : Hit > Attack > Move > Idle
+// ================================
+
 public class EnemyAnimationController : MonoBehaviour
 {
     [SerializeField] private Animator animator;
@@ -11,11 +15,14 @@ public class EnemyAnimationController : MonoBehaviour
     [SerializeField] private string idleStateName = "Enemy_Idle";
     [SerializeField] private string walkSideStateName = "Enemy_Side";
     [SerializeField] private string attackStateName = "Enemy_Attack";
+    [SerializeField] private string hitStateName = "Enemy_Hit";
+    [SerializeField] private float hitAnimationDuration;
 
     private Vector2 movement;
     private string currentStateName;
     private bool isFacingRight = true;
     private bool isAttacking = false;
+    private bool isHit = false;
     private BasicEnemy basicEnemy;
 
     private void Start()
@@ -27,10 +34,11 @@ public class EnemyAnimationController : MonoBehaviour
         basicEnemy = GetComponent<BasicEnemy>();
     }
 
+
     public void UpdateMovement(Vector2 newMovement)
     {
         movement = newMovement;
-        if (!isAttacking)
+        if (!isAttacking && !isHit)
         {
             UpdateAnimation();
         }
@@ -38,7 +46,7 @@ public class EnemyAnimationController : MonoBehaviour
 
     public void PlayAttackAnimation()
     {
-        if (!isAttacking)
+        if (!isAttacking && !isHit)
         {
             isAttacking = true;
             StartCoroutine(AttackAnimationCoroutine());
@@ -53,6 +61,34 @@ public class EnemyAnimationController : MonoBehaviour
 
         yield return new WaitForSeconds(basicEnemy.GetAttackDelay());
 
+        isAttacking = false;
+        UpdateAnimation();
+    }
+
+    public void PlayHitAnimation()
+    {
+        isHit = true;
+        StartCoroutine(HitAnimationCoroutine());
+    }
+
+    private IEnumerator HitAnimationCoroutine()
+    {
+        if (animator.HasState(0, Animator.StringToHash(hitStateName)))
+        {
+            animator.Play(hitStateName, 0, 0f);
+            currentStateName = hitStateName;
+        }
+        else
+        {
+            animator.Play(idleStateName, 0, 0f);
+            currentStateName = idleStateName;
+        }
+
+        Debug.Log($"Playing Hit animation: {hitStateName}");
+
+        yield return new WaitForSeconds(hitAnimationDuration);
+
+        isHit = false;
         isAttacking = false;
         UpdateAnimation();
     }

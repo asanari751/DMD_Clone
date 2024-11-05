@@ -130,7 +130,7 @@ public class UIManager : MonoBehaviour
         {
             Time.timeScale = 1f;
             SceneManager.sceneLoaded += OnSceneLoaded;
-            SceneTransitionManager.Instance.LoadSceneWithFade(hubSceneName);
+            SceneTransitionManager.Instance.LoadSceneWithTransition(hubSceneName);
             Debug.Log("씬 변경: Hub");
         });
     }

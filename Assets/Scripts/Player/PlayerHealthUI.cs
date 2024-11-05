@@ -11,6 +11,8 @@ public class PlayerHealthUI : MonoBehaviour
     [SerializeField] private Image healthFillImage;
     [SerializeField] private Image healthBackground;
     [SerializeField] private Image healthDelayedImage;
+    [SerializeField] private Image healthUIImage;
+    [SerializeField] private Image healthUIDelayedImage;
     [SerializeField] private float deathAnimationDuration;
     [SerializeField] private float colorChangeDuration;
     [SerializeField] private float delayedDuration;
@@ -62,9 +64,12 @@ public class PlayerHealthUI : MonoBehaviour
 
             // 메인 체력바는 즉시 갱신
             healthFillImage.fillAmount = targetFillAmount;
+            healthUIImage.fillAmount = targetFillAmount;
 
             // 지연 체력바는 천천히 따라오도록 설정
             healthDelayedImage.DOFillAmount(targetFillAmount, delayedDuration)
+                .SetEase(Ease.InOutSine);
+            healthUIDelayedImage.DOFillAmount(targetFillAmount, delayedDuration)
                 .SetEase(Ease.InOutSine);
         }
     }
@@ -109,6 +114,11 @@ public class PlayerHealthUI : MonoBehaviour
         {
             healthFillImage.color = originalHealthBarColor;
         });
+
+        healthUIImage.DOColor(Color.white, colorChangeDuration).OnComplete(() =>
+        {
+            healthUIImage.color = originalHealthBarColor;
+        });
     }
 
     private void HandleHealthBarPosition()
@@ -131,13 +141,13 @@ public class PlayerHealthUI : MonoBehaviour
         }
         else
         {
-            SceneTransitionManager.Instance.LoadSceneWithFade(hubScene);
+            SceneTransitionManager.Instance.LoadSceneWithTransition(hubScene);
         }
     }
 
     private IEnumerator TransitionAfterAnimation(float delay)
     {
         yield return new WaitForSeconds(delay);
-        SceneTransitionManager.Instance.LoadSceneWithFade(hubScene);
+        SceneTransitionManager.Instance.LoadSceneWithTransition(hubScene);
     }
 }

@@ -68,7 +68,7 @@ public class FlowFieldVisualizer : MonoBehaviour
         string label = "";
         if (showCost)
         {
-            label += $"{Mathf.RoundToInt(flowfield.Grid[x, y].cost)}\n";
+            label += $"{Mathf.RoundToInt(flowfield.Grid[x, y].cost),3}\n";
         }
         if (showDirection)
         {

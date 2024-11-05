@@ -67,7 +67,7 @@ public class UIManagerTitle : MonoBehaviour
 
     private void OnPlayButtonClick()
     {
-        SceneTransitionManager.Instance.LoadSceneWithFade(playSceneName);
+        SceneTransitionManager.Instance.LoadSceneWithTransition(playSceneName);
     }
 
     private void OnSettingsButtonClick()

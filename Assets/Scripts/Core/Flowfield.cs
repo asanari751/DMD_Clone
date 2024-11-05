@@ -3,19 +3,28 @@ using System.Collections.Generic;
 
 public class Flowfield : MonoBehaviour
 {
+    [Header("Grid Settings")]
     [SerializeField] private Vector2Int gridSize = new Vector2Int(20, 20);
     [SerializeField] private float cellSize = 1f;
+    [SerializeField] private float diagonalMoveCost = 1.3f;
+
+    [Header("Enemy Avoidance")]
+    [SerializeField] private float avoidanceForce = 5f;
+    [SerializeField] private float surfaceFollowForce = 3f;
+    [SerializeField] private LayerMask enemyLayer;
+
     private Cell[,] grid;
     private Vector2Int playerGridPosition;
     public Transform playerTransform;
     private Vector2 gridOrigin;
     private Vector2 lastUpdatePosition;
     public LayerMask obstacleLayer;
+    private Rigidbody2D rb2d;
 
     public float obstacleCheckInterval = 0.5f; // 장애물 검사 간격 (초)
     private float lastObstacleCheckTime;
     private bool isPathToPlayerAvailable = true;
-    
+
     public Dictionary<Vector2Int, CellCache> cellCache;
 
     public Vector2Int GridSize => gridSize;
@@ -171,7 +180,7 @@ public class Flowfield : MonoBehaviour
             {
                 if (neighbor.isObstacle) continue;
 
-                float moveCost = (neighbor.position - current.position).magnitude == 1 ? 1f : 1.4f;
+                float moveCost = (neighbor.position - current.position).magnitude == 1 ? 1f : diagonalMoveCost;
                 float newCost = current.cost + moveCost;
 
                 if (newCost < neighbor.cost)
@@ -303,18 +312,18 @@ public class Flowfield : MonoBehaviour
         );
     }
 
-    private void UpdateLocalCostField()
-    {
-        int range = 5; // 업데이트할 범위 설정
-        Vector2Int min = new Vector2Int(
-            Mathf.Max(0, playerGridPosition.x - range),
-            Mathf.Max(0, playerGridPosition.y - range)
-        );
-        Vector2Int max = new Vector2Int(
-            Mathf.Min(gridSize.x - 1, playerGridPosition.x + range),
-            Mathf.Min(gridSize.y - 1, playerGridPosition.y + range)
-        );
-    }
+    // private void UpdateLocalCostField()
+    // {
+    //     int range = 5; // 업데이트할 범위 설정
+    //     Vector2Int min = new Vector2Int(
+    //         Mathf.Max(0, playerGridPosition.x - range),
+    //         Mathf.Max(0, playerGridPosition.y - range)
+    //     );
+    //     Vector2Int max = new Vector2Int(
+    //         Mathf.Min(gridSize.x - 1, playerGridPosition.x + range),
+    //         Mathf.Min(gridSize.y - 1, playerGridPosition.y + range)
+    //     );
+    // }
 
     private void UpdateLocalFlowField()
     {
@@ -422,11 +431,11 @@ public class Flowfield : MonoBehaviour
         }
     }
 
-private bool CheckForObstacle(Vector3 worldPos)
-{
-    Collider2D obstacle = Physics2D.OverlapBox(worldPos, Vector2.one * (cellSize * 0.9f), 0f, obstacleLayer);
-    return obstacle != null;
-}
+    private bool CheckForObstacle(Vector3 worldPos)
+    {
+        Collider2D obstacle = Physics2D.OverlapBox(worldPos, Vector2.one * (cellSize * 0.9f), 0f, obstacleLayer);
+        return obstacle != null;
+    }
 }
 
 public class Cell

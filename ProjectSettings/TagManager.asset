@@ -8,6 +8,7 @@ TagManager:
   - Health
   - Elite
   - Boss
+  - Enemy
   layers:
   - Default
   - TransparentFX

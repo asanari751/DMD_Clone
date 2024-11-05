@@ -61,13 +61,13 @@ public class PauseController : MonoBehaviour
     public void ReturnToHub()
     {
         Time.timeScale = 1f;
-        SceneTransitionManager.Instance.LoadSceneWithFade("1_Hub");
+        SceneTransitionManager.Instance.LoadSceneWithTransition("1_Hub");
     }
 
     public void ReturnToTitle()
     {
         Time.timeScale = 1f;
-        SceneTransitionManager.Instance.LoadSceneWithFade("0_Title");
+        SceneTransitionManager.Instance.LoadSceneWithTransition("0_Title");
     }
 
     private void Update()

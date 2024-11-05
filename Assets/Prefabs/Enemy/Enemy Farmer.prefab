@@ -11,15 +11,15 @@ GameObject:
   - component: {fileID: 4514696612962679870}
   - component: {fileID: 662584177183261202}
   - component: {fileID: 8577688993285471522}
-  - component: {fileID: 1156452232056041260}
+  - component: {fileID: 4215199506219085885}
+  - component: {fileID: 4674724632027795859}
   - component: {fileID: 8803329705486930600}
   - component: {fileID: 1334247076841853299}
   - component: {fileID: 4453743842889480057}
-  - component: {fileID: 4674724632027795859}
   - component: {fileID: 8943113403550105905}
   m_Layer: 6
   m_Name: Enemy Farmer
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -113,7 +113,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0
   m_GravityScale: 0
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 0f966749a165fce4188c17002aa86ed2, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -124,8 +124,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!70 &1156452232056041260
-CapsuleCollider2D:
+--- !u!58 &4215199506219085885
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -158,9 +158,30 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.014487347, y: 0.60889524}
-  m_Size: {x: 0.7390806, y: 1.1339415}
-  m_Direction: 0
+  m_Offset: {x: 0, y: 0.41}
+  m_Radius: 0.4
+--- !u!95 &4674724632027795859
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4976483147096513540}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 24a5f765b6086a14fb7f007f1e55a290, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &8803329705486930600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,7 +217,7 @@ MonoBehaviour:
     MaxHealth: 5
     AttackRange: 3
     attackDelay: 1
-    attackCooldown: 2
+    attackCooldown: 1
     attackDamage: 1
     RetreatSpeed: 1
   attackAreaPrefab: {fileID: 5094983644987885009, guid: e869be970af93c540b757083e85fa8a4,
@@ -218,28 +239,6 @@ MonoBehaviour:
   knockbackDistance: 0.5
   knockbackDuration: 0.5
   knockbackColor: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
---- !u!95 &4674724632027795859
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4976483147096513540}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 24a5f765b6086a14fb7f007f1e55a290, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &8943113403550105905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -271,7 +270,7 @@ GameObject:
   - component: {fileID: 7484714946537723146}
   - component: {fileID: 4072466293936534073}
   m_Layer: 0
-  m_Name: Shadow_0
+  m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -286,8 +285,8 @@ Transform:
   m_GameObject: {fileID: 5223107067649577173}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.026, y: -0.01, z: 0}
-  m_LocalScale: {x: 0.61409646, y: 0.9312, z: 1}
+  m_LocalPosition: {x: -0.0027, y: -0.01, z: 0}
+  m_LocalScale: {x: 1.0805271, y: 0.9312, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4514696612962679870}

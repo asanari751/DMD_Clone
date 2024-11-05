@@ -21,6 +21,6 @@ public class SceneTransition : MonoBehaviour
 
     public void LoadScene(string sceneName)
     {
-        SceneTransitionManager.Instance.LoadSceneWithFade(sceneName);
+        SceneTransitionManager.Instance.LoadSceneWithTransition(sceneName);
     }
 }

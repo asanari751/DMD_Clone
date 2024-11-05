@@ -2,24 +2,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class SceneTransitionManager : MonoBehaviour
 {
     public static SceneTransitionManager Instance { get; private set; }
 
-    [SerializeField] private Image fadeImage;
-    [SerializeField] private float fadeDuration = 1f;
+    private const string loadingScene = "0_Loading";
+    private string sceneToLoad;
+    private AsyncOperation loadOperation;
 
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            
-            fadeImage.canvas.transform.SetParent(null);
-            DontDestroyOnLoad(fadeImage.canvas.gameObject);
             DontDestroyOnLoad(gameObject);
-            fadeImage.gameObject.SetActive(false);
         }
         else
         {
@@ -27,22 +25,46 @@ public class SceneTransitionManager : MonoBehaviour
         }
     }
 
-    public void LoadSceneWithFade(string sceneName)
+    public void LoadSceneWithTransition(string sceneName)
     {
-        fadeImage.gameObject.SetActive(true);
-        fadeImage.color = Color.clear;
+        sceneToLoad = sceneName;
+        FadeController.Instance.FadeOut(() => StartCoroutine(LoadingProcess()));
+    }
 
-        // 페이드 아웃 (투명 -> 검정)
-        fadeImage.DOFade(1f, fadeDuration)
-            .OnComplete(() =>
+    private IEnumerator LoadingProcess()
+    {
+        SceneManager.LoadScene(loadingScene);
+
+        yield return new WaitForSeconds(0.1f);
+
+        LoadingProgress loadingProgress = FindAnyObjectByType<LoadingProgress>();
+        if (loadingProgress == null)
+        {
+            Debug.LogError("LoadingProgress");
+            yield break;
+        }
+
+        loadOperation = SceneManager.LoadSceneAsync(sceneToLoad);
+        loadOperation.allowSceneActivation = false;
+
+        while (!loadOperation.isDone)
+        {
+            float progress = Mathf.Clamp01(loadOperation.progress / 0.9f);
+            loadingProgress.SetProgress(progress);
+
+            if (loadOperation.progress >= 0.9f && loadingProgress.IsLoadingComplete())
             {
-                SceneManager.LoadScene(sceneName);
-                // 페이드 인 (검정 -> 투명)
-                fadeImage.DOFade(0f, fadeDuration)
-                    .OnComplete(() =>
-                    {
-                        fadeImage.gameObject.SetActive(false);
-                    });
-            });
+                FadeController.Instance.FadeOut(() =>
+                {
+                    loadOperation.allowSceneActivation = true;
+                });
+
+                yield return new WaitUntil(() => loadOperation.isDone);
+                FadeController.Instance.FadeIn(null);
+                break;
+            }
+
+            yield return null;
+        }
     }
 }

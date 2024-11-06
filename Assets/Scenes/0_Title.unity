@@ -9894,7 +9894,7 @@ MonoBehaviour:
   frameRateText: {fileID: 918307356}
   frameRateSlider: {fileID: 881400762}
   minFrameRate: 30
-  maxFrameRate: 144
+  maxFrameRate: 300
   masterVolumeText: {fileID: 1985215369}
   masterVolumeSlider: {fileID: 1274198673}
   sfxVolumeText: {fileID: 1595700509}

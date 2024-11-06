@@ -3362,7 +3362,7 @@ MonoBehaviour:
     Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text
     Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text
     Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text
-    Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text "
+    Text Text Text Text Text Text Text Text Text Text"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f8cff39dfc94e5f49a96f3b441170247, type: 2}
   m_sharedMaterial: {fileID: -3715159498768737803, guid: f8cff39dfc94e5f49a96f3b441170247,
@@ -5431,6 +5431,7 @@ RectTransform:
   m_Children:
   - {fileID: 1640936707}
   - {fileID: 761316498}
+  - {fileID: 1905511126}
   m_Father: {fileID: 1223663544}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -6561,6 +6562,8 @@ MonoBehaviour:
   healthFillImage: {fileID: 2066075330}
   healthBackground: {fileID: 775263411}
   healthDelayedImage: {fileID: 2018284895}
+  healthUIImage: {fileID: 0}
+  healthUIDelayedImage: {fileID: 0}
   deathAnimationDuration: 0
   colorChangeDuration: 0
   delayedDuration: 0
@@ -7188,20 +7191,16 @@ MonoBehaviour:
   characters:
   - illustration: {fileID: 1503043323}
     characterName: "\uBC14\uD1A0\uB9AC \uC5D0\uB974\uC81C\uBCA0\uD2B8"
-    dialogueText: "Text Text Text Text Text Text Text Text Text Text Text \nText
-      Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text
-      Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text
-      Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text
-      Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text
-      Text Text Text Text Text"
+    dialogueText: "\uC5B4\uBA38, \uB108 \uAC19\uC740 \uD558\uCC2E\uC740 \uC874\uC7AC\uAC00
+      \uAC10\uD788 \uB098\uB97C \uC120\uD0DD\uD588\uB2E4\uACE0? \n\uD478\uD6D7, \uADF8\uB798,
+      \uC774 \uBAB8\uC774 \uB108\uB97C \uAD7D\uC5B4\uC0B4\uD3B4\uC904\uAC8C. \uD558\uC9C0\uB9CC
+      \uB124\uAC00 \uAC10\uB2F9\uD560 \uC218 \uC788\uC744\uC9C0\uB294 \uBAA8\uB974\uACA0\uB294\uAC78~?"
   - illustration: {fileID: 469004796}
     characterName: "\uC2A4\uD2B8\uB9AC\uACE0\uC774"
-    dialogueText: "Text Text Text Text Text Text Text Text Text Text Text \nText
-      Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text
-      Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text
-      Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text
-      Text Text Text Text Text Text Text Text Text Text Text Text Text Text Text
-      Text Text Text Text Text"
+    dialogueText: "\uC774\uC81C \uB108\uB294 \uACE0\uC694\uD55C \uBB18\uC9C0\uC758
+      \uC218\uD638\uC790\uC774\uC790, \uB0B4 \uC5B4\uB460\uC758 \uC77C\uBD80\uBD84\uC774
+      \uB418\uC5C8\uB2E4.\n\uB098\uC758 \uADF8\uB9BC\uC790\uB294 \uB124 \uC190\uC5D0
+      \uD798\uC744 \uC548\uACA8\uC904 \uAC83\uC774\uB2E4."
   characterNameText: {fileID: 565596747}
   dialogueText: {fileID: 761316500}
   godChoosePanel: {fileID: 728383253}
@@ -8375,6 +8374,81 @@ PolygonCollider2D:
       - {x: 0.88959676, y: 1.020715}
       - {x: 0.5857197, y: 1.0178795}
   m_UseDelaunayMesh: 0
+--- !u!1 &1905511125
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1905511126}
+  - component: {fileID: 1905511128}
+  - component: {fileID: 1905511127}
+  m_Layer: 5
+  m_Name: Indicator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1905511126
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905511125}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1243722215}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 449, y: -110}
+  m_SizeDelta: {x: 50, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1905511127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905511125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 10330f48451499545b90f527b663d483, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1905511128
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905511125}
+  m_CullTransparentMesh: 1
 --- !u!1 &1918690719
 GameObject:
   m_ObjectHideFlags: 0

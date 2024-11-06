@@ -56,11 +56,22 @@ public class EnemyKnockback : MonoBehaviour
         }
     }
 
+    public void ResetKnockback()
+    {
+        if (knockbackSequence != null && knockbackSequence.IsActive())
+        {
+            knockbackSequence.Kill();
+        }
+        isKnockedBack = false;
+        ResetColor();
+    }
+
     private void OnDisable()
     {
         if (knockbackSequence != null && knockbackSequence.IsActive())
         {
             knockbackSequence.Kill();
         }
+        isKnockedBack = false;  // OnDisable에서도 상태 초기화
     }
 }

@@ -97,31 +97,37 @@ public class EnemyAnimationController : MonoBehaviour
     {
         if (animator != null && spriteRenderer != null)
         {
-            string newStateName;
-
             bool isMoving = movement.magnitude > moveThreshold;
-            newStateName = isMoving ? walkSideStateName : idleStateName;
+            string newStateName = isMoving ? walkSideStateName : idleStateName;
 
             if (movement.x != 0)
             {
                 isFacingRight = movement.x > 0;
+                spriteRenderer.flipX = !isFacingRight;
             }
 
-            spriteRenderer.flipX = !isFacingRight;
-
-            if (newStateName != currentStateName)
-            {
-                Debug.Log($"Playing animation: {newStateName}");
-                animator.Play(newStateName, 0, 0f);
-                currentStateName = newStateName;
-            }
+            animator.Play(newStateName);
+            currentStateName = newStateName;
         }
     }
 
     public void ResetAnimationState()
     {
+        // 모든 상태 리셋
         currentStateName = "";
         isAttacking = false;
-        UpdateAnimation();
+        isHit = false;
+        isFacingRight = true;
+        movement = Vector2.zero;
+
+        if (animator != null)
+        {
+            animator.Play(idleStateName);
+        }
+
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.flipX = !isFacingRight;
+        }
     }
 }

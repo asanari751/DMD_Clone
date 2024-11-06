@@ -78,4 +78,13 @@ public class EnemyMovementController : MonoBehaviour
             return -directionToPlayer * basicEnemy.GetRetreatSpeed();
         }
     }
+
+    public void ResetMovementController()
+    {
+        basicEnemy = GetComponent<BasicEnemy>();
+        flowfield = FindAnyObjectByType<Flowfield>();
+        rb = GetComponent<Rigidbody2D>();
+        playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
+        animationController = GetComponent<EnemyAnimationController>();
+    }
 }

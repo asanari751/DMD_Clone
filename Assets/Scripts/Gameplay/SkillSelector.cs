@@ -36,6 +36,9 @@ public class SkillSelector : MonoBehaviour
     [SerializeField] private TextMeshProUGUI redDiceCountText;
     [SerializeField] private TextMeshProUGUI blueDiceCountText;
 
+    // 임시용 화면 가리기, 재가공 필수
+    [SerializeField] private Image tempBlackImage;
+
     public GameObject skillSelectorUI;
     public Button[] skillButtons;
     public TextMeshProUGUI[] skillDescriptionTexts;
@@ -109,6 +112,7 @@ public class SkillSelector : MonoBehaviour
     {
         ResetSkillButtons();
         skillSelectorUI.SetActive(true);
+        tempBlackImage.gameObject.SetActive(true);
         pauseController.ToggleUIState();
 
         cursorManager.SetNormalCursor();
@@ -219,6 +223,7 @@ public class SkillSelector : MonoBehaviour
 
         pauseController.ToggleUIState();
         skillSelectorUI.SetActive(false);
+        tempBlackImage.gameObject.SetActive(false);
         cursorManager.SetCombatCursor();
         // darkBackground.gameObject.SetActive(false);
     }
@@ -238,6 +243,16 @@ public class SkillSelector : MonoBehaviour
                 if (buttonText != null)
                 {
                     buttonText.text = skill.skillName;
+                }
+
+                Transform skillTitleTransform = skillButtons[i].transform.Find("Skill Title - TMP");
+                if (skillTitleTransform != null)
+                {
+                    TextMeshProUGUI skillTitleText = skillTitleTransform.GetComponent<TextMeshProUGUI>();
+                    if (skillTitleText != null)
+                    {
+                        skillTitleText.text = skill.skillName;
+                    }
                 }
 
                 Transform skillIconTransform = skillButtons[i].transform.Find("Skill Icon");
@@ -267,7 +282,10 @@ public class SkillSelector : MonoBehaviour
 
                 if (skillDescriptionTexts.Length > i && skillDescriptionTexts[i] != null)
                 {
-                    skillDescriptionTexts[i].text = skill.skillDescription;
+                    string coloredDescription = skill.skillDescription
+                        .Replace("출혈", "<color=#DC143C>출혈</color>")
+                        .Replace("둔화", "<color=#4472C4>둔화</color>");
+                    skillDescriptionTexts[i].text = coloredDescription;
                 }
 
                 int index = i;

@@ -8,11 +8,6 @@ public class Flowfield : MonoBehaviour
     [SerializeField] private float cellSize = 1f;
     [SerializeField] private float diagonalMoveCost = 1.3f;
 
-    [Header("Enemy Avoidance")]
-    [SerializeField] private float avoidanceForce = 5f;
-    [SerializeField] private float surfaceFollowForce = 3f;
-    [SerializeField] private LayerMask enemyLayer;
-
     private Cell[,] grid;
     private Vector2Int playerGridPosition;
     public Transform playerTransform;

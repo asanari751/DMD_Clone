@@ -351,6 +351,13 @@ public class BasicEnemy : MonoBehaviour, IDamageable
         CanAttack = true;
         IsAttacking = false;
 
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.constraints = originalConstraints;
+        }
+
         if (enemyKnockback != null)
         {
             enemyKnockback.ResetColor();

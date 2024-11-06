@@ -46,14 +46,14 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Player
+  - name: Sprites
     uniqueID: 2425651459
-    locked: 0
-  - name: Enemy
-    uniqueID: 4250941897
     locked: 0
   - name: HP Image
     uniqueID: 4189426099
+    locked: 0
+  - name: Dirt
+    uniqueID: 4250941897
     locked: 0
   m_RenderingLayers:
   - Default

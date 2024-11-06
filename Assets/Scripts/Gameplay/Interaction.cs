@@ -188,8 +188,16 @@ public class Interaction : MonoBehaviour
 
         float duration = characterToDisplay.dialogueText.Length / typingSpeed;
 
-        textTween = DOTween.To(() => dialogueText.maxVisibleCharacters, x => dialogueText.maxVisibleCharacters = x, characterToDisplay.dialogueText.Length, duration)
-            .SetEase(Ease.Linear).SetUpdate(true).OnComplete(() => isDialogueComplete = true);
+        textTween = DOTween.To(() => dialogueText.maxVisibleCharacters,
+        x => dialogueText.maxVisibleCharacters = x,
+        characterToDisplay.dialogueText.Length,
+        duration)
+        .SetEase(Ease.Linear)
+        .SetUpdate(true)
+        .OnComplete(() =>
+        {
+            isDialogueComplete = true;
+        });
     }
 
     private void OnCancel(InputAction.CallbackContext context)
@@ -284,7 +292,9 @@ public class Interaction : MonoBehaviour
     {
         PauseController.Paused = false;
         Time.timeScale = 1f;
-        godChoosePanel.SetActive(false);
+
+        if (godChoosePanel != null)
+            godChoosePanel.SetActive(false);
 
         foreach (var button in godChooseButtons)
         {
@@ -306,13 +316,15 @@ public class Interaction : MonoBehaviour
                 button.transform.localScale = Vector3.one;
                 button.transform.position = originalButtonPositions[System.Array.IndexOf(godChooseButtons, button)];
             }
-
-            SetInteractionUI(false);
-            backgroundOverlay.gameObject.SetActive(false);
-            isDialogueComplete = false;
-            areButtonsVisible = false;
-            nowInteract = false;
         }
+
+        if (backgroundOverlay != null && backgroundOverlay.gameObject != null)
+            backgroundOverlay.gameObject.SetActive(false);
+
+        SetInteractionUI(false);
+        isDialogueComplete = false;
+        areButtonsVisible = false;
+        nowInteract = false;
     }
 
     private void DisableAllButtonComponents()

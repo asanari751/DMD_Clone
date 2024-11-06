@@ -80,21 +80,34 @@ public class EnemySpawner : MonoBehaviour
             Vector2 spawnPosition = GetRandomSpawnPosition();
             enemy.transform.position = spawnPosition;
 
-            BasicEnemy basicEnemy = enemy.GetComponent<BasicEnemy>();
-            if (basicEnemy != null)
-            {
-                basicEnemy.ResetEnemy();
-                basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;
-                basicEnemy.OnEnemyDeath += ReturnEnemyToPool;
-            }
+            DOTween.Kill(enemy.transform);
 
-            DOTween.Kill(this);
             enemy.SetActive(true);
 
             EnemyAnimationController animController = enemy.GetComponent<EnemyAnimationController>();
             if (animController != null)
             {
                 animController.ResetAnimationState();
+            }
+
+            EnemyMovementController movementController = enemy.GetComponent<EnemyMovementController>();
+            if (movementController != null)
+            {
+                movementController.ResetMovementController();
+            }
+
+            EnemyKnockback knockback = enemy.GetComponent<EnemyKnockback>();
+            if (knockback != null)
+            {
+                knockback.ResetKnockback();
+            }
+
+            BasicEnemy basicEnemy = enemy.GetComponent<BasicEnemy>();
+            if (basicEnemy != null)
+            {
+                basicEnemy.ResetEnemy();
+                basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;
+                basicEnemy.OnEnemyDeath += ReturnEnemyToPool;
             }
 
             currentEnemyCount++;

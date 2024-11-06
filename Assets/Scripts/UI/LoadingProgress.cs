@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class LoadingProgress : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class LoadingProgress : MonoBehaviour
     [SerializeField] private float imageChangeInterval = 0.5f;
     [SerializeField] private float minimumLoadingTime = 2.0f;
     [SerializeField] private Sprite[] loadingSprites;
+    [SerializeField] private TextMeshProUGUI loadingText;  // UI Text 컴포넌트 참조
+    [SerializeField] private string[] loadingTexts = new string[] { };
+    [SerializeField] private float textChangeInterval = 0.3f;
     [SerializeField] private float[] loadingStopPoints;
     [SerializeField] private float stopDuration = 0.25f;
 
@@ -24,6 +28,7 @@ public class LoadingProgress : MonoBehaviour
     {
         loadingStartTime = Time.time;
         StartCoroutine(CycleLoadingImages());
+        StartCoroutine(CycleLoadingTexts());
     }
 
     private void Update()
@@ -32,7 +37,7 @@ public class LoadingProgress : MonoBehaviour
         float timeProgress = Mathf.Clamp01(elapsedTime / minimumLoadingTime);
         float finalProgress = Mathf.Min(targetProgress, timeProgress);
 
-        if (currentStopPointIndex < loadingStopPoints.Length && 
+        if (currentStopPointIndex < loadingStopPoints.Length &&
             finalProgress >= loadingStopPoints[currentStopPointIndex])
         {
             if (!stopStartTime.HasValue)
@@ -64,6 +69,17 @@ public class LoadingProgress : MonoBehaviour
             loadingImage.sprite = loadingSprites[currentSpriteIndex];
             currentSpriteIndex = (currentSpriteIndex + 1) % loadingSprites.Length;
             yield return new WaitForSeconds(imageChangeInterval);
+        }
+    }
+
+    private IEnumerator CycleLoadingTexts()
+    {
+        int currentTextIndex = 0;
+        while (true)
+        {
+            loadingText.text = loadingTexts[currentTextIndex];
+            currentTextIndex = (currentTextIndex + 1) % loadingTexts.Length;
+            yield return new WaitForSeconds(textChangeInterval);
         }
     }
 

@@ -133,6 +133,7 @@ public class EnemySpawner : MonoBehaviour
     private void OnEliteEnemyDeath()
     {
         gameTimerController.RemoveCombatAreaLimits();
+        gameTimerController.ResumeTimer();
     }
 
     private void SpawnBossEnemy()

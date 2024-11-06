@@ -9,7 +9,7 @@ public class LoadingProgress : MonoBehaviour
     [SerializeField] private Image loadingImage;
     [SerializeField] private float smoothSpeed = 10f;
     [SerializeField] private float imageChangeInterval = 0.5f;
-    [SerializeField] private float minimumLoadingTime = 2.0f;
+    [SerializeField] private float minimumLoadingTime;
     [SerializeField] private Sprite[] loadingSprites;
     [SerializeField] private TextMeshProUGUI loadingText;  // UI Text 컴포넌트 참조
     [SerializeField] private string[] loadingTexts = new string[] { };

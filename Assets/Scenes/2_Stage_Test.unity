@@ -1396,7 +1396,7 @@ MonoBehaviour:
     CustomLookAtTarget: 0
   Lens:
     FieldOfView: 40
-    OrthographicSize: 10
+    OrthographicSize: 4.5
     NearClipPlane: 0.1
     FarClipPlane: 5000
     Dutch: 0
@@ -29024,8 +29024,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ComponentVersion: 1
   m_AssetsPPU: 48
-  m_RefResolutionX: 1920
-  m_RefResolutionY: 1080
+  m_RefResolutionX: 1600
+  m_RefResolutionY: 900
   m_CropFrame: 0
   m_GridSnapping: 0
   m_FilterMode: 0
@@ -41554,7 +41554,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 1928920833}
   uiManager: {fileID: 1743977334}
-  debugParameter: 1
+  debugParameter: 10
   updateInterval: 1
   timeSinceLastUpdate: 0
   obstacleHierahy: {fileID: 1558981614}
@@ -41566,7 +41566,7 @@ MonoBehaviour:
   playerTransform: {fileID: 1766201571}
   xOffset: 1
   yOffset: 1
-  squareSize: 17
+  squareSize: 27
 --- !u!1 &651483432
 GameObject:
   m_ObjectHideFlags: 0
@@ -47684,6 +47684,7 @@ MonoBehaviour:
   delayedDuration: 1
   maxHealth: 5
   yOffset: 2
+  smoothSpeed: 100
   playerTransform: {fileID: 1766201571}
   hubScene: 1_Hub
   InCombatArea: 1
@@ -49718,7 +49719,7 @@ MonoBehaviour:
   eliteEnemy: {fileID: 6135728234777956250}
   bossEnemy: {fileID: 3011803388326096627}
   spawnInterval: 0.01
-  maxEnemies: 4
+  maxEnemies: 50
   parent: {fileID: 914842388}
 --- !u!1001 &2080272655
 PrefabInstance:

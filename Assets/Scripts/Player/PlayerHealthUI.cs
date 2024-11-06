@@ -18,6 +18,7 @@ public class PlayerHealthUI : MonoBehaviour
     [SerializeField] private float delayedDuration;
     [SerializeField] private float maxHealth;
     [SerializeField] private float yOffset;
+    [SerializeField] private float smoothSpeed;
 
     [Header("Ref")]
     [SerializeField] private Transform playerTransform;
@@ -25,6 +26,7 @@ public class PlayerHealthUI : MonoBehaviour
     [SerializeField] private bool InCombatArea = false;
 
     private float currentHealth;
+    private Vector3 currentPosition;
     private Color originalHealthBarColor;
     private bool isDead = false;
 
@@ -124,8 +126,11 @@ public class PlayerHealthUI : MonoBehaviour
     private void HandleHealthBarPosition()
     {
         Vector3 playerPosition = playerTransform.position;
-        Vector3 healthBarPosition = new Vector3(playerPosition.x, playerPosition.y + yOffset, playerPosition.z);
-        healthBarRoot.transform.position = Camera.main.WorldToScreenPoint(healthBarPosition);
+        Vector3 targetPosition = new Vector3(playerPosition.x, playerPosition.y + yOffset, playerPosition.z);
+        Vector3 screenPosition = Camera.main.WorldToScreenPoint(targetPosition);
+
+        currentPosition = Vector3.Lerp(healthBarRoot.transform.position, screenPosition, Time.deltaTime * smoothSpeed);
+        healthBarRoot.transform.position = currentPosition;
     }
 
     private void Die()

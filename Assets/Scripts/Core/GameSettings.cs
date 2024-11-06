@@ -70,6 +70,17 @@ public class GameSettings : MonoBehaviour
     [SerializeField] private TMP_Text[] keyBindingTexts;
     [SerializeField] private Button[] rebindButtons;
 
+    [Header("Buttons")]
+    [SerializeField] private Button applyButton;
+
+    private float tempResolutionIndex;
+    private bool tempFullscreen;
+    private float tempFrameRate;
+    private float tempMasterVolume;
+    private float tempSFXVolume;
+    private float tempAmbientVolume;
+    private float tempBGMVolume;
+
     // Panel =================================================================
 
     public void ShowVideoSettings()
@@ -105,6 +116,8 @@ public class GameSettings : MonoBehaviour
 
         if (keyBindingSettingsPanel != null)
             keyBindingSettingsPanel.SetActive(false);
+
+        applyButton.onClick.AddListener(ApplySettings);
 
         InitializeSettings();
         InitializeKeyBindings();
@@ -146,9 +159,12 @@ public class GameSettings : MonoBehaviour
 
     private void LoadSettings()
     {
-        resolutionSlider.value = PlayerPrefs.GetFloat("ResolutionIndex", 0);
-        fullscreenToggle.isOn = PlayerPrefs.GetInt("Fullscreen", 1) == 1;
-        frameRateSlider.value = PlayerPrefs.GetFloat("FrameRate", maxFrameRate);
+        // *** 기본값
+        resolutionSlider.value = PlayerPrefs.GetFloat("ResolutionIndex", 1); // 1600x900 해상도 인덱스
+        fullscreenToggle.isOn = PlayerPrefs.GetInt("Fullscreen", 0) == 1;   // 창모드(0)
+        frameRateSlider.value = PlayerPrefs.GetFloat("FrameRate", 300f);     // 300 FPS
+        // ===
+        
         masterVolumeSlider.value = PlayerPrefs.GetFloat("MasterVolume", 1f);
         sfxVolumeSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
         ambientVolumeSlider.value = PlayerPrefs.GetFloat("AmbientVolume", 1f);
@@ -157,36 +173,63 @@ public class GameSettings : MonoBehaviour
 
     private void OnResolutionChanged(float value)
     {
+        tempResolutionIndex = value;
         int index = Mathf.RoundToInt(value);
         if (index < availableResolutions.Length)
         {
             Resolution res = availableResolutions[index];
             resolutionText.text = $"해상도        {res}";
-
-            FullScreenMode fullScreenMode = fullscreenToggle.isOn ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
-
-            Screen.SetResolution(res.width, res.height, fullScreenMode);
-
-            Debug.Log($"해상도 변경: {res.width}x{res.height} @{res.refreshRate}Hz");
-            PlayerPrefs.SetFloat("ResolutionIndex", value);
         }
     }
 
     private void OnFullscreenChanged(bool isFullscreen)
     {
-        Screen.fullScreen = isFullscreen;
+        tempFullscreen = isFullscreen;
         fullscreenFill.enabled = isFullscreen;
-        Debug.Log($"전체 화면: {(isFullscreen ? "활성화" : "비활성화")}");
-        PlayerPrefs.SetInt("Fullscreen", isFullscreen ? 1 : 0);
     }
 
     private void OnFrameRateChanged(float value)
     {
+        tempFrameRate = value;
         int frameRate = Mathf.Max(minFrameRate, Mathf.RoundToInt(value));
         frameRateText.text = $"최대 프레임     {frameRate} FPS";
-        Application.targetFrameRate = frameRate;
-        PlayerPrefs.SetFloat("FrameRate", value);
     }
+
+    // private void OnResolutionChanged(float value)
+    // {
+    //     tempResolutionIndex = value;
+    //     int index = Mathf.RoundToInt(value);
+    //     if (index < availableResolutions.Length)
+    //     {
+    //         Resolution res = availableResolutions[index];
+    //         resolutionText.text = $"해상도        {res}";
+
+    //         FullScreenMode fullScreenMode = fullscreenToggle.isOn ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
+
+    //         Screen.SetResolution(res.width, res.height, fullScreenMode);
+
+    //         Debug.Log($"해상도 변경: {res.width}x{res.height} @{res.refreshRate}Hz");
+    //         PlayerPrefs.SetFloat("ResolutionIndex", value);
+    //     }
+    // }
+
+    // private void OnFullscreenChanged(bool isFullscreen)
+    // {
+    //     tempFullscreen = isFullscreen;
+    //     Screen.fullScreen = isFullscreen;
+    //     fullscreenFill.enabled = isFullscreen;
+    //     Debug.Log($"전체 화면: {(isFullscreen ? "활성화" : "비활성화")}");
+    //     PlayerPrefs.SetInt("Fullscreen", isFullscreen ? 1 : 0);
+    // }
+
+    // private void OnFrameRateChanged(float value)
+    // {
+    //     tempFrameRate = value;
+    //     int frameRate = Mathf.Max(minFrameRate, Mathf.RoundToInt(value));
+    //     frameRateText.text = $"최대 프레임     {frameRate} FPS";
+    //     Application.targetFrameRate = frameRate;
+    //     PlayerPrefs.SetFloat("FrameRate", value);
+    // }
 
     // Audio ===============================================
 
@@ -398,5 +441,33 @@ public class GameSettings : MonoBehaviour
             }
         }
         UpdateKeyBindingUI();
+    }
+
+    private void ApplySettings()
+    {
+        // 해상도 적용
+        int index = Mathf.RoundToInt(tempResolutionIndex);
+        if (index < availableResolutions.Length)
+        {
+            Resolution res = availableResolutions[index];
+            Screen.SetResolution(res.width, res.height, tempFullscreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed);
+        }
+
+        // 프레임레이트 적용
+        Application.targetFrameRate = Mathf.RoundToInt(tempFrameRate);
+
+        // 볼륨 적용
+        AudioListener.volume = tempMasterVolume;
+
+        // PlayerPrefs에 저장
+        PlayerPrefs.SetFloat("ResolutionIndex", tempResolutionIndex);
+        PlayerPrefs.SetInt("Fullscreen", tempFullscreen ? 1 : 0);
+        PlayerPrefs.SetFloat("FrameRate", tempFrameRate);
+        PlayerPrefs.SetFloat("MasterVolume", tempMasterVolume);
+        PlayerPrefs.SetFloat("SFXVolume", tempSFXVolume);
+        PlayerPrefs.SetFloat("AmbientVolume", tempAmbientVolume);
+        PlayerPrefs.SetFloat("BGMVolume", tempBGMVolume);
+
+        PlayerPrefs.Save();
     }
 }

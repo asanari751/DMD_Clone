@@ -72,6 +72,12 @@ public class GameSettings : MonoBehaviour
 
     [Header("Buttons")]
     [SerializeField] private Button applyButton;
+    [SerializeField] private Button resetButton;
+
+    [Header("Pop Up Window")]
+    [SerializeField] private GameObject confirmationPopup;
+    [SerializeField] private Button popupApply;
+    [SerializeField] private Button popupCancle;
 
     private float tempResolutionIndex;
     private bool tempFullscreen;
@@ -118,6 +124,9 @@ public class GameSettings : MonoBehaviour
             keyBindingSettingsPanel.SetActive(false);
 
         applyButton.onClick.AddListener(ApplySettings);
+        resetButton.onClick.AddListener(LoadSettings);
+        popupApply.onClick.AddListener(OnConfirmExit);
+        popupCancle.onClick.AddListener(() => confirmationPopup.SetActive(false));
 
         InitializeSettings();
         InitializeKeyBindings();
@@ -159,16 +168,22 @@ public class GameSettings : MonoBehaviour
 
     private void LoadSettings()
     {
-        // *** 기본값
-        resolutionSlider.value = PlayerPrefs.GetFloat("ResolutionIndex", 1); // 1600x900 해상도 인덱스
-        fullscreenToggle.isOn = PlayerPrefs.GetInt("Fullscreen", 0) == 1;   // 창모드(0)
-        frameRateSlider.value = PlayerPrefs.GetFloat("FrameRate", 300f);     // 300 FPS
-        // ===
-        
-        masterVolumeSlider.value = PlayerPrefs.GetFloat("MasterVolume", 1f);
-        sfxVolumeSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1f);
-        ambientVolumeSlider.value = PlayerPrefs.GetFloat("AmbientVolume", 1f);
-        bgmVolumeSlider.value = PlayerPrefs.GetFloat("BGMVolume", 1f);
+        tempResolutionIndex = PlayerPrefs.GetFloat("ResolutionIndex", 1);
+        tempFullscreen = PlayerPrefs.GetInt("Fullscreen", 0) == 1;
+        tempFrameRate = PlayerPrefs.GetFloat("FrameRate", 300f);
+        tempMasterVolume = PlayerPrefs.GetFloat("MasterVolume", 1f);
+        tempSFXVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        tempAmbientVolume = PlayerPrefs.GetFloat("AmbientVolume", 1f);
+        tempBGMVolume = PlayerPrefs.GetFloat("BGMVolume", 1f);
+
+        // UI 업데이트
+        resolutionSlider.value = tempResolutionIndex;
+        fullscreenToggle.isOn = tempFullscreen;
+        frameRateSlider.value = tempFrameRate;
+        masterVolumeSlider.value = tempMasterVolume;
+        sfxVolumeSlider.value = tempSFXVolume;
+        ambientVolumeSlider.value = tempAmbientVolume;
+        bgmVolumeSlider.value = tempBGMVolume;
     }
 
     private void OnResolutionChanged(float value)
@@ -469,5 +484,47 @@ public class GameSettings : MonoBehaviour
         PlayerPrefs.SetFloat("BGMVolume", tempBGMVolume);
 
         PlayerPrefs.Save();
+    }
+
+    // =====
+    // 옵션 설정 확인 프로세스
+    // =====
+
+    public void OnSettingsExit()
+    {
+        if (HasUnsavedChanges())
+        {
+            confirmationPopup.SetActive(true);
+        }
+        else
+        {
+            CloseSettings();
+        }
+    }
+
+    private bool HasUnsavedChanges()
+    {
+        return tempResolutionIndex != PlayerPrefs.GetFloat("ResolutionIndex") ||
+               tempFullscreen != (PlayerPrefs.GetInt("Fullscreen") == 1) ||
+               tempFrameRate != PlayerPrefs.GetFloat("FrameRate") ||
+               tempMasterVolume != PlayerPrefs.GetFloat("MasterVolume") ||
+               tempSFXVolume != PlayerPrefs.GetFloat("SFXVolume") ||
+               tempAmbientVolume != PlayerPrefs.GetFloat("AmbientVolume") ||
+               tempBGMVolume != PlayerPrefs.GetFloat("BGMVolume");
+    }
+
+    private void OnConfirmExit()
+    {
+        LoadSettings();
+        confirmationPopup.SetActive(false);
+        CloseSettings();
+    }
+
+    private void CloseSettings()
+    {
+        videoSettingsPanel.SetActive(false);
+        soundSettingsPanel.SetActive(false);
+        keyBindingSettingsPanel.SetActive(false);
+        gameObject.SetActive(false);
     }
 }

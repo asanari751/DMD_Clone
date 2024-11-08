@@ -443,20 +443,20 @@ public class GameSettings : MonoBehaviour
         }
     }
 
-    private void LoadKeyBindings()
-    {
-        for (int i = 0; i < keyBindingTexts.Length; i++)
-        {
-            string savedBinding = PlayerPrefs.GetString($"KeyBinding_{i}", string.Empty);
-            if (!string.IsNullOrEmpty(savedBinding))
-            {
-                InputAction action = GetActionByIndex(i);
-                var bindingIndex = action.GetBindingIndexForControl(action.controls[0]);
-                action.ApplyBindingOverride(bindingIndex, savedBinding);
-            }
-        }
-        UpdateKeyBindingUI();
-    }
+    // private void LoadKeyBindings()
+    // {
+    //     for (int i = 0; i < keyBindingTexts.Length; i++)
+    //     {
+    //         string savedBinding = PlayerPrefs.GetString($"KeyBinding_{i}", string.Empty);
+    //         if (!string.IsNullOrEmpty(savedBinding))
+    //         {
+    //             InputAction action = GetActionByIndex(i);
+    //             var bindingIndex = action.GetBindingIndexForControl(action.controls[0]);
+    //             action.ApplyBindingOverride(bindingIndex, savedBinding);
+    //         }
+    //     }
+    //     UpdateKeyBindingUI();
+    // }
 
     private void ApplySettings()
     {
@@ -520,7 +520,7 @@ public class GameSettings : MonoBehaviour
         CloseSettings();
     }
 
-    private void CloseSettings()
+    public void CloseSettings()
     {
         videoSettingsPanel.SetActive(false);
         soundSettingsPanel.SetActive(false);

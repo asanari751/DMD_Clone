@@ -530,7 +530,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &80565419
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5783,7 +5783,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &982662191
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11301,6 +11301,7 @@ MonoBehaviour:
   exitButton: {fileID: 654496716}
   settingsPanel: {fileID: 982662190}
   closeSettingsButton: {fileID: 8346205}
+  gameSettings: {fileID: 2078451797}
 --- !u!114 &2078451799
 MonoBehaviour:
   m_ObjectHideFlags: 0

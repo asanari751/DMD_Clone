@@ -16,6 +16,9 @@ public class UIManagerTitle : MonoBehaviour
     [SerializeField] private GameObject settingsPanel;
     [SerializeField] private Button closeSettingsButton;
 
+    [Header("Game Settings")]
+    [SerializeField] private GameSettings gameSettings;
+
     private void Start()
     {
         InitializeButtons();
@@ -80,9 +83,9 @@ public class UIManagerTitle : MonoBehaviour
 
     private void OnCloseSettingsClick()
     {
-        if (settingsPanel != null)
+        if (gameSettings != null)
         {
-            settingsPanel.SetActive(false);
+            gameSettings.OnSettingsExit();
         }
     }
 

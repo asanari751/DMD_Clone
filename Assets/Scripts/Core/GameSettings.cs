@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using UnityEngine.Audio;
 
 public class GameSettings : MonoBehaviour
 {
@@ -32,13 +33,19 @@ public class GameSettings : MonoBehaviour
     }
 
     [Header("Settings Panels")]
+    [SerializeField] private GameObject SettingsPanel;
+    [SerializeField] private GameObject keyBindingSettingsPanel;
+    [SerializeField] private GameObject AccessibilitySettingsPanel;
     [SerializeField] private GameObject videoSettingsPanel;
     [SerializeField] private GameObject soundSettingsPanel;
-    [SerializeField] private GameObject keyBindingSettingsPanel;
+    [SerializeField] private GameObject textSettingsPanel;
 
+    [Header("Buttons")]
+    [SerializeField] private Button keyBindingSettingsButton;
+    [SerializeField] private Button accessibilitySettingsButton;
     [SerializeField] private Button videoSettingsButton;
     [SerializeField] private Button soundSettingsButton;
-    [SerializeField] private Button keyBindingSettingsButton;
+    [SerializeField] private Button textSettingsButton;
 
     [Header("Resolution")]
     [SerializeField] private TMP_Text resolutionText;
@@ -56,6 +63,8 @@ public class GameSettings : MonoBehaviour
     [SerializeField] private int maxFrameRate = 144;
 
     [Header("Volume")]
+
+    [SerializeField] private AudioMixer audioMixer;
     [SerializeField] private TMP_Text masterVolumeText;
     [SerializeField] private Slider masterVolumeSlider;
     [SerializeField] private TMP_Text sfxVolumeText;
@@ -250,27 +259,26 @@ public class GameSettings : MonoBehaviour
 
     private void OnMasterVolumeChanged(float value)
     {
+        tempMasterVolume = value;
         masterVolumeText.text = $"전체 음량      {Mathf.RoundToInt(value * 100)}%";
-        AudioListener.volume = value;
-        PlayerPrefs.SetFloat("MasterVolume", value);
     }
 
     private void OnSFXVolumeChanged(float value)
     {
-        sfxVolumeText.text = $"효과음       {Mathf.RoundToInt(value * 100)}%";
-        PlayerPrefs.SetFloat("SFXVolume", value);
+        tempSFXVolume = value;
+        sfxVolumeText.text = $"효과음      {Mathf.RoundToInt(value * 100)}%";
     }
 
     private void OnAmbientVolumeChanged(float value)
     {
-        ambientVolumeText.text = $"환경음       {Mathf.RoundToInt(value * 100)}%";
-        PlayerPrefs.SetFloat("AmbientVolume", value);
+        tempAmbientVolume = value;
+        ambientVolumeText.text = $"환경음      {Mathf.RoundToInt(value * 100)}%";
     }
 
     private void OnBGMVolumeChanged(float value)
     {
-        bgmVolumeText.text = $"배경음       {Mathf.RoundToInt(value * 100)}%";
-        PlayerPrefs.SetFloat("BGMVolume", value);
+        tempBGMVolume = value;
+        bgmVolumeText.text = $"배경음      {Mathf.RoundToInt(value * 100)}%";
     }
 
     // Key =================================
@@ -460,7 +468,6 @@ public class GameSettings : MonoBehaviour
 
     private void ApplySettings()
     {
-        // 해상도 적용
         int index = Mathf.RoundToInt(tempResolutionIndex);
         if (index < availableResolutions.Length)
         {
@@ -468,13 +475,15 @@ public class GameSettings : MonoBehaviour
             Screen.SetResolution(res.width, res.height, tempFullscreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed);
         }
 
-        // 프레임레이트 적용
         Application.targetFrameRate = Mathf.RoundToInt(tempFrameRate);
 
-        // 볼륨 적용
         AudioListener.volume = tempMasterVolume;
 
-        // PlayerPrefs에 저장
+        // 볼륨이 0일때는 -80db로 설정
+        audioMixer.SetFloat("SFXVolume", tempSFXVolume == 0 ? -80f : Mathf.Log10(tempSFXVolume) * 20);
+        audioMixer.SetFloat("AmbientVolume", tempAmbientVolume == 0 ? -80f : Mathf.Log10(tempAmbientVolume) * 20);
+        audioMixer.SetFloat("BGMVolume", tempBGMVolume == 0 ? -80f : Mathf.Log10(tempBGMVolume) * 20);
+
         PlayerPrefs.SetFloat("ResolutionIndex", tempResolutionIndex);
         PlayerPrefs.SetInt("Fullscreen", tempFullscreen ? 1 : 0);
         PlayerPrefs.SetFloat("FrameRate", tempFrameRate);
@@ -525,6 +534,6 @@ public class GameSettings : MonoBehaviour
         videoSettingsPanel.SetActive(false);
         soundSettingsPanel.SetActive(false);
         keyBindingSettingsPanel.SetActive(false);
-        gameObject.SetActive(false);
+        SettingsPanel.SetActive(false);
     }
 }

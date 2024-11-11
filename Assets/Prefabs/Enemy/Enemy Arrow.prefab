@@ -83,7 +83,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1869315837
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 1
   m_Sprite: {fileID: 3013390855461805465, guid: 68231e1148b021241a45d4e12454755e,
     type: 3}
@@ -236,9 +236,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 605f792aaaab51641bbf76e3aace2bb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  knockbackDistance: 0.5
+  defaultKnockbackDistance: 1
   knockbackDuration: 0.5
   knockbackColor: {r: 1, g: 1, b: 1, a: 1}
+  isKnockedBack: 0
 --- !u!114 &8943113403550105905
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -270,7 +271,7 @@ GameObject:
   - component: {fileID: 7484714946537723146}
   - component: {fileID: 4072466293936534073}
   m_Layer: 0
-  m_Name: Shadow_0
+  m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -285,7 +286,7 @@ Transform:
   m_GameObject: {fileID: 5223107067649577173}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0438, y: -0.029, z: 0}
+  m_LocalPosition: {x: -0.0438, y: 0.068, z: 0}
   m_LocalScale: {x: 1.0497171, y: 0.9312, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -332,16 +333,15 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1107081779
+  m_SortingLayer: 1
   m_SortingOrder: -1
-  m_Sprite: {fileID: 4093480436322176185, guid: 4b18ad44f3f1a8a4e97c86b53774dace,
-    type: 3}
+  m_Sprite: {fileID: 21300000, guid: 36a283609e753d8418f91932e2d7bfd1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.875, y: 0.375}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

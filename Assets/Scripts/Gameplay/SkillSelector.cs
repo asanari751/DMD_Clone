@@ -24,17 +24,35 @@ public class SkillSelector : MonoBehaviour
         public Color color;
     }
 
+    [System.Serializable]
+    public class GodData
+    {
+        public Image godImage;
+        public string godName;
+        [TextArea(3, 10)]
+        public string[] dialogueTexts;
+    }
+
     // [SerializeField] private GameObject darkBackground;
     [SerializeField] private float productionTime = 1f;
     [SerializeField] private float maximizeButton = 1.1f;
     [SerializeField] private float buttonEdge = 10f;
     [SerializeField] private SkillLevelColor[] skillLevelColors = new SkillLevelColor[3];
+    [SerializeField] private TMP_Text selectorTitle;
 
     [Header("Dices")]
     [SerializeField] private Button redDiceButton;
     [SerializeField] private Button blueDiceButton;
     [SerializeField] private TextMeshProUGUI redDiceCountText;
     [SerializeField] private TextMeshProUGUI blueDiceCountText;
+
+    [Header("Interaction UI")]
+    [SerializeField] private GameObject interactionField;
+    [SerializeField] private Image backgroundOverlay;
+    [SerializeField] private float typingSpeed = 0.05f;
+    [SerializeField] private TMP_Text dialogueText;
+    [SerializeField] private TMP_Text godNameText;
+    [SerializeField] private GodData[] gods;
 
     // 임시용 화면 가리기, 재가공 필수
     [SerializeField] private Image tempBlackImage;
@@ -54,6 +72,7 @@ public class SkillSelector : MonoBehaviour
     private int maxBlueDiceCount = 3;
     private int currentRedDiceCount;
     private int currentBlueDiceCount;
+    private int previousGodIndex = -1;
     private List<Skilldata> currentSkillSet = new List<Skilldata>();
 
     private Vector3[] originalPositions;
@@ -62,6 +81,11 @@ public class SkillSelector : MonoBehaviour
     private PauseController pauseController;
     private ChangeCursor cursorManager;
 
+    private Tween textTween;
+    private bool isDialogueComplete = false;
+    private Dictionary<int, int> lastDialogueIndices = new Dictionary<int, int>();
+    private float repeatWeight = 0.5f;
+
     private void Start()
     {
         cursorManager = FindAnyObjectByType<ChangeCursor>();
@@ -69,7 +93,7 @@ public class SkillSelector : MonoBehaviour
         pauseController = FindAnyObjectByType<PauseController>();
         if (experienceComponent != null)
         {
-            experienceComponent.onLevelUp.AddListener(ShowSkillSelector);
+            experienceComponent.onLevelUp.AddListener(StartInteraction);
         }
 
         skillSelectorUI.SetActive(false);
@@ -108,17 +132,128 @@ public class SkillSelector : MonoBehaviour
         }
     }
 
+    // 인터랙션 영역
+
+    private void StartInteraction()
+    {
+        isDialogueComplete = false;
+
+        if (!interactionField.activeSelf)
+        {
+            pauseController.ToggleUIState();
+        }
+
+        int randomGodIndex;
+        do
+        {
+            randomGodIndex = Random.Range(0, gods.Length);
+        } while (randomGodIndex == previousGodIndex);
+
+        previousGodIndex = randomGodIndex;
+        GodData selectedGod = gods[randomGodIndex];
+
+        string selectedDialogue = GetWeightedRandomDialogue(randomGodIndex);
+
+        interactionField.SetActive(true);
+        backgroundOverlay.gameObject.SetActive(true);
+
+        DisplayGodDialogue(selectedGod, selectedDialogue);
+    }
+
+    private string GetWeightedRandomDialogue(int godIndex)
+    {
+        float[] weights = new float[3];
+        int lastIndex;
+
+        if (!lastDialogueIndices.TryGetValue(godIndex, out lastIndex))
+        {
+            lastIndex = -1;
+        }
+
+        for (int i = 0; i < 3; i++)
+        {
+            weights[i] = (i == lastIndex) ? repeatWeight : 1f;
+        }
+
+        float totalWeight = weights.Sum();
+        float randomValue = Random.Range(0f, totalWeight);
+        float currentSum = 0f;
+
+        for (int i = 0; i < 3; i++)
+        {
+            currentSum += weights[i];
+            if (randomValue <= currentSum)
+            {
+                lastDialogueIndices[godIndex] = i;
+                return gods[godIndex].dialogueTexts[i];
+            }
+        }
+
+        return gods[godIndex].dialogueTexts[0];
+    }
+
+    private void DisplayGodDialogue(GodData selectedGod, string dialogue)
+    {
+        // 모든 신의 이미지를 비활성화
+        foreach (var god in gods)
+        {
+            god.godImage.gameObject.SetActive(false);
+        }
+
+        // 선택된 신만 활성화
+        selectedGod.godImage.gameObject.SetActive(true);
+
+        // 선택된 신의 이름 표시
+        godNameText.text = selectedGod.godName;
+        selectorTitle.text = selectedGod.godName;
+
+        dialogueText.text = dialogue;
+        dialogueText.maxVisibleCharacters = 0;
+
+        float duration = dialogue.Length * typingSpeed;
+
+        textTween = DOTween.To(() => dialogueText.maxVisibleCharacters,
+            x => dialogueText.maxVisibleCharacters = x,
+            dialogue.Length,
+            duration)
+            .SetEase(Ease.Linear)
+            .SetUpdate(true)
+            .OnComplete(() => isDialogueComplete = true);
+    }
+
+    private void Update()
+    {
+        if (interactionField.activeSelf && (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0)))
+        {
+            if (isDialogueComplete)
+            {
+                interactionField.SetActive(false);
+                backgroundOverlay.gameObject.SetActive(false);
+                ShowSkillSelector();
+            }
+            else
+            {
+                if (textTween != null && textTween.IsActive())
+                {
+                    textTween.Complete();
+                    isDialogueComplete = true;
+                }
+            }
+        }
+    }
+
+    // 스킬 선택 영역
+
     private void ShowSkillSelector()
     {
         ResetSkillButtons();
         skillSelectorUI.SetActive(true);
         tempBlackImage.gameObject.SetActive(true);
-        pauseController.ToggleUIState();
 
         cursorManager.SetNormalCursor();
 
-        currentRedDiceCount = maxRedDiceCount;
-        currentBlueDiceCount = maxBlueDiceCount;
+        // currentRedDiceCount = maxRedDiceCount;
+        // currentBlueDiceCount = maxBlueDiceCount;
 
         ShuffleSkills();
         currentSkillSet = new List<Skilldata>(availableSkills.Take(3));
@@ -158,6 +293,7 @@ public class SkillSelector : MonoBehaviour
             StartCoroutine(ProductionCoroutine());
         }
     }
+
     private IEnumerator ProductionCoroutine()
     {
         isProducing = true;
@@ -361,13 +497,24 @@ public class SkillSelector : MonoBehaviour
             return;
 
         if (isRed)
+        {
             currentRedDiceCount--;
+            currentSkillSet = new List<Skilldata>(availableSkills.Take(3));
+            StartCoroutine(RollDiceAnimation());
+            UpdateDiceUI();
+        }
+
         else
+        {
             currentBlueDiceCount--;
+            skillSelectorUI.SetActive(false);
+            tempBlackImage.gameObject.SetActive(false);
 
-        currentSkillSet = new List<Skilldata>(availableSkills.Take(3));
-
-        StartCoroutine(RollDiceAnimation());
+            interactionField.SetActive(true);
+            backgroundOverlay.gameObject.SetActive(true);
+            StartInteraction();
+            UpdateDiceUI();
+        }
     }
 
     private IEnumerator RollDiceAnimation()

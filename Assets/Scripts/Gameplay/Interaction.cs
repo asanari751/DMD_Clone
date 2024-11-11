@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
 using DG.Tweening;
+using System.Collections.Generic;
+using System.Linq;
 
 public class Interaction : MonoBehaviour
 {
@@ -12,7 +14,7 @@ public class Interaction : MonoBehaviour
         public Image illustration;
         public string characterName;
         [TextArea(3, 10)]
-        public string dialogueText;
+        public string[] dialogueTexts;
     }
 
     [Header("Interaction UI")]
@@ -29,6 +31,7 @@ public class Interaction : MonoBehaviour
     [SerializeField] private CharacterData[] characters;
     [SerializeField] private TMP_Text characterNameText;
     [SerializeField] private TMP_Text dialogueText;
+    [SerializeField] private float repeatWeight; // 대사 재선택 확률
 
     [Header("Button Animation")]
     [SerializeField] private GameObject godChoosePanel;
@@ -44,6 +47,7 @@ public class Interaction : MonoBehaviour
     private Vector3[] originalButtonPositions;
     private bool areButtonsVisible = false;
     private bool nowInteract = false;
+    private Dictionary<int, int> lastDialogueIndices = new Dictionary<int, int>();
 
     private void Start()
     {
@@ -168,7 +172,7 @@ public class Interaction : MonoBehaviour
         }
     }
 
-    private void DisplayCharacterData(CharacterData characterToDisplay)
+    private void DisplayCharacterData(CharacterData characterToDisplay, string selectedDialogue)
     {
         for (int i = 0; i < characters.Length; i++)
         {
@@ -182,15 +186,15 @@ public class Interaction : MonoBehaviour
             textTween.Kill();
         }
 
-        dialogueText.text = characterToDisplay.dialogueText;
+        dialogueText.text = selectedDialogue;
         dialogueText.maxVisibleCharacters = 0;
         isDialogueComplete = false;
 
-        float duration = characterToDisplay.dialogueText.Length / typingSpeed;
+        float duration = selectedDialogue.Length / typingSpeed;
 
         textTween = DOTween.To(() => dialogueText.maxVisibleCharacters,
         x => dialogueText.maxVisibleCharacters = x,
-        characterToDisplay.dialogueText.Length,
+        selectedDialogue.Length,
         duration)
         .SetEase(Ease.Linear)
         .SetUpdate(true)
@@ -241,6 +245,13 @@ public class Interaction : MonoBehaviour
             DisableAllButtonComponents();
             AnimateButtonSelection(index);
             titleImage.SetActive(false);
+
+            CharacterData selectedCharacter = characters[index];
+
+            int randomDialogueIndex = Random.Range(0, 3);
+            string selectedDialogue = selectedCharacter.dialogueTexts[randomDialogueIndex];
+
+            DisplayCharacterData(selectedCharacter, selectedDialogue);
         }
     }
 
@@ -256,10 +267,14 @@ public class Interaction : MonoBehaviour
                 button.image.DOColor(Color.white, animationDuration).SetUpdate(true).OnComplete(() =>
                 {
                     button.gameObject.SetActive(false);
-                    DisplayCharacterData(characters[selectedIndex]);
+
+                    int randomDialogueIndex = Random.Range(0, 3);
+                    string selectedDialogue = GetWeightedRandomDialogue(selectedIndex);
+                    DisplayCharacterData(characters[selectedIndex], selectedDialogue);
                     SetInteractionUI(true);
                 });
             }
+
             else
             {
                 Color targetColor = new Color(0x44 / 255f, 0x44 / 255f, 0x44 / 255f);
@@ -273,7 +288,6 @@ public class Interaction : MonoBehaviour
             }
         }
         nowInteract = false;
-
         DOVirtual.DelayedCall(animationDuration, () => { EnableAllButtonComponents(); }).SetUpdate(true);
     }
 
@@ -325,6 +339,41 @@ public class Interaction : MonoBehaviour
         isDialogueComplete = false;
         areButtonsVisible = false;
         nowInteract = false;
+    }
+
+    private string GetWeightedRandomDialogue(int characterIndex)
+    {
+        float[] weights = new float[3];
+        int lastIndex;
+
+        // 이전 대사 인덱스 확인
+        if (!lastDialogueIndices.TryGetValue(characterIndex, out lastIndex))
+        {
+            lastIndex = -1;
+        }
+
+        // 가중치 설정
+        for (int i = 0; i < 3; i++)
+        {
+            weights[i] = (i == lastIndex) ? repeatWeight : 1f;
+        }
+
+        // 가중치 기반 랜덤 선택
+        float totalWeight = weights.Sum();
+        float randomValue = Random.Range(0f, totalWeight);
+        float currentSum = 0f;
+
+        for (int i = 0; i < 3; i++)
+        {
+            currentSum += weights[i];
+            if (randomValue <= currentSum)
+            {
+                lastDialogueIndices[characterIndex] = i; // 선택된 인덱스 저장
+                return characters[characterIndex].dialogueTexts[i];
+            }
+        }
+
+        return characters[characterIndex].dialogueTexts[0];
     }
 
     private void DisableAllButtonComponents()

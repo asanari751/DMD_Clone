@@ -1044,7 +1044,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &134079613
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9788,7 +9788,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1751688996
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11888,11 +11888,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SettingsPanel: {fileID: 982662190}
-  keyBindingSettingsPanel: {fileID: 300657967}
-  AccessibilitySettingsPanel: {fileID: 0}
   videoSettingsPanel: {fileID: 2068563745}
   soundSettingsPanel: {fileID: 1434567087}
-  textSettingsPanel: {fileID: 0}
+  keyBindingSettingsPanel: {fileID: 300657967}
+  AccessibilitySettingsPanel: {fileID: 134079612}
+  textSettingsPanel: {fileID: 1751688995}
+  panels:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   keyBindingSettingsButton: {fileID: 1857220216}
   accessibilitySettingsButton: {fileID: 1004334903}
   videoSettingsButton: {fileID: 1198815023}

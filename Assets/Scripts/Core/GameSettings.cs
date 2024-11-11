@@ -34,11 +34,12 @@ public class GameSettings : MonoBehaviour
 
     [Header("Settings Panels")]
     [SerializeField] private GameObject SettingsPanel;
-    [SerializeField] private GameObject keyBindingSettingsPanel;
-    [SerializeField] private GameObject AccessibilitySettingsPanel;
     [SerializeField] private GameObject videoSettingsPanel;
     [SerializeField] private GameObject soundSettingsPanel;
+    [SerializeField] private GameObject keyBindingSettingsPanel;
+    [SerializeField] private GameObject AccessibilitySettingsPanel;
     [SerializeField] private GameObject textSettingsPanel;
+    [SerializeField] private GameObject[] panels;
 
     [Header("Buttons")]
     [SerializeField] private Button keyBindingSettingsButton;
@@ -100,37 +101,58 @@ public class GameSettings : MonoBehaviour
 
     public void ShowVideoSettings()
     {
-        videoSettingsPanel.SetActive(true);
-        soundSettingsPanel.SetActive(false);
-        keyBindingSettingsPanel.SetActive(false);
+        ShowSettingsPanel(videoSettingsPanel);
     }
 
     public void ShowSoundSettings()
     {
-        videoSettingsPanel.SetActive(false);
-        soundSettingsPanel.SetActive(true);
-        keyBindingSettingsPanel.SetActive(false);
+        ShowSettingsPanel(soundSettingsPanel);
     }
 
     public void ShowKeyBindingSettings()
     {
-        keyBindingSettingsPanel.SetActive(true);
-        videoSettingsPanel.SetActive(false);
-        soundSettingsPanel.SetActive(false);
+        ShowSettingsPanel(keyBindingSettingsPanel);
+    }
+
+    public void ShowAccessibilitySettings()
+    {
+        ShowSettingsPanel(AccessibilitySettingsPanel);
+    }
+
+    public void ShowTextSettings()
+    {
+        ShowSettingsPanel(textSettingsPanel);
+    }
+
+    private void ShowSettingsPanel(GameObject activePanel)
+    {
+        foreach (var panel in panels)
+        {
+            if (panel != null)
+                panel.SetActive(panel == activePanel);
+        }
     }
 
     // =======================================================================
 
     private void Start()
     {
-        if (videoSettingsPanel != null)
-            videoSettingsPanel.SetActive(false);
+        // settingsPanels 배열 초기화
+        panels = new GameObject[]
+        {
+        videoSettingsPanel,
+        soundSettingsPanel,
+        keyBindingSettingsPanel,
+        AccessibilitySettingsPanel,
+        textSettingsPanel
+        };
 
-        if (soundSettingsPanel != null)
-            soundSettingsPanel.SetActive(false);
-
-        if (keyBindingSettingsPanel != null)
-            keyBindingSettingsPanel.SetActive(false);
+        // 모든 패널을 비활성화
+        foreach (var panel in panels)
+        {
+            if (panel != null)
+                panel.SetActive(false);
+        }
 
         applyButton.onClick.AddListener(ApplySettings);
         resetButton.onClick.AddListener(LoadSettings);
@@ -147,6 +169,8 @@ public class GameSettings : MonoBehaviour
         videoSettingsButton.onClick.AddListener(ShowVideoSettings);
         soundSettingsButton.onClick.AddListener(ShowSoundSettings);
         keyBindingSettingsButton.onClick.AddListener(ShowKeyBindingSettings);
+        accessibilitySettingsButton.onClick.AddListener(ShowAccessibilitySettings);
+        textSettingsButton.onClick.AddListener(ShowTextSettings);
 
         resolutionSlider.maxValue = availableResolutions.Length - 1;
         resolutionSlider.wholeNumbers = true; // 정수

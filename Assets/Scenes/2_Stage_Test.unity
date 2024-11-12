@@ -29099,7 +29099,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 11.25
+  orthographic size: 4.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -41844,7 +41844,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 1928920833}
   uiManager: {fileID: 1743977334}
-  debugParameter: 10
+  debugParameter: 0.1
   updateInterval: 1
   timeSinceLastUpdate: 0
   obstacleHierahy: {fileID: 1558981614}
@@ -51915,6 +51915,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a7b795eaa0cc334a9e78dd061e54a37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugStatusEffect: 0
+  debugDuration: 3
+  applyDebugEffect: 0
   deathTime: 0.3
   experienceDrop: 10
   expOrbPrefab: {fileID: 6992617434821140472, guid: 5221308d8fca95b4f88475e0a2e5314c,
@@ -51945,6 +51948,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1f181633f45cd341bed96261f280ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugStatusEffect: 0
+  debugDuration: 3
+  applyDebugEffect: 0
   deathTime: 0.3
   experienceDrop: 10
   expOrbPrefab: {fileID: 6992617434821140472, guid: 5221308d8fca95b4f88475e0a2e5314c,

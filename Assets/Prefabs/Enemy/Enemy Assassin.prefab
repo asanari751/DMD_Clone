@@ -206,6 +206,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219a463292eeb9f4b92e42cdca874bba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugStatusEffect: 0
+  debugDuration: 3
+  applyDebugEffect: 0
   deathTime: 1
   experienceDrop: 1
   expOrbPrefab: {fileID: 6992617434821140472, guid: 5221308d8fca95b4f88475e0a2e5314c,

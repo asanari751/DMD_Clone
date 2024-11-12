@@ -154,6 +154,14 @@ public class PlayerSkills : MonoBehaviour
         // 아이언 메이든 이펙트 생성
         GameObject ironMaiden = Instantiate(skill2EffectPrefab, spawnPosition, Quaternion.identity);
 
+
+        // SpriteRenderer sorting order 설정
+        SpriteRenderer spriteRenderer = ironMaiden.GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.sortingOrder = Mathf.RoundToInt(-spawnPosition.y * 100);
+        }
+
         // 애니메이터 실행
         Animator animator = ironMaiden.GetComponent<Animator>();
         if (animator != null)

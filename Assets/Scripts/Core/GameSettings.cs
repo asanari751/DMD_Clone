@@ -17,7 +17,7 @@ public class GameSettings : MonoBehaviour
 
         public override string ToString()
         {
-            return $"{width}x{height}#{refreshRate}";
+            return $"{width}x{height}";
         }
     }
 
@@ -49,8 +49,10 @@ public class GameSettings : MonoBehaviour
     [SerializeField] private Button textSettingsButton;
 
     [Header("Resolution")]
+    // [SerializeField] private TMP_Text resolutionText; // 슬라이더
+    // [SerializeField] private Slider resolutionSlider;
     [SerializeField] private TMP_Text resolutionText;
-    [SerializeField] private Slider resolutionSlider;
+    [SerializeField] private Button[] resolutionButtons; // 해상도 버튼 배열
     [SerializeField] private Resolution[] availableResolutions;
 
     [Header("Fullscreen")]
@@ -172,9 +174,23 @@ public class GameSettings : MonoBehaviour
         accessibilitySettingsButton.onClick.AddListener(ShowAccessibilitySettings);
         textSettingsButton.onClick.AddListener(ShowTextSettings);
 
-        resolutionSlider.maxValue = availableResolutions.Length - 1;
-        resolutionSlider.wholeNumbers = true; // 정수
-        resolutionSlider.onValueChanged.AddListener(OnResolutionChanged);
+        // resolutionSlider.maxValue = availableResolutions.Length - 1;
+        // resolutionSlider.wholeNumbers = true; // 정수
+        // resolutionSlider.onValueChanged.AddListener(OnResolutionChanged);
+
+        for (int i = 0; i < resolutionButtons.Length && i < availableResolutions.Length; i++)
+        {
+            Resolution resolution = availableResolutions[i];
+            Button button = resolutionButtons[i];
+
+            // 버튼 텍스트 설정
+            TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
+            buttonText.text = $"{resolution.width}x{resolution.height}";
+
+            // 버튼 클릭 이벤트 설정
+            int index = i;
+            button.onClick.AddListener(() => OnResolutionButtonClicked(index));
+        }
 
         fullscreenToggle.onValueChanged.AddListener(OnFullscreenChanged);
 
@@ -210,9 +226,12 @@ public class GameSettings : MonoBehaviour
         tempBGMVolume = PlayerPrefs.GetFloat("BGMVolume", 1f);
 
         // UI 업데이트
-        resolutionSlider.value = tempResolutionIndex;
+        // resolutionSlider.value = tempResolutionIndex;
         fullscreenToggle.isOn = tempFullscreen;
         frameRateSlider.value = tempFrameRate;
+
+        UpdateResolutionButtonsVisual();
+
         masterVolumeSlider.value = tempMasterVolume;
         sfxVolumeSlider.value = tempSFXVolume;
         ambientVolumeSlider.value = tempAmbientVolume;
@@ -227,6 +246,39 @@ public class GameSettings : MonoBehaviour
         {
             Resolution res = availableResolutions[index];
             resolutionText.text = $"해상도        {res}";
+        }
+    }
+
+    private void OnResolutionButtonClicked(int index)
+    {
+        if (index < availableResolutions.Length)
+        {
+            Resolution res = availableResolutions[index];
+            resolutionText.text = $"해상도        {res}";
+            tempResolutionIndex = index;
+        }
+    }
+
+    private void UpdateResolutionButtonsVisual()
+    {
+        Color selectedColor = new Color(0.2f, 0.2f, 0.2f); // 회색
+        Color normalColor = Color.white;
+
+        for (int i = 0; i < resolutionButtons.Length; i++)
+        {
+            Button button = resolutionButtons[i];
+            Image buttonImage = button.GetComponent<Image>();
+
+            if (i == tempResolutionIndex)
+            {
+                button.interactable = false;
+                buttonImage.color = selectedColor;
+            }
+            else
+            {
+                button.interactable = true;
+                buttonImage.color = normalColor;
+            }
         }
     }
 

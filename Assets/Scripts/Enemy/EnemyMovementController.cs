@@ -22,11 +22,13 @@ public class EnemyMovementController : MonoBehaviour
     {
         if (flowfield != null && rb != null && playerTransform != null && !basicEnemy.IsKnockedBack() && !basicEnemy.IsDead())
         {
-            // 공격 중이거나 넉백 상태면 이동하지 않음
-            if (basicEnemy.IsAttacking || basicEnemy.IsKnockedBack())
+            // 공포 상태일 때의 이동 처리
+            if (basicEnemy.IsFeared())
             {
-                rb.linearVelocity = Vector2.zero;
-                if (animationController != null) animationController.UpdateMovement(Vector2.zero);
+                Vector2 directionFromPlayer = (transform.position - playerTransform.position).normalized;
+                Vector2 fearMovement = directionFromPlayer * basicEnemy.GetMoveSpeed() / 2f;
+                rb.linearVelocity = fearMovement;
+                if (animationController != null) animationController.UpdateMovement(fearMovement);
                 return;
             }
 

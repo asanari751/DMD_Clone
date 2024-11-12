@@ -1,9 +1,27 @@
 using UnityEngine;
 using System.Collections;
 using DG.Tweening;
+using System.Collections.Generic;
 
 public class BasicEnemy : MonoBehaviour, IDamageable
 {
+
+#if UNITY_EDITOR
+    [Header("Debug Options")]
+    [SerializeField] private StatusEffectType debugStatusEffect;
+    [SerializeField] private float debugDuration = 3f;
+    [SerializeField] private bool applyDebugEffect;
+
+    private void OnValidate()
+    {
+        if (applyDebugEffect)
+        {
+            ApplyStatusEffect(debugStatusEffect, debugDuration);
+            applyDebugEffect = false;
+        }
+    }
+#endif
+
     [SerializeField] private float deathTime;
     [SerializeField] private float experienceDrop;
     [SerializeField] private GameObject expOrbPrefab;
@@ -41,6 +59,29 @@ public class BasicEnemy : MonoBehaviour, IDamageable
     private EnemyAnimationController animationController;
     [SerializeField] private Color startColor;
     [SerializeField] private Color endcolor;
+    private Dictionary<StatusEffectType, Coroutine> activeStatusEffects = new Dictionary<StatusEffectType, Coroutine>();
+    private bool isFeared = false;
+    private float attackDelayAfterKnockback = 0.5f;
+    private float currentAttackDelayTimer = 0f;
+    private bool isWaitingToAttack = false;
+
+    public enum StatusEffectType
+    {
+        None,
+        Fear,
+        Bleed,
+        Slow,
+        Weakness,
+        Poison,
+        Stun
+    }
+
+    public interface IStatusEffectable
+    {
+        void ApplyStatusEffect(StatusEffectType type, float duration);
+        void RemoveStatusEffect(StatusEffectType type);
+        bool HasStatusEffect(StatusEffectType type);
+    }
 
     private void Awake()
     {
@@ -74,6 +115,11 @@ public class BasicEnemy : MonoBehaviour, IDamageable
         if (spriteRenderer != null)
         {
             spriteRenderer.sortingOrder = Mathf.RoundToInt(-transform.position.y * 100);
+        }
+
+        if (isFeared)
+        {
+            return; // 공포 상태일 때는 일반 업데이트 로직 실행하지 않음
         }
     }
 
@@ -220,19 +266,35 @@ public class BasicEnemy : MonoBehaviour, IDamageable
     }
     public void CheckAttack()
     {
-        if (isDead || playerTransform == null) return;
+        if (isDead || playerTransform == null || isFeared) return;
 
         PlayerHealthUI playerHealth = playerTransform.GetComponent<PlayerHealthUI>();
         if (playerHealth != null && playerHealth.IsDead()) return;
 
-        float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
+        if (IsKnockedBack())
+        {
+            isWaitingToAttack = true;
+            currentAttackDelayTimer = 0f;
+            return;
+        }
 
+        if (isWaitingToAttack)
+        {
+            currentAttackDelayTimer += Time.deltaTime;
+            if (currentAttackDelayTimer >= attackDelayAfterKnockback)
+            {
+                isWaitingToAttack = false;
+            }
+            return;
+        }
+
+        float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
         if (distanceToPlayer <= stats.AttackRange && CanAttack)
         {
             attackRoutine = StartCoroutine(AttackRoutine());
         }
     }
-
+    
     private IEnumerator AttackRoutine()
     {
         IsAttacking = true;
@@ -362,5 +424,126 @@ public class BasicEnemy : MonoBehaviour, IDamageable
         {
             enemyKnockback.ResetColor();
         }
+    }
+
+    // ========= 상태이상 ( 별도 컴포넌트로 분리후 제거 )
+
+    public void ApplyStatusEffect(StatusEffectType type, float duration)
+    {
+        if (activeStatusEffects.ContainsKey(type))
+        {
+            StopCoroutine(activeStatusEffects[type]);
+        }
+
+        switch (type)
+        {
+            case StatusEffectType.Fear:
+                activeStatusEffects[type] = StartCoroutine(FearEffect(duration));
+                break;
+            case StatusEffectType.Bleed:
+                activeStatusEffects[type] = StartCoroutine(BleedEffect(duration));
+                break;
+        }
+    }
+
+    public void RemoveStatusEffect(StatusEffectType type)
+    {
+        if (activeStatusEffects.ContainsKey(type))
+        {
+            StopCoroutine(activeStatusEffects[type]);
+            activeStatusEffects.Remove(type);
+
+            if (type == StatusEffectType.Fear)
+            {
+                isFeared = false;
+            }
+        }
+    }
+
+    public bool HasStatusEffect(StatusEffectType type)
+    {
+        return activeStatusEffects.ContainsKey(type);
+    }
+
+    private IEnumerator FearEffect(float duration)
+    {
+        isFeared = true;
+        StopAttack();
+
+        // 깜빡임 효과 시작
+        Sequence fearSequence = DOTween.Sequence();
+        fearSequence.Append(spriteRenderer.DOColor(Color.grey, 0.2f))
+                    .Append(spriteRenderer.DOColor(Color.white, 0.2f))
+                    .SetLoops(-1);
+
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // 깜빡임 효과 종료 및 원래 색상으로 복구
+        fearSequence.Kill();
+        spriteRenderer.color = Color.white;
+
+        isFeared = false;
+        activeStatusEffects.Remove(StatusEffectType.Fear);
+    }
+
+    public bool IsFeared()
+    {
+        return isFeared;
+    }
+
+    private void ApplyBleedDamage()
+    {
+        float bleedDamage = GetMaxHealth() * 0.1f;
+        currentHealth -= bleedDamage;
+
+        // 체력바 업데이트
+        if (this is EliteEnemy)
+        {
+            MonsterHealthUI healthUI = GetComponent<MonsterHealthUI>();
+            healthUI.UpdateHealthBar(currentHealth, stats.MaxHealth);
+        }
+
+        if (this is EnemyBoss)
+        {
+            BossHealthUI bossHealthUI = GetComponent<BossHealthUI>();
+            bossHealthUI.UpdateHealthBar(currentHealth, stats.MaxHealth);
+        }
+
+        if (DamageIndicator.Instance != null)
+        {
+            DamageIndicator.Instance.ShowDamage(transform.position, Mathf.RoundToInt(bleedDamage));
+        }
+
+        if (currentHealth <= 0 && !isDead)
+        {
+            Die();
+        }
+    }
+
+    private IEnumerator BleedEffect(float duration)
+    {
+        float elapsedTime = 0f;
+        float tickInterval = 1f;
+        float nextTickTime = tickInterval;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+
+            if (elapsedTime >= nextTickTime)
+            {
+                ApplyBleedDamage();
+                nextTickTime += tickInterval;
+            }
+
+            yield return null;
+        }
+
+        activeStatusEffects.Remove(StatusEffectType.Bleed);
     }
 }

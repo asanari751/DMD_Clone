@@ -3,21 +3,35 @@ using UnityEngine;
 public class EnemyBoss : BasicEnemy
 {
     public event System.Action OnBossEnemyDeath;
-    private GameTimerController gameTimerController;
+    private EnemyHealthBoss enemyHealthBoss;
+    private EnemyHealthController enemyHealthController;
 
-    private new void Start()
+    protected override void Awake()
     {
-        base.Start(); // 부모 클래스의 초기화 추가
-        gameTimerController = FindAnyObjectByType<GameTimerController>();
+        enemyHealthController = GetComponent<EnemyHealthController>();
+        enemyHealthBoss = GetComponent<EnemyHealthBoss>();
+
+        if (enemyHealthController != null)
+        {
+            enemyHealthController.OnDie += HandleOnDie;
+        }
     }
 
-    public override void Die()
+    private void OnDestroy()
     {
-        if (!IsDead())
+        if (enemyHealthController != null)
         {
-            base.Die();
-            OnBossEnemyDeath?.Invoke();
-            gameTimerController.TriggerBossDefeated();
+            enemyHealthController.OnDie -= HandleOnDie;
         }
+    }
+
+    private void HandleOnDie()
+    {
+        if (enemyHealthBoss != null)
+        {
+            enemyHealthBoss.DestroyHealthBar();
+        }
+
+        OnBossEnemyDeath?.Invoke();
     }
 }

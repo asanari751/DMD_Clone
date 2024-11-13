@@ -3,8 +3,6 @@ using System.Collections;
 
 public class IronMaiden : MonoBehaviour
 {
-    [SerializeField] private float stopRadius = 1f;
-
     private float damage;
     private float pullForce;
     private float duration;
@@ -28,10 +26,10 @@ public class IronMaiden : MonoBehaviour
 
             foreach (Collider2D collider in colliders)
             {
-                BasicEnemy enemy = collider.GetComponent<BasicEnemy>();
-                if (enemy != null)
+                EnemyHealthController enemyHealth = collider.GetComponent<EnemyHealthController>();
+                if (enemyHealth != null)
                 {
-                    Vector2 directionToEnemy = enemy.transform.position - transform.position;
+                    Vector2 directionToEnemy = enemyHealth.transform.position - transform.position;
                     float distanceToEnemy = directionToEnemy.magnitude;
 
                     // 최소 거리 설정 (아이언 메이든과 너무 가까워지지 않도록)
@@ -39,12 +37,12 @@ public class IronMaiden : MonoBehaviour
                     if (distanceToEnemy > minDistance)
                     {
                         Vector2 pullDirection = -directionToEnemy.normalized;
-                        EnemyKnockback knockback = enemy.GetComponent<EnemyKnockback>();
+                        EnemyKnockback knockback = enemyHealth.GetComponent<EnemyKnockback>();
                         if (knockback != null)
                         {
                             knockback.SetKnockbackDistance(Mathf.Min(pullForce, distanceToEnemy - minDistance));
                         }
-                        enemy.TakeDamage(damage, -pullDirection);
+                        enemyHealth.TakeDamage(damage, -pullDirection);
                     }
                 }
             }

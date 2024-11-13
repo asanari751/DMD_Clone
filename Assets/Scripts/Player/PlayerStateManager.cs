@@ -103,7 +103,8 @@ public class PlayerStateManager : MonoBehaviour
             Vector2 targetPosition = closestEnemy.transform.position;
             Action<Vector2> attackAction = currentAttackType == AttackType.Arrow ? PerformRangedAttack : PerformAttack;
             attackAction(targetPosition);
-        } return;
+        }
+        return;
     }
 
     private void PerformManualAttack()
@@ -167,11 +168,14 @@ public class PlayerStateManager : MonoBehaviour
 
         foreach (Collider2D collider in Physics2D.OverlapCircleAll(transform.position, meeleAttackRange, targetLayers))
         {
-            if (IsInAttackAngle(collider.transform.position, angleToTarget) &&
-                collider.TryGetComponent<BasicEnemy>(out var enemy))
+            if (IsInAttackAngle(collider.transform.position, angleToTarget))
             {
-                Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized;
-                enemy.TakeDamage(attackDamage, knockbackDirection);
+                EnemyHealthController enemyHealth = collider.GetComponent<EnemyHealthController>();
+                if (enemyHealth != null)
+                {
+                    Vector2 knockbackDirection = (collider.transform.position - transform.position).normalized;
+                    enemyHealth.TakeDamage(attackDamage, knockbackDirection);
+                }
             }
         }
         ShowAttackEffect(targetPosition);

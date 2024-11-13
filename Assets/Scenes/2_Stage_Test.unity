@@ -29099,7 +29099,7 @@ Camera:
   far clip plane: 5000
   field of view: 40
   orthographic: 1
-  orthographic size: 4.5
+  orthographic size: 11.25
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -41844,7 +41844,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 1928920833}
   uiManager: {fileID: 1743977334}
-  debugParameter: 0.1
+  debugParameter: 100
   updateInterval: 1
   timeSinceLastUpdate: 0
   obstacleHierahy: {fileID: 1558981614}
@@ -50570,7 +50570,7 @@ MonoBehaviour:
   eliteEnemy: {fileID: 6135728234777956250}
   bossEnemy: {fileID: 3011803388326096627}
   spawnInterval: 0.01
-  maxEnemies: 50
+  maxEnemies: 4
   parent: {fileID: 914842388}
 --- !u!1 &2078981337
 GameObject:
@@ -51915,27 +51915,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a7b795eaa0cc334a9e78dd061e54a37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugStatusEffect: 0
-  debugDuration: 3
-  applyDebugEffect: 0
-  deathTime: 0.3
-  experienceDrop: 10
+  experienceDrop: 1
   expOrbPrefab: {fileID: 6992617434821140472, guid: 5221308d8fca95b4f88475e0a2e5314c,
     type: 3}
-  expOrbCount: 10
+  expOrbCount: 5
   stats:
     enemyType: 0
     MoveSpeed: 5
-    MaxHealth: 500
+    MaxHealth: 30
     AttackRange: 1
     attackDelay: 1
-    attackCooldown: 2
-    attackDamage: 10
-    RetreatSpeed: 1
+    attackCooldown: 1
+    attackDamage: 1
+    RetreatSpeed: 2
   attackAreaPrefab: {fileID: 5094983644987885009, guid: e869be970af93c540b757083e85fa8a4,
     type: 3}
-  startColor: {r: 1, g: 1, b: 1, a: 1}
-  endcolor: {r: 1, g: 0, b: 0, a: 1}
+  startColor: {r: 1, g: 0, b: 0, a: 0.5882353}
+  endcolor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &2507412579526198674
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -51948,27 +51944,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1f181633f45cd341bed96261f280ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugStatusEffect: 0
-  debugDuration: 3
-  applyDebugEffect: 0
-  deathTime: 0.3
-  experienceDrop: 10
+  experienceDrop: 3
   expOrbPrefab: {fileID: 6992617434821140472, guid: 5221308d8fca95b4f88475e0a2e5314c,
     type: 3}
-  expOrbCount: 5
+  expOrbCount: 1
   stats:
     enemyType: 0
     MoveSpeed: 5
     MaxHealth: 10
     AttackRange: 1
     attackDelay: 1
-    attackCooldown: 2
-    attackDamage: 10
-    RetreatSpeed: 1
+    attackCooldown: 1
+    attackDamage: 1
+    RetreatSpeed: 3
   attackAreaPrefab: {fileID: 5094983644987885009, guid: e869be970af93c540b757083e85fa8a4,
     type: 3}
-  startColor: {r: 1, g: 1, b: 1, a: 1}
-  endcolor: {r: 1, g: 0, b: 0, a: 1}
+  startColor: {r: 1, g: 0, b: 0, a: 0.5882353}
+  endcolor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &2567118109556788340
 GameObject:
   m_ObjectHideFlags: 0
@@ -52119,8 +52111,10 @@ GameObject:
   - component: {fileID: 2005795659450912725}
   - component: {fileID: 3757004366908047183}
   - component: {fileID: 1654971220831510623}
-  - component: {fileID: 2327410662848346831}
+  - component: {fileID: 7344789330219823335}
   - component: {fileID: 3284028864394177426}
+  - component: {fileID: 7344789330219823334}
+  - component: {fileID: 2327410662848346831}
   - component: {fileID: 6435195111542685423}
   m_Layer: 6
   m_Name: Enemy Prototype Boss
@@ -53046,7 +53040,9 @@ GameObject:
   - component: {fileID: 7646493029839192374}
   - component: {fileID: 2507412579526198674}
   - component: {fileID: 5870822206004579067}
+  - component: {fileID: 7646493029839192376}
   - component: {fileID: 4363411972407563631}
+  - component: {fileID: 7646493029839192375}
   m_Layer: 6
   m_Name: Enemy Prototype Elite
   m_TagString: Elite
@@ -53425,6 +53421,38 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7344789330219823334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3011803388326096627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df47363c723aacd47b9d050023bd87d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugStatusEffect: 3
+  debugDuration: 3
+  applyDebugEffect: 0
+  slowDebuff: 0.75
+  weaknessDebuff: 1.3
+  poisonDebuff: 3
+  bleedDebuff: 0.1
+--- !u!114 &7344789330219823335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3011803388326096627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59abf103fa6e3634d96676fe35d31ef0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathTime: 0.5
 --- !u!224 &7358053288140771453
 RectTransform:
   m_ObjectHideFlags: 0
@@ -53557,6 +53585,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 528cc4556cfc5014481229843c43583b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7646493029839192375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6135728234777956250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df47363c723aacd47b9d050023bd87d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugStatusEffect: 0
+  debugDuration: 3
+  applyDebugEffect: 0
+  slowDebuff: 0.75
+  weaknessDebuff: 1.3
+  poisonDebuff: 3
+  bleedDebuff: 0.1
+--- !u!114 &7646493029839192376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6135728234777956250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59abf103fa6e3634d96676fe35d31ef0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathTime: 0.5
 --- !u!114 &7985084037384195744
 MonoBehaviour:
   m_ObjectHideFlags: 0

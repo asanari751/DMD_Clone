@@ -17,6 +17,8 @@ GameObject:
   - component: {fileID: 1334247076841853299}
   - component: {fileID: 4453743842889480057}
   - component: {fileID: 8943113403550105905}
+  - component: {fileID: 6566927577476033785}
+  - component: {fileID: 7756913502525280123}
   m_Layer: 6
   m_Name: Enemy Knight
   m_TagString: Enemy
@@ -206,10 +208,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219a463292eeb9f4b92e42cdca874bba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debugStatusEffect: 0
-  debugDuration: 3
-  applyDebugEffect: 0
-  deathTime: 1
   experienceDrop: 1
   expOrbPrefab: {fileID: 6992617434821140472, guid: 5221308d8fca95b4f88475e0a2e5314c,
     type: 3}
@@ -263,6 +261,38 @@ MonoBehaviour:
   attackStateName: Knight Attack
   hitStateName: Knight Hit
   hitAnimationDuration: 0.5
+--- !u!114 &6566927577476033785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4976483147096513540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df47363c723aacd47b9d050023bd87d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  debugStatusEffect: 0
+  debugDuration: 3
+  applyDebugEffect: 0
+  slowDebuff: 0.75
+  weaknessDebuff: 1.3
+  poisonDebuff: 3
+  bleedDebuff: 0.1
+--- !u!114 &7756913502525280123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4976483147096513540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59abf103fa6e3634d96676fe35d31ef0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathTime: 0
 --- !u!1 &5223107067649577173
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ public class EnemySpawner : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameTimerController gameTimerController;
     [SerializeField] private UIManager uiManager;
-    [SerializeField] private BossHealthUI bossHealthUI;
+    [SerializeField] private EnemyHealthBoss bossHealthUI;
 
     [Header("Enemys")]
     [SerializeField] private List<GameObject> enemyPrefabs;
@@ -122,7 +122,7 @@ public class EnemySpawner : MonoBehaviour
             eliteEnemy.transform.position = GetRandomSpawnPosition();
             eliteEnemy.SetActive(true);
 
-            EliteEnemy eliteEnemyScript = eliteEnemy.GetComponent<EliteEnemy>();
+            EnemyElite eliteEnemyScript = eliteEnemy.GetComponent<EnemyElite>();
             if (eliteEnemyScript != null)
             {
                 eliteEnemyScript.OnEliteEnemyDeath += OnEliteEnemyDeath;
@@ -154,6 +154,7 @@ public class EnemySpawner : MonoBehaviour
     private void OnBossEnemyDeath()
     {
         gameTimerController.RemoveCombatAreaLimits();
+        gameTimerController.TriggerBossDefeated();
     }
 
     private GameObject SpawnSpecialEnemy(GameObject specialEnemyPrefab)

@@ -106,12 +106,8 @@ public class EnemyAnimationController : MonoBehaviour
                 spriteRenderer.flipX = !isFacingRight;
             }
 
-            // 현재 상태와 다를 때만 애니메이션 변경
-            if (newStateName != currentStateName)
-            {
-                animator.Play(newStateName);
-                currentStateName = newStateName;
-            }
+            animator.Play(newStateName);
+            currentStateName = newStateName;
         }
     }
 

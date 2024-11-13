@@ -1,14 +1,36 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class EliteEnemy : BasicEnemy
+public class EnemyElite : BasicEnemy
 {
     public event System.Action OnEliteEnemyDeath;
-    public override void Die()
+    private EnemyHealthController enemyHealthController;
+    private EnemyHealthElite enemyHealthElite;
+
+    protected override void Awake()
     {
-        if (!IsDead())
+        base.Awake();
+        
+        enemyHealthController = GetComponent<EnemyHealthController>();
+        enemyHealthElite = GetComponent<EnemyHealthElite>();
+
+        if (enemyHealthController != null)
         {
-            base.Die();
-            OnEliteEnemyDeath?.Invoke();
+            enemyHealthController.OnDie += HandleOnDie;
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (enemyHealthController != null)
+        {
+            enemyHealthController.OnDie -= HandleOnDie;
+        }
+    }
+
+    private void HandleOnDie()
+    {
+        enemyHealthElite.DestroyHealthBar();
+        OnEliteEnemyDeath?.Invoke();
     }
 }

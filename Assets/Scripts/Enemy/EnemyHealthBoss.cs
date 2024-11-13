@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 
-public class BossHealthUI : MonoBehaviour
+public class EnemyHealthBoss : MonoBehaviour
 {
     [Header("Health Bar")]
     [SerializeField] private GameObject healthBarRoot;

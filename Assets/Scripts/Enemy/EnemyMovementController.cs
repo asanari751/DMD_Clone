@@ -3,6 +3,8 @@ using UnityEngine;
 public class EnemyMovementController : MonoBehaviour
 {
     private BasicEnemy basicEnemy;
+    private EnemyStatusEffect enemyStatusEffect;
+    private EnemyHealthController enemyHealthController;
     private EnemyStats enemyStats;
     private Flowfield flowfield;
     private Rigidbody2D rb;
@@ -12,6 +14,8 @@ public class EnemyMovementController : MonoBehaviour
     private void Start()
     {
         basicEnemy = GetComponent<BasicEnemy>();
+        enemyStatusEffect = GetComponent<EnemyStatusEffect>();
+        enemyHealthController = GetComponent<EnemyHealthController>();
         flowfield = FindAnyObjectByType<Flowfield>();
         rb = GetComponent<Rigidbody2D>();
         playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
@@ -20,10 +24,17 @@ public class EnemyMovementController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (flowfield != null && rb != null && playerTransform != null && !basicEnemy.IsKnockedBack() && !basicEnemy.IsDead())
+        if (flowfield != null && rb != null && playerTransform != null && !basicEnemy.IsKnockedBack() && !enemyHealthController.IsDead())
         {
+            if (!basicEnemy.CanMove())
+            {
+                rb.linearVelocity = Vector2.zero;
+                if (animationController != null) animationController.UpdateMovement(Vector2.zero);
+                return;
+            }
+
             // 공포 상태일 때의 이동 처리
-            if (basicEnemy.IsFeared())
+            if (enemyStatusEffect.IsFeared())
             {
                 Vector2 directionFromPlayer = (transform.position - playerTransform.position).normalized;
                 Vector2 fearMovement = directionFromPlayer * basicEnemy.GetMoveSpeed() / 2f;

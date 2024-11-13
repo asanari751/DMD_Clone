@@ -191,4 +191,57 @@ public class PlayerSkills : MonoBehaviour
         if (collider != null)
             collider.enabled = true;
     }
+
+    // 스킬 3 기즈모
+
+    // private void OnDrawGizmos()
+    // {
+    //     Vector3 center = transform.position;
+    //     float radius = 5f;
+
+    //     // 붉은색 원과 연결선 (y축 방향으로 30도씩 제거)
+    //     Gizmos.color = Color.red;
+    //     Vector3 redStart1 = center + new Vector3(Mathf.Cos(-60f * Mathf.Deg2Rad), Mathf.Sin(-60f * Mathf.Deg2Rad)) * radius;
+    //     Vector3 redEnd1 = center + new Vector3(Mathf.Cos(60f * Mathf.Deg2Rad), Mathf.Sin(60f * Mathf.Deg2Rad)) * radius;
+    //     Vector3 redStart2 = center + new Vector3(Mathf.Cos(120f * Mathf.Deg2Rad), Mathf.Sin(120f * Mathf.Deg2Rad)) * radius;
+    //     Vector3 redEnd2 = center + new Vector3(Mathf.Cos(240f * Mathf.Deg2Rad), Mathf.Sin(240f * Mathf.Deg2Rad)) * radius;
+
+    //     DrawPartialCircle(center, radius, -60f, 60f);
+    //     DrawPartialCircle(center, radius, 120f, 240f);
+    //     Gizmos.DrawLine(redStart1, center);
+    //     Gizmos.DrawLine(redEnd1, center);
+    //     Gizmos.DrawLine(redStart2, center);
+    //     Gizmos.DrawLine(redEnd2, center);
+
+    //     // 푸른색 원과 연결선 (y축 방향으로 60도씩 제거)
+    //     Gizmos.color = Color.blue;
+    //     Vector3 blueStart1 = center + new Vector3(Mathf.Cos(-30f * Mathf.Deg2Rad), Mathf.Sin(-30f * Mathf.Deg2Rad)) * radius;
+    //     Vector3 blueEnd1 = center + new Vector3(Mathf.Cos(30f * Mathf.Deg2Rad), Mathf.Sin(30f * Mathf.Deg2Rad)) * radius;
+    //     Vector3 blueStart2 = center + new Vector3(Mathf.Cos(150f * Mathf.Deg2Rad), Mathf.Sin(150f * Mathf.Deg2Rad)) * radius;
+    //     Vector3 blueEnd2 = center + new Vector3(Mathf.Cos(210f * Mathf.Deg2Rad), Mathf.Sin(210f * Mathf.Deg2Rad)) * radius;
+
+    //     DrawPartialCircle(center, radius, -30f, 30f);
+    //     DrawPartialCircle(center, radius, 150f, 210f);
+    //     Gizmos.DrawLine(blueStart1, center);
+    //     Gizmos.DrawLine(blueEnd1, center);
+    //     Gizmos.DrawLine(blueStart2, center);
+    //     Gizmos.DrawLine(blueEnd2, center);
+    // }
+
+    // private void DrawPartialCircle(Vector3 center, float radius, float startAngle, float endAngle)
+    // {
+    //     int segments = 36;
+    //     float angleStep = (endAngle - startAngle) / segments;
+
+    //     for (float angle = startAngle; angle < endAngle; angle += angleStep)
+    //     {
+    //         float radian1 = angle * Mathf.Deg2Rad;
+    //         float radian2 = (angle + angleStep) * Mathf.Deg2Rad;
+
+    //         Vector3 pos1 = center + new Vector3(Mathf.Cos(radian1), Mathf.Sin(radian1)) * radius;
+    //         Vector3 pos2 = center + new Vector3(Mathf.Cos(radian2), Mathf.Sin(radian2)) * radius;
+
+    //         Gizmos.DrawLine(pos1, pos2);
+    //     }
+    // }
 }

@@ -23,6 +23,13 @@ public class Interaction : MonoBehaviour
     [SerializeField] private float typingSpeed;
     [SerializeField] private GameObject titleImage;
 
+    [Header("Interaction Prompt")]
+    [SerializeField] private GameObject interactionPrompt;
+    [SerializeField] private TMP_Text promptText;
+    [SerializeField] private Vector3 promptOffset = new Vector3(1f, 0f, 0f);
+    [SerializeField] private float promptDelay;
+    [SerializeField] private CanvasGroup interactionPromptCanvasGroup;
+
     [Header("Input Action")]
     [SerializeField] private InputActionReference interactionAction;
     [SerializeField] private InputActionReference cancleAction;
@@ -54,9 +61,23 @@ public class Interaction : MonoBehaviour
         SetInteractionUI(false);
         titleImage.SetActive(false);
         godChoosePanel.SetActive(false);
+        interactionPrompt.SetActive(false);
+
+        if (interactionPromptCanvasGroup != null)
+        {
+            interactionPromptCanvasGroup.alpha = 0f;
+        }
 
         InitializeGodChooseButtons();
         InitializeCloseButton();
+    }
+
+    private void Update()
+    {
+        if (isInRange && interactionPrompt.activeSelf)
+        {
+            UpdatePromptPosition();
+        }
     }
 
     private void InitializeGodChooseButtons()
@@ -85,6 +106,7 @@ public class Interaction : MonoBehaviour
         interactionAction.action.performed += OnInteract;
         cancleAction.action.Enable();
         cancleAction.action.performed += OnCancel;
+        InputSystem.onActionChange += OnActionChange;
     }
 
     private void OnDisable()
@@ -93,10 +115,19 @@ public class Interaction : MonoBehaviour
         interactionAction.action.performed -= OnInteract;
         cancleAction.action.Disable();
         cancleAction.action.performed -= OnCancel;
+        InputSystem.onActionChange -= OnActionChange;
 
         if (textTween != null && textTween.IsActive()) // 강제 취소
         {
             textTween.Kill();
+        }
+    }
+
+    private void OnActionChange(object obj, InputActionChange change)
+    {
+        if (change == InputActionChange.BoundControlsChanged)
+        {
+            UpdatePromptText();
         }
     }
 
@@ -105,6 +136,18 @@ public class Interaction : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isInRange = true;
+
+            if (interactionPromptCanvasGroup != null)
+            {
+                interactionPromptCanvasGroup.DOKill();
+            }
+
+            interactionPrompt.SetActive(true);
+            interactionPromptCanvasGroup.alpha = 0f;
+            interactionPromptCanvasGroup.DOFade(1f, 0.5f);
+
+            UpdatePromptText();
+            UpdatePromptPosition();
         }
     }
 
@@ -113,6 +156,16 @@ public class Interaction : MonoBehaviour
         isInRange = false;
         if (isInRange == false)
         {
+            if (interactionPromptCanvasGroup != null)
+            {
+                interactionPromptCanvasGroup.DOKill();
+            }
+
+            interactionPromptCanvasGroup.DOFade(0f, 0.5f).OnComplete(() =>
+            {
+                interactionPrompt.SetActive(false);
+            });
+
             EndInteraction();
             SetInteractionUI(false);
         }
@@ -389,6 +442,33 @@ public class Interaction : MonoBehaviour
         foreach (var button in godChooseButtons)
         {
             button.enabled = true;
+        }
+    }
+
+    private void UpdatePromptPosition()
+    {
+        if (interactionPrompt != null)
+        {
+            Vector3 worldPosition = transform.position + promptOffset;
+            Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
+
+            interactionPrompt.transform.DOKill();
+
+            interactionPrompt.transform.DOMove(screenPosition, promptDelay)
+            .SetEase(Ease.OutQuad);
+        }
+    }
+
+    private void UpdatePromptText()
+    {
+        for (int i = 0; i < interactionAction.action.bindings.Count; i++)
+        {
+            if (interactionAction.action.bindings[i].path.Contains("Keyboard"))
+            {
+                string keyName = interactionAction.action.GetBindingDisplayString(i);
+                promptText.text = $"{keyName} 상호작용";
+                break;
+            }
         }
     }
 }

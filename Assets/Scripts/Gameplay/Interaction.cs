@@ -5,6 +5,7 @@ using TMPro;
 using DG.Tweening;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.EventSystems;
 
 public class Interaction : MonoBehaviour
 {
@@ -54,6 +55,7 @@ public class Interaction : MonoBehaviour
     private Vector3[] originalButtonPositions;
     private bool areButtonsVisible = false;
     private bool nowInteract = false;
+    private Image interactionPromptImage;
     private Dictionary<int, int> lastDialogueIndices = new Dictionary<int, int>();
 
     private void Start()
@@ -176,14 +178,17 @@ public class Interaction : MonoBehaviour
         if (isInRange && !nowInteract)
         {
             nowInteract = true;
+
             if (!areButtonsVisible)
             {
                 ShowGodChooseButtons();
             }
+
             else if (!isDialogueComplete)
             {
                 CompleteDialogue();
             }
+
             else
             {
                 EndInteraction();
@@ -445,6 +450,8 @@ public class Interaction : MonoBehaviour
         }
     }
 
+    // interactionPrompt
+
     private void UpdatePromptPosition()
     {
         if (interactionPrompt != null)
@@ -466,7 +473,7 @@ public class Interaction : MonoBehaviour
             if (interactionAction.action.bindings[i].path.Contains("Keyboard"))
             {
                 string keyName = interactionAction.action.GetBindingDisplayString(i);
-                promptText.text = $"{keyName} 상호작용";
+                promptText.text = $"{keyName}    상호작용";
                 break;
             }
         }

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da4b8bfa5b2cff44bb4a8378ac175508, type: 3}
+  m_Name: B1
+  m_EditorClassIdentifier: 
+  skillRangeType: 1
+  skillName: "\uAC00\uC2DC\uC758 \uAC10\uC625"
+  skillIcon: {fileID: 21300000, guid: 386137f3ea0ec554dbda1d54172d204b, type: 3}
+  skillLevel: 0
+  skillDescription: "\uC790\uC2E0\uC744 \uB458\uB7EC\uC2FC \uAC00\uC2DC\uB97C \uC18C\uD658\uD558\uC5EC
+    \uC77C\uC815 \uC2DC\uAC04 \uB3D9\uC548 \uC801\uB4E4\uC5D0\uAC8C \uD53C\uD574\uB97C
+    \uC8FC\uACE0, \uC801\uC5D0\uAC8C \uB454\uD654\uB97C \uBD80\uC5EC\uD569\uB2C8\uB2E4.\r"
+  skillPrefab: {fileID: 0}
+  radius: 0
+  knockbackForce: 0
+  damage: 0
+  duration: 0
+  cooldown: 0
+  attackInterval: 0
+  isPassive: 0
+  effectOnHit: 4
+  castTime: 0
+  isAoe: 1
+  maxTargets: 99

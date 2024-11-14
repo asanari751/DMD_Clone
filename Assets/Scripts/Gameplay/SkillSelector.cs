@@ -12,10 +12,13 @@ public class SkillSelector : MonoBehaviour
     [System.Serializable]
     public class Skilldata
     {
-        public string skillName;
-        public Sprite skillIcon;
-        public int skillLevel;
-        public string skillDescription;
+        public SkillData skillDataSO; // SkillData 스크립터블 오브젝트 참조
+
+        // 스크립터블 오브젝트에서 데이터 가져오기
+        public string skillName => skillDataSO.skillName;
+        public Sprite skillIcon => skillDataSO.skillIcon;
+        public int skillLevel => skillDataSO.skillLevel;
+        public string skillDescription => skillDataSO.skillDescription;
     }
 
     [System.Serializable]
@@ -31,6 +34,7 @@ public class SkillSelector : MonoBehaviour
         public string godName;
         [TextArea(3, 10)]
         public string[] dialogueTexts;
+        public List<Skilldata> availableSkills;
     }
 
     // [SerializeField] private GameObject darkBackground;
@@ -60,7 +64,6 @@ public class SkillSelector : MonoBehaviour
     public GameObject skillSelectorUI;
     public Button[] skillButtons;
     public TextMeshProUGUI[] skillDescriptionTexts;
-    public List<Skilldata> availableSkills;
 
     public Transform skillPanel;
     public Transform skillInventory;
@@ -85,6 +88,7 @@ public class SkillSelector : MonoBehaviour
     private bool isDialogueComplete = false;
     private Dictionary<int, int> lastDialogueIndices = new Dictionary<int, int>();
     private float repeatWeight = 0.5f;
+    private int currentGodIndex = -1;
 
     private void Start()
     {
@@ -151,6 +155,8 @@ public class SkillSelector : MonoBehaviour
 
         previousGodIndex = randomGodIndex;
         GodData selectedGod = gods[randomGodIndex];
+
+        currentGodIndex = randomGodIndex;
 
         string selectedDialogue = GetWeightedRandomDialogue(randomGodIndex);
 
@@ -252,28 +258,28 @@ public class SkillSelector : MonoBehaviour
 
         cursorManager.SetNormalCursor();
 
-        // currentRedDiceCount = maxRedDiceCount;
-        // currentBlueDiceCount = maxBlueDiceCount;
+        // 현재 선택된 신의 스킬 리스트 가져오기
+        List<Skilldata> selectedGodSkills = gods[currentGodIndex].availableSkills;
 
-        ShuffleSkills();
-        currentSkillSet = new List<Skilldata>(availableSkills.Take(3));
+        ShuffleSkills(selectedGodSkills);
+        currentSkillSet = new List<Skilldata>(selectedGodSkills.Take(3));
 
         UpdateSkillUI();
         UpdateDiceUI();
         StartProduction();
     }
 
-    private void ShuffleSkills() // 순서 섞기
+    private void ShuffleSkills(List<Skilldata> skillsToShuffle)
     {
         System.Random rng = new System.Random();
-        int n = availableSkills.Count;
+        int n = skillsToShuffle.Count;
         while (n > 1)
         {
             n--;
             int k = rng.Next(n + 1);
-            Skilldata value = availableSkills[k];
-            availableSkills[k] = availableSkills[n];
-            availableSkills[n] = value;
+            Skilldata value = skillsToShuffle[k];
+            skillsToShuffle[k] = skillsToShuffle[n];
+            skillsToShuffle[n] = value;
         }
     }
 
@@ -337,7 +343,7 @@ public class SkillSelector : MonoBehaviour
 
     private void SelectSkill(int index)
     {
-        Skilldata selectedSkill = availableSkills[index];
+        Skilldata selectedSkill = currentSkillSet[index];
         PlayerSkills.Instance.AddOrUpgradeSkill(selectedSkill.skillName);
         UpdateSkillUI();
 
@@ -368,11 +374,11 @@ public class SkillSelector : MonoBehaviour
     {
         for (int i = 0; i < skillButtons.Length; i++)
         {
-            if (i < availableSkills.Count)
+            if (i < currentSkillSet.Count)
             {
                 skillButtons[i].gameObject.SetActive(true);
 
-                Skilldata skill = availableSkills[i];
+                Skilldata skill = currentSkillSet[i];
                 int skillLevel = PlayerSkills.Instance.GetSkillLevel(skill.skillName);
 
                 TextMeshProUGUI buttonText = skillButtons[i].GetComponentInChildren<TextMeshProUGUI>();
@@ -499,7 +505,7 @@ public class SkillSelector : MonoBehaviour
         if (isRed)
         {
             currentRedDiceCount--;
-            currentSkillSet = new List<Skilldata>(availableSkills.Take(3));
+            currentSkillSet = new List<Skilldata>(gods[currentGodIndex].availableSkills.Take(3));
             StartCoroutine(RollDiceAnimation());
             UpdateDiceUI();
         }
@@ -522,16 +528,32 @@ public class SkillSelector : MonoBehaviour
         isProducing = true;
         KillAllButtonAnimations();
 
+        float moveDistance = 100f;
+        float animationDuration = 0.5f;
+
         for (int i = 0; i < skillButtons.Length; i++)
         {
-            skillButtons[i].transform.position = originalPositions[i] + Vector3.up * 1200f;
+            Button button = skillButtons[i];
+            Vector3 originalPosition = button.transform.position;
+
+            button.transform.DOMoveY(originalPosition.y + moveDistance, animationDuration / 2)
+                .SetEase(Ease.OutQuad)
+                .SetUpdate(true);
+
+            button.transform.DOMoveY(originalPosition.y, animationDuration / 2)
+                .SetEase(Ease.InQuad)
+                .SetDelay(animationDuration / 2)
+                .SetUpdate(true);
         }
 
         int maxAttempts = 10;
         int currentAttempt = 0;
+
+        List<Skilldata> selectedGodSkills = gods[currentGodIndex].availableSkills;
+
         do
         {
-            ShuffleSkills();
+            ShuffleSkills(selectedGodSkills);
             currentAttempt++;
             if (currentAttempt >= maxAttempts)
             {
@@ -540,23 +562,20 @@ public class SkillSelector : MonoBehaviour
             }
         } while (IsIdenticalSkillSet());
 
+        currentSkillSet = new List<Skilldata>(selectedGodSkills.Take(3));
+
         UpdateSkillUI();
         UpdateDiceUI();
 
-        for (int i = 0; i < skillButtons.Length; i++)
-        {
-            MoveButtonDown(skillButtons[i], i);
-            yield return new WaitForSecondsRealtime(productionTime / skillButtons.Length);
-        }
+        yield return new WaitForSecondsRealtime(animationDuration);
 
-        yield return new WaitForSecondsRealtime(productionTime);
         isProducing = false;
     }
 
     private bool IsIdenticalSkillSet()
     {
         // 현재 보여지는 3개의 스킬이 이전과 동일한지 확인
-        var newSkillSet = availableSkills.Take(3);
+        var newSkillSet = currentSkillSet;
         return currentSkillSet.All(skill => newSkillSet.Any(s => s.skillName == skill.skillName))
                && newSkillSet.All(skill => currentSkillSet.Any(s => s.skillName == skill.skillName));
     }

@@ -97,7 +97,7 @@ public class BasicEnemy : MonoBehaviour
         return enemyKnockback != null && enemyKnockback.IsKnockedBack();
     }
 
-    private void SpawnExpOrbs()
+    public void SpawnExpOrbs()
     {
         if (expOrbPool == null) return; // 호출 실패 시 처리
 

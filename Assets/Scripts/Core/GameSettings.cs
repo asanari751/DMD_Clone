@@ -76,6 +76,8 @@ public class GameSettings : MonoBehaviour
     [SerializeField] private Slider ambientVolumeSlider;
     [SerializeField] private TMP_Text bgmVolumeText;
     [SerializeField] private Slider bgmVolumeSlider;
+    [SerializeField] private TMP_Text UIVolumeText;
+    [SerializeField] private Slider UIVolumeSlider;
 
     [Header("Key Bindings")]
     [SerializeField] private KeyBindingProfile defaultProfile;
@@ -98,6 +100,7 @@ public class GameSettings : MonoBehaviour
     private float tempSFXVolume;
     private float tempAmbientVolume;
     private float tempBGMVolume;
+    private float tempUIVolume;
 
     // Panel =================================================================
 
@@ -199,10 +202,35 @@ public class GameSettings : MonoBehaviour
         frameRateSlider.wholeNumbers = true;
         frameRateSlider.onValueChanged.AddListener(OnFrameRateChanged);
 
+        // Master
+        masterVolumeSlider.minValue = 0;
+        masterVolumeSlider.maxValue = 10;
+        masterVolumeSlider.wholeNumbers = true;
         masterVolumeSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
+
+        // SFX
+        sfxVolumeSlider.minValue = 0;
+        sfxVolumeSlider.maxValue = 10;
+        sfxVolumeSlider.wholeNumbers = true;
         sfxVolumeSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
+
+        // Ambient
+        ambientVolumeSlider.minValue = 0;
+        ambientVolumeSlider.maxValue = 10;
+        ambientVolumeSlider.wholeNumbers = true;
         ambientVolumeSlider.onValueChanged.AddListener(OnAmbientVolumeChanged);
+
+        // BGM
+        bgmVolumeSlider.minValue = 0;
+        bgmVolumeSlider.maxValue = 10;
+        bgmVolumeSlider.wholeNumbers = true;
         bgmVolumeSlider.onValueChanged.AddListener(OnBGMVolumeChanged);
+
+        // UI
+        UIVolumeSlider.minValue = 0;
+        UIVolumeSlider.maxValue = 10;
+        UIVolumeSlider.wholeNumbers = true;
+        UIVolumeSlider.onValueChanged.AddListener(OnUIVolumeChanged);
     }
 
     private void InitializeKeyBindings()
@@ -232,10 +260,11 @@ public class GameSettings : MonoBehaviour
 
         UpdateResolutionButtonsVisual();
 
-        masterVolumeSlider.value = tempMasterVolume;
-        sfxVolumeSlider.value = tempSFXVolume;
-        ambientVolumeSlider.value = tempAmbientVolume;
-        bgmVolumeSlider.value = tempBGMVolume;
+        masterVolumeSlider.value = tempMasterVolume * 10f;
+        sfxVolumeSlider.value = tempSFXVolume * 10f;
+        ambientVolumeSlider.value = tempAmbientVolume * 10f;
+        bgmVolumeSlider.value = tempBGMVolume * 10f;
+        UIVolumeSlider.value = tempBGMVolume * 10f;
     }
 
     private void OnResolutionChanged(float value)
@@ -335,26 +364,32 @@ public class GameSettings : MonoBehaviour
 
     private void OnMasterVolumeChanged(float value)
     {
-        tempMasterVolume = value;
-        masterVolumeText.text = $"전체 음량      {Mathf.RoundToInt(value * 100)}%";
+        tempMasterVolume = value / 10f;
+        // masterVolumeText.text = $"전체 음량 {Mathf.RoundToInt(tempMasterVolume * 100)}%";
     }
 
     private void OnSFXVolumeChanged(float value)
     {
-        tempSFXVolume = value;
-        sfxVolumeText.text = $"효과음      {Mathf.RoundToInt(value * 100)}%";
+        tempSFXVolume = value / 10f;
+        // sfxVolumeText.text = $"효과음 {Mathf.RoundToInt(tempSFXVolume * 100)}%";
     }
 
     private void OnAmbientVolumeChanged(float value)
     {
-        tempAmbientVolume = value;
-        ambientVolumeText.text = $"환경음      {Mathf.RoundToInt(value * 100)}%";
+        tempAmbientVolume = value / 10f;
+        // ambientVolumeText.text = $"환경음 {Mathf.RoundToInt(tempAmbientVolume * 100)}%";
     }
 
     private void OnBGMVolumeChanged(float value)
     {
-        tempBGMVolume = value;
-        bgmVolumeText.text = $"배경음      {Mathf.RoundToInt(value * 100)}%";
+        tempBGMVolume = value / 10f;
+        // bgmVolumeText.text = $"배경음 {Mathf.RoundToInt(tempBGMVolume * 100)}%";
+    }
+
+    private void OnUIVolumeChanged(float value)
+    {
+        tempUIVolume = value / 10f;
+        // bgmVolumeText.text = $"배경음 {Mathf.RoundToInt(tempBGMVolume * 100)}%";
     }
 
     // Key =================================
@@ -559,6 +594,7 @@ public class GameSettings : MonoBehaviour
         audioMixer.SetFloat("SFXVolume", tempSFXVolume == 0 ? -80f : Mathf.Log10(tempSFXVolume) * 20);
         audioMixer.SetFloat("AmbientVolume", tempAmbientVolume == 0 ? -80f : Mathf.Log10(tempAmbientVolume) * 20);
         audioMixer.SetFloat("BGMVolume", tempBGMVolume == 0 ? -80f : Mathf.Log10(tempBGMVolume) * 20);
+        audioMixer.SetFloat("UIVolume", tempUIVolume == 0 ? -80f : Mathf.Log10(tempUIVolume) * 20);
 
         PlayerPrefs.SetFloat("ResolutionIndex", tempResolutionIndex);
         PlayerPrefs.SetInt("Fullscreen", tempFullscreen ? 1 : 0);
@@ -567,6 +603,7 @@ public class GameSettings : MonoBehaviour
         PlayerPrefs.SetFloat("SFXVolume", tempSFXVolume);
         PlayerPrefs.SetFloat("AmbientVolume", tempAmbientVolume);
         PlayerPrefs.SetFloat("BGMVolume", tempBGMVolume);
+        PlayerPrefs.SetFloat("UIVolume", tempUIVolume);
 
         PlayerPrefs.Save();
     }
@@ -595,7 +632,8 @@ public class GameSettings : MonoBehaviour
                tempMasterVolume != PlayerPrefs.GetFloat("MasterVolume") ||
                tempSFXVolume != PlayerPrefs.GetFloat("SFXVolume") ||
                tempAmbientVolume != PlayerPrefs.GetFloat("AmbientVolume") ||
-               tempBGMVolume != PlayerPrefs.GetFloat("BGMVolume");
+               tempBGMVolume != PlayerPrefs.GetFloat("BGMVolume") ||
+               tempUIVolume != PlayerPrefs.GetFloat("UIVolume");
     }
 
     private void OnConfirmExit()
@@ -610,6 +648,8 @@ public class GameSettings : MonoBehaviour
         videoSettingsPanel.SetActive(false);
         soundSettingsPanel.SetActive(false);
         keyBindingSettingsPanel.SetActive(false);
+        AccessibilitySettingsPanel.SetActive(false);
+        textSettingsPanel.SetActive(false);
         SettingsPanel.SetActive(false);
     }
 }

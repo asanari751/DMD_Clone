@@ -344,9 +344,14 @@ public class SkillSelector : MonoBehaviour
     private void SelectSkill(int index)
     {
         Skilldata selectedSkill = currentSkillSet[index];
-        PlayerSkills.Instance.AddOrUpgradeSkill(selectedSkill.skillName);
+
+        // PlayerSkills에 스킬 추가 또는 업그레이드
+        PlayerSkills.Instance.AddOrUpgradeSkill(selectedSkill.skillDataSO);
+
+        // UI 업데이트 등 기타 처리
         UpdateSkillUI();
 
+        // 스킬 아이콘 업데이트
         bool isAlreadySelected = false;
         for (int i = 0; i < currentSkillSlot; i++)
         {
@@ -367,7 +372,6 @@ public class SkillSelector : MonoBehaviour
         skillSelectorUI.SetActive(false);
         tempBlackImage.gameObject.SetActive(false);
         cursorManager.SetCombatCursor();
-        // darkBackground.gameObject.SetActive(false);
     }
 
     private void UpdateSkillUI()

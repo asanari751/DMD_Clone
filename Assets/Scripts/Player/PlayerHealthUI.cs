@@ -39,6 +39,9 @@ public class PlayerHealthUI : MonoBehaviour
             UpdateHealthBar(currentHealth, maxHealth);
             originalHealthBarColor = healthFillImage.color;
             healthDelayedImage.fillAmount = healthFillImage.fillAmount;
+
+            // 임시 설정 - 게임 매니저로 분리
+            CameraManager.Instance.SetTarget(playerTransform);
         }
         else
         {
@@ -81,6 +84,11 @@ public class PlayerHealthUI : MonoBehaviour
         currentHealth = Mathf.Max(currentHealth - damage, 0);
         UpdateHealthBar(currentHealth, maxHealth);
         HandleDamageVisuals();
+
+        if (CameraManager.Instance != null)
+        {
+            CameraManager.Instance.ShakeCamera();
+        }
 
         if (currentHealth <= 0)
             Die();

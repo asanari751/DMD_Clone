@@ -5,14 +5,16 @@ using UnityEngine;
 using DG.Tweening;
 
 [System.Serializable]
-public class SkillStats
+public class Skill
 {
-    public float radius;
-    public float knockbackForce;
-    public float damage;
-    public float duration;
-    public float cooldown;
-    public float attackInterval;
+    public SkillData skillData;
+    public bool isReady = true;
+    public int skillLevel = 1;
+
+    public Skill(SkillData data)
+    {
+        skillData = data;
+    }
 }
 
 public class PlayerSkills : MonoBehaviour
@@ -20,36 +22,10 @@ public class PlayerSkills : MonoBehaviour
 
     public static PlayerSkills Instance { get; private set; }
 
-    [SerializeField] private GameObject skill1EffectPrefab;
-    [SerializeField] private GameObject skill2EffectPrefab;
-
-    [SerializeField]
-    private SkillStats skill1Stats = new SkillStats
-    {
-        radius = 50f,
-        knockbackForce = 50f,
-        damage = 2f,
-        duration = 5f,
-        cooldown = 8f,
-        attackInterval = 1f  // 기본값 1초로 설정
-    };
-
-    [SerializeField]
-    private SkillStats skill2Stats = new SkillStats
-    {
-        radius = 50f,
-        knockbackForce = 50f,
-        damage = 1f,
-        duration = 5f,
-        cooldown = 8f,
-        attackInterval = 1f  // 기본값 1초로 설정
-    };
-
-    [SerializeField] private float skill2SpawnRadius = 100f;
-
     private Dictionary<string, int> skillLevels = new Dictionary<string, int>();
-    private bool isSkill1Ready = true;
-    private bool isSkill2Ready = true;
+    public List<Skill> activeSkills = new List<Skill>();
+    private EnemyHealthController enemyHealthController;
+    private const int defaultSkillLevel = 0;
 
     private void Awake()
     {
@@ -65,183 +41,113 @@ public class PlayerSkills : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(AutoCastSkill1());
-        StartCoroutine(AutoCastSkill2());
+        foreach (var skill in activeSkills)
+        {
+            StartCoroutine(AutoCastSkill(skill));
+        }
     }
 
-    public void AddOrUpgradeSkill(string skillName)
+    public void AddOrUpgradeSkill(SkillData skillData)
     {
-        if (skillLevels.ContainsKey(skillName))
+        var existingSkill = activeSkills.Find(s => s.skillData.skillName == skillData.skillName);
+        if (existingSkill != null)
         {
-            skillLevels[skillName]++;
+            existingSkill.skillLevel++;
+            skillLevels[skillData.skillName] = existingSkill.skillLevel;
         }
         else
         {
-            skillLevels[skillName] = 2;
+            Skill newSkill = new Skill(skillData);
+            activeSkills.Add(newSkill);
+            skillLevels[skillData.skillName] = 1;
+            StartCoroutine(AutoCastSkill(newSkill));
         }
     }
 
     public int GetSkillLevel(string skillName)
     {
-        return skillLevels.TryGetValue(skillName, out int level) ? level : 0;
+        var skill = activeSkills.Find(s => s.skillData.skillName == skillName);
+        return skill != null ? skill.skillLevel : defaultSkillLevel;
     }
 
-    private IEnumerator AutoCastSkill1()
+    private IEnumerator AutoCastSkill(Skill skill)
     {
         while (true)
         {
-            if (skillLevels.ContainsKey("Skill 1") && isSkill1Ready)
+            if (skill.isReady)
             {
-                UseSkill1();
-                isSkill1Ready = false;
-                yield return new WaitForSeconds(skill1Stats.cooldown);
-                isSkill1Ready = true;
+                UseSkill(skill);
+                skill.isReady = false;
+                yield return new WaitForSeconds(skill.skillData.cooldown);
+                skill.isReady = true;
             }
             yield return new WaitForSeconds(0.1f);
         }
     }
 
-    private void UseSkill1()
+    private void UseSkill(Skill skill)
     {
-        // 이펙트
-        GameObject skillEffect = Instantiate(skill1EffectPrefab, transform.position, Quaternion.identity);
-        skillEffect.transform.SetParent(transform);
+        switch (skill.skillData.skillName)
+        {
+            case "가시의 감옥":
+                UseB1(skill);
+                break;
+
+            case "가시 채찍":
+                UseB2(skill);
+                break;
+
+            case "피의 화살":
+                UseB3(skill);
+                break;
+
+            case "아이언 메이든":
+                UseB4(skill);
+                break;
+
+            //
+
+            default:
+                Debug.LogWarning($"알 수 없는 스킬: {skill.skillData.skillName}");
+                break;
+        }
+    }
+
+    // 스킬 실행단
+
+    private void UseB1(Skill skill) // B1
+    {
+        GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+        B1 b1 = skillEffect.AddComponent<B1>();
+        b1.Initialize(skill.skillData, skill.skillLevel);
 
         Animator animator = skillEffect.GetComponent<Animator>();
         if (animator != null)
         {
-            animator.Play("Test");
-        }
-
-        float levelMultiplier = Mathf.Pow(2, GetSkillLevel("Iron Maiden") - 1);
-        float finalDamage = skill1Stats.damage * levelMultiplier;
-
-        CircleCollider2D collider = skillEffect.AddComponent<CircleCollider2D>();
-        collider.radius = skill1Stats.radius;
-        collider.isTrigger = true;
-        collider.enabled = false;
-
-        SkillDamageArea damageArea = skillEffect.AddComponent<SkillDamageArea>();
-        damageArea.Initialize(finalDamage, skill1Stats.knockbackForce);
-
-        StartCoroutine(EnableColliderAfterDelay(collider, 0.15f));
-
-        // 스킬 이펙트 제거
-        Destroy(skillEffect, skill1Stats.duration);
-    }
-
-    private IEnumerator AutoCastSkill2()
-    {
-        while (true)
-        {
-            if (skillLevels.ContainsKey("아이언 메이든") && isSkill2Ready)
-            {
-                UseSkill2();
-                isSkill2Ready = false;
-                yield return new WaitForSeconds(skill2Stats.cooldown);
-                isSkill2Ready = true;
-            }
-            yield return new WaitForSeconds(0.1f);
+            animator.Play(skill.skillData.skillName);
         }
     }
 
-    private void UseSkill2()
+    private void UseB2(Skill skill) // B2
     {
-        // 랜덤 위치 계산 (플레이어 주변 100픽셀 이내)
-        Vector2 randomOffset = Random.insideUnitCircle * skill2SpawnRadius;
-        Vector3 spawnPosition = transform.position + new Vector3(randomOffset.x, randomOffset.y, 0);
+        // 
+    }
 
-        // 아이언 메이든 이펙트 생성
-        GameObject ironMaiden = Instantiate(skill2EffectPrefab, spawnPosition, Quaternion.identity);
+    private void UseB3(Skill skill) // B3
+    {
+        //
+    }
 
+    private void UseB4(Skill skill) // B4
+    {
+        GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+        B4 b4 = skillEffect.AddComponent<B4>();
+        b4.Initialize(skill.skillData, skill.skillLevel);
 
-        // SpriteRenderer sorting order 설정
-        SpriteRenderer spriteRenderer = ironMaiden.GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.sortingOrder = Mathf.RoundToInt(-spawnPosition.y * 100);
-        }
-
-        // 애니메이터 실행
-        Animator animator = ironMaiden.GetComponent<Animator>();
+        Animator animator = skillEffect.GetComponent<Animator>();
         if (animator != null)
         {
-            animator.Play("Iron Maiden");
+            animator.Play(skill.skillData.skillName);
         }
-
-        float currentSkillLevel = GetSkillLevel("아이언 메이든");
-        float finalDamage = skill2Stats.damage;
-
-        // 데미지 영역 설정
-        CircleCollider2D collider = ironMaiden.AddComponent<CircleCollider2D>();
-        collider.radius = skill2Stats.radius;
-        collider.isTrigger = true;
-
-        // 주기적으로 적을 끌어당기고 데미지를 주는 컴포넌트 추가
-        IronMaiden maiden = ironMaiden.AddComponent<IronMaiden>();
-        maiden.Initialize(finalDamage, skill2Stats.knockbackForce, skill2Stats.duration, skill2Stats.attackInterval);
-
-        // 지속시간 후 제거
-        Destroy(ironMaiden, skill2Stats.duration);
     }
-
-    private IEnumerator EnableColliderAfterDelay(Collider2D collider, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        if (collider != null)
-            collider.enabled = true;
-    }
-
-    // 스킬 3 기즈모
-
-    // private void OnDrawGizmos()
-    // {
-    //     Vector3 center = transform.position;
-    //     float radius = 5f;
-
-    //     // 붉은색 원과 연결선 (y축 방향으로 30도씩 제거)
-    //     Gizmos.color = Color.red;
-    //     Vector3 redStart1 = center + new Vector3(Mathf.Cos(-60f * Mathf.Deg2Rad), Mathf.Sin(-60f * Mathf.Deg2Rad)) * radius;
-    //     Vector3 redEnd1 = center + new Vector3(Mathf.Cos(60f * Mathf.Deg2Rad), Mathf.Sin(60f * Mathf.Deg2Rad)) * radius;
-    //     Vector3 redStart2 = center + new Vector3(Mathf.Cos(120f * Mathf.Deg2Rad), Mathf.Sin(120f * Mathf.Deg2Rad)) * radius;
-    //     Vector3 redEnd2 = center + new Vector3(Mathf.Cos(240f * Mathf.Deg2Rad), Mathf.Sin(240f * Mathf.Deg2Rad)) * radius;
-
-    //     DrawPartialCircle(center, radius, -60f, 60f);
-    //     DrawPartialCircle(center, radius, 120f, 240f);
-    //     Gizmos.DrawLine(redStart1, center);
-    //     Gizmos.DrawLine(redEnd1, center);
-    //     Gizmos.DrawLine(redStart2, center);
-    //     Gizmos.DrawLine(redEnd2, center);
-
-    //     // 푸른색 원과 연결선 (y축 방향으로 60도씩 제거)
-    //     Gizmos.color = Color.blue;
-    //     Vector3 blueStart1 = center + new Vector3(Mathf.Cos(-30f * Mathf.Deg2Rad), Mathf.Sin(-30f * Mathf.Deg2Rad)) * radius;
-    //     Vector3 blueEnd1 = center + new Vector3(Mathf.Cos(30f * Mathf.Deg2Rad), Mathf.Sin(30f * Mathf.Deg2Rad)) * radius;
-    //     Vector3 blueStart2 = center + new Vector3(Mathf.Cos(150f * Mathf.Deg2Rad), Mathf.Sin(150f * Mathf.Deg2Rad)) * radius;
-    //     Vector3 blueEnd2 = center + new Vector3(Mathf.Cos(210f * Mathf.Deg2Rad), Mathf.Sin(210f * Mathf.Deg2Rad)) * radius;
-
-    //     DrawPartialCircle(center, radius, -30f, 30f);
-    //     DrawPartialCircle(center, radius, 150f, 210f);
-    //     Gizmos.DrawLine(blueStart1, center);
-    //     Gizmos.DrawLine(blueEnd1, center);
-    //     Gizmos.DrawLine(blueStart2, center);
-    //     Gizmos.DrawLine(blueEnd2, center);
-    // }
-
-    // private void DrawPartialCircle(Vector3 center, float radius, float startAngle, float endAngle)
-    // {
-    //     int segments = 36;
-    //     float angleStep = (endAngle - startAngle) / segments;
-
-    //     for (float angle = startAngle; angle < endAngle; angle += angleStep)
-    //     {
-    //         float radian1 = angle * Mathf.Deg2Rad;
-    //         float radian2 = (angle + angleStep) * Mathf.Deg2Rad;
-
-    //         Vector3 pos1 = center + new Vector3(Mathf.Cos(radian1), Mathf.Sin(radian1)) * radius;
-    //         Vector3 pos2 = center + new Vector3(Mathf.Cos(radian2), Mathf.Sin(radian2)) * radius;
-
-    //         Gizmos.DrawLine(pos1, pos2);
-    //     }
-    // }
 }

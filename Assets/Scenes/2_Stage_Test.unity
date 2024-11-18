@@ -1347,12 +1347,12 @@ GameObject:
   - component: {fileID: 253712301}
   - component: {fileID: 253712296}
   m_Layer: 31
-  m_Name: Follow Camera
+  m_Name: '[Obs]Follow Camera'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &253712296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29011,6 +29011,7 @@ GameObject:
   - component: {fileID: 519420033}
   - component: {fileID: 519420036}
   - component: {fileID: 519420037}
+  - component: {fileID: 519420038}
   m_Layer: 31
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -29246,13 +29247,30 @@ MonoBehaviour:
   m_RefResolutionX: 1600
   m_RefResolutionY: 900
   m_CropFrame: 0
-  m_GridSnapping: 0
+  m_GridSnapping: 1
   m_FilterMode: 0
   m_UpscaleRT: 0
   m_PixelSnapping: 0
   m_CropFrameX: 0
   m_CropFrameY: 0
   m_StretchFill: 0
+--- !u!114 &519420038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9664a250c79b18d4b8424ea127064edf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1766201571}
+  smoothTime: 0.3
+  offset: {x: 0, y: 0, z: -10}
+  shakeDuration: 0.2
+  shakeMagnitude: 0.3
 --- !u!1 &527142929
 GameObject:
   m_ObjectHideFlags: 0
@@ -42067,7 +42085,9 @@ MonoBehaviour:
       \uD53C\uAC00 \uB124 \uC548\uC5D0 \uC2A4\uBA70\uB4E4\uC5C8\uC73C\uB2C8, \uADF8
       \uC5B4\uB5A4 \uACF5\uD3EC\uB3C4 \uB108\uB97C \uBC29\uD574\uD558\uC9C0 \uBABB\uD558\uB9AC\uB77C."
     availableSkills:
-    - skillDataSO: {fileID: 0}
+    - skillDataSO: {fileID: 11400000, guid: 4efeca0f33901e44f92d09a6af5e3f03, type: 2}
+    - skillDataSO: {fileID: 11400000, guid: 878505e7f9edb824f94736e75e50bdb6, type: 2}
+    - skillDataSO: {fileID: 11400000, guid: fc5bdce5506f2e44abe8aecafbe4b299, type: 2}
   - godImage: {fileID: 862882508}
     godName: "\uBC14\uD1A0\uB9AC \uC5D0\uB974\uC81C\uBCA0\uD2B8"
     dialogueTexts:
@@ -42124,7 +42144,9 @@ MonoBehaviour:
       \uB124 \uC801\uC5D0\uAC8C \uACF5\uD3EC\uB97C \uC120\uC0AC\uD558\uC5EC \uBB34\uB98E
       \uAFC7\uB9AC\uB77C."
     availableSkills:
-    - skillDataSO: {fileID: 0}
+    - skillDataSO: {fileID: 11400000, guid: 6748372d3e1b0ae41aca96572609346e, type: 2}
+    - skillDataSO: {fileID: 11400000, guid: bfe2e7cafb859aa45a7e4bf59349bc41, type: 2}
+    - skillDataSO: {fileID: 11400000, guid: a7212211dbc9f6e45a6b41fe6d32bc3a, type: 2}
   tempBlackImage: {fileID: 1937353154}
   skillSelectorUI: {fileID: 1332151170}
   skillButtons:
@@ -48726,24 +48748,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a74b75a4ffb97949a9f6f13c4858394, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skill1EffectPrefab: {fileID: 1505759182}
-  skill2EffectPrefab: {fileID: 1446853465805849609, guid: 615bbff0ef67dc049b1f98f96c7c5954,
-    type: 3}
-  skill1Stats:
-    radius: 5.5
-    knockbackForce: 100
-    damage: 1
-    duration: 1
-    cooldown: 5
-    attackInterval: 1
-  skill2Stats:
-    radius: 10
-    knockbackForce: 1
-    damage: 0
-    duration: 5
-    cooldown: 5
-    attackInterval: 0.5
-  skill2SpawnRadius: 5
+  activeSkills: []
 --- !u!1 &1783540886
 GameObject:
   m_ObjectHideFlags: 0

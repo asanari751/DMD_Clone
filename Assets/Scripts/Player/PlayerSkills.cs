@@ -128,14 +128,30 @@ public class PlayerSkills : MonoBehaviour
         }
     }
 
-    private void UseB2(Skill skill) // B2
+    private void UseB2(Skill skill)
     {
-        // 
+        GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+        B2 b2 = skillEffect.AddComponent<B2>();
+        b2.Initialize(skill.skillData, skill.skillLevel);
+
+        // Animator animator = skillEffect.GetComponent<Animator>();
+        // if (animator != null)
+        // {
+        //     animator.Play(skill.skillData.skillName);
+        // }
     }
 
-    private void UseB3(Skill skill) // B3
+    private void UseB3(Skill skill)
     {
-        //
+        GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+        B3 b3 = skillEffect.AddComponent<B3>();
+        b3.Initialize(skill.skillData, skill.skillLevel);
+
+        // Animator animator = skillEffect.GetComponent<Animator>();
+        // if (animator != null)
+        // {
+        //     animator.Play(skill.skillData.skillName);
+        // }
     }
 
     private void UseB4(Skill skill) // B4

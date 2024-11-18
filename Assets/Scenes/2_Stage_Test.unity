@@ -29267,8 +29267,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1766201571}
-  smoothTime: 0.3
-  offset: {x: 0, y: 0, z: -10}
+  smoothTime: 0.1
+  offset: {x: 0, y: 0, z: -1}
   shakeDuration: 0.2
   shakeMagnitude: 0.3
 --- !u!1 &527142929

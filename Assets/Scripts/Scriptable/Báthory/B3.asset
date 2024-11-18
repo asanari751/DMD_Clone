@@ -18,15 +18,16 @@ MonoBehaviour:
   skillLevel: 0
   skillDescription: "\uC801\uC744 \uAD00\uD1B5\uD558\uB294 \uD654\uC0B4\uC744 \uBC1C\uC0AC\uD574
     \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4.\r"
-  skillPrefab: {fileID: 0}
-  radius: 0
-  knockbackForce: 0
-  damage: 0
-  duration: 0
-  cooldown: 0
-  attackInterval: 0
+  skillPrefab: {fileID: 5284200110495949324, guid: 30564031c75791a48b3905fcda5a2526,
+    type: 3}
+  damage: 5
+  duration: 0.5
+  cooldown: 1
+  attackInterval: 0.5
   isPassive: 0
   effectOnHit: 0
-  castTime: 0
-  isAoe: 1
+  radius: 0
+  range: 10
+  angle: 0
   maxTargets: 99
+  knockbackForce: 3

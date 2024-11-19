@@ -71,8 +71,8 @@ public class SkillSelector : MonoBehaviour
     public List<Image> skillInventoryIcons = new List<Image>();
     public int currentSkillSlot = 0;
 
-    private int maxRedDiceCount = 3;
-    private int maxBlueDiceCount = 3;
+    private int maxRedDiceCount = 99;
+    private int maxBlueDiceCount = 99;
     private int currentRedDiceCount;
     private int currentBlueDiceCount;
     private int previousGodIndex = -1;

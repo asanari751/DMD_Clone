@@ -2629,7 +2629,7 @@ MonoBehaviour:
   expTable:
     _serializedList:
     - Key: 1
-      Value: 5
+      Value: 1
     - Key: 2
       Value: 10
     - Key: 3
@@ -44151,7 +44151,12 @@ PrefabInstance:
     - target: {fileID: 3700240015915899349, guid: 20e2b83c03423ad4e8962447b1ebdf52,
         type: 3}
       propertyPath: m_Name
-      value: Particle System
+      value: Particle
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700240015915899349, guid: 20e2b83c03423ad4e8962447b1ebdf52,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7452349303271447286, guid: 20e2b83c03423ad4e8962447b1ebdf52,
         type: 3}
@@ -44332,7 +44337,7 @@ PrefabInstance:
     - target: {fileID: 9069301392603011855, guid: 20e2b83c03423ad4e8962447b1ebdf52,
         type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9069301392603011855, guid: 20e2b83c03423ad4e8962447b1ebdf52,
         type: 3}
@@ -46501,7 +46506,8 @@ MonoBehaviour:
   damageTextParent: {fileID: 0}
   lifetime: 0.5
   moveSpeed: 0.5
-  offset: {x: 1, y: 2, z: 0}
+  damageOffset: {x: 0, y: 2, z: 0}
+  healOffset: {x: 0, y: 0.66, z: 0}
   minScale: 0.5
   minAlpha: 0
   fontSize: 48
@@ -48731,6 +48737,7 @@ MonoBehaviour:
   colorChangeDuration: 0.1
   delayedDuration: 1
   maxHealth: 5
+  currentHealth: 5
   yOffset: 2
   smoothSpeed: 100
   playerTransform: {fileID: 1766201571}
@@ -50912,7 +50919,7 @@ MonoBehaviour:
   eliteEnemy: {fileID: 6135728234777956250}
   bossEnemy: {fileID: 3011803388326096627}
   spawnInterval: 0.01
-  maxEnemies: 50
+  maxEnemies: 4
   parent: {fileID: 914842388}
 --- !u!1 &2078981337
 GameObject:

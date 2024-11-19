@@ -22,12 +22,14 @@ MonoBehaviour:
     type: 3}
   damage: 3
   duration: 1
-  cooldown: 3
-  attackInterval: 1
+  cooldown: 1
   isPassive: 0
+  attackInterval: 1
   effectOnHit: 0
   radius: 0
   range: 5
-  angle: 180
+  angle: 120
   maxTargets: 99
   knockbackForce: 1
+  procChance: 0
+  effectValue: 0

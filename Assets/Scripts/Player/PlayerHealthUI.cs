@@ -17,6 +17,7 @@ public class PlayerHealthUI : MonoBehaviour
     [SerializeField] private float colorChangeDuration;
     [SerializeField] private float delayedDuration;
     [SerializeField] private float maxHealth;
+    [SerializeField] private float currentHealth;
     [SerializeField] private float yOffset;
     [SerializeField] private float smoothSpeed;
 
@@ -25,10 +26,11 @@ public class PlayerHealthUI : MonoBehaviour
     [SerializeField] private string hubScene = "1_Hub";
     [SerializeField] private bool InCombatArea = false;
 
-    private float currentHealth;
     private Vector3 currentPosition;
     private Color originalHealthBarColor;
     private bool isDead = false;
+    public float CurrentHealth => currentHealth;
+    public float MaxHealth => maxHealth;
 
     private void Start()
     {
@@ -162,5 +164,40 @@ public class PlayerHealthUI : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         SceneTransitionManager.Instance.LoadSceneWithTransition(hubScene);
+    }
+
+    // 패시브 스킬 ( PlayerSkill.cs )
+
+    public void UpdateHealthBarForHeal(float currentHealth, float maxHealth)
+    {
+        if (healthFillImage != null)
+        {
+            float targetFillAmount = currentHealth / maxHealth;
+
+            // 회복 시에는 지연 체력바가 즉시 차오름
+            healthDelayedImage.fillAmount = targetFillAmount;
+            healthUIDelayedImage.fillAmount = targetFillAmount;
+
+            // 메인 체력바가 천천히 따라감
+            healthFillImage.DOFillAmount(targetFillAmount, delayedDuration)
+                .SetEase(Ease.InOutSine);
+            healthUIImage.DOFillAmount(targetFillAmount, delayedDuration)
+                .SetEase(Ease.InOutSine);
+        }
+    }
+
+    // Heal 메서드 수정
+    public void Heal(float amount)
+    {
+        currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+        UpdateHealthBarForHeal(currentHealth, maxHealth);
+    }
+
+    // IncreaseMaxHealth 메서드 수정
+    public void IncreaseMaxHealth(float amount)
+    {
+        maxHealth += amount;
+        currentHealth += amount;
+        UpdateHealthBarForHeal(currentHealth, maxHealth);
     }
 }

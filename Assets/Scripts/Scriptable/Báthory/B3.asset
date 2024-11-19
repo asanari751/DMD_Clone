@@ -27,7 +27,7 @@ MonoBehaviour:
   isPassive: 0
   effectOnHit: 0
   radius: 0
-  range: 10
+  range: 15
   angle: 0
   maxTargets: 99
   knockbackForce: 3

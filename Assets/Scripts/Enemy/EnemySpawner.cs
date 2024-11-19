@@ -24,6 +24,8 @@ public class EnemySpawner : MonoBehaviour
     private List<List<GameObject>> enemyPool;
     private int currentEnemyCount = 0;
     private int currentEnemyType = 0;
+    public delegate void EnemyDefeatedHandler(GameObject enemy);
+    public event EnemyDefeatedHandler OnEnemyDefeated;
 
 
     private void Start()
@@ -187,8 +189,9 @@ public class EnemySpawner : MonoBehaviour
             basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;
         }
 
-        DOTween.Kill(enemy.transform);
+        OnEnemyDefeated?.Invoke(enemy);  // 이벤트 발생
 
+        DOTween.Kill(enemy.transform);
         enemy.SetActive(false);
         currentEnemyCount--;
     }

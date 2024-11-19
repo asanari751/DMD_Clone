@@ -12,7 +12,8 @@ public class DamageIndicator : MonoBehaviour
     [Header("Properties")]
     [SerializeField] private float lifetime = 1f;
     [SerializeField] private float moveSpeed = 1f;
-    [SerializeField] private Vector3 offset = new Vector3(0, 2f, 0);
+    [SerializeField] private Vector3 damageOffset = new Vector3(0, 2f, 0);
+    [SerializeField] private Vector3 healOffset = new Vector3(0, 3f, 0);
     [SerializeField] private float minScale = 0.5f;
     [SerializeField] private float minAlpha = 0f;
     [SerializeField] private float fontSize = 36f;
@@ -67,7 +68,7 @@ public class DamageIndicator : MonoBehaviour
     {
         GameObject damageText = Instantiate(textPrefab, damageTextParent != null ? damageTextParent : canvas.transform);
         RectTransform rectTransform = damageText.GetComponent<RectTransform>();
-        Vector2 viewportPosition = Camera.main.WorldToViewportPoint(position + offset);
+        Vector2 viewportPosition = Camera.main.WorldToViewportPoint(position + damageOffset);
         Vector2 worldObjectScreenPosition = new Vector2(
             ((viewportPosition.x * canvas.pixelRect.width) - (canvas.pixelRect.width * 0.5f)),
             ((viewportPosition.y * canvas.pixelRect.height) - (canvas.pixelRect.height * 0.5f)));
@@ -121,5 +122,16 @@ public class DamageIndicator : MonoBehaviour
         damageText.transform.position = startPosition + Vector3.up * moveSpeed * elapsedTime;
         damageText.transform.localScale = startScale * scale;
         textMesh.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
+    }
+
+    // PlayerSkills B7, B8
+
+    public void ShowHeal(Vector3 position, int amount)
+    {
+        GameObject healText = CreateDamageText(position + healOffset);
+        TextMeshProUGUI textMesh = healText.GetComponent<TextMeshProUGUI>();
+        textMesh.text = amount.ToString();
+        textMesh.color = Color.green;
+        StartCoroutine(AnimateText(healText));
     }
 }

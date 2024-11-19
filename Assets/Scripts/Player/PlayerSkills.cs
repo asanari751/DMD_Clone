@@ -72,6 +72,13 @@ public class PlayerSkills : MonoBehaviour
 
     private IEnumerator AutoCastSkill(Skill skill)
     {
+        // 패시브 스킬은 코루틴 실행하지 않음
+        if (skill.skillData.isPassive)
+        {
+            UseSkill(skill);
+            yield break;
+        }
+
         while (true)
         {
             if (skill.isReady)
@@ -103,6 +110,22 @@ public class PlayerSkills : MonoBehaviour
 
             case "아이언 메이든":
                 UseB4(skill);
+                break;
+
+            case "가시의 저주":
+                UseB5(skill);
+                break;
+
+            case "피의 폭발":
+                UseB6(skill);
+                break;
+
+            case "피의 목욕":
+                UseB7(skill);
+                break;
+
+            case "영원한 젊음":
+                UseB8(skill);
                 break;
 
             //
@@ -164,6 +187,53 @@ public class PlayerSkills : MonoBehaviour
         if (animator != null)
         {
             animator.Play(skill.skillData.skillName);
+        }
+    }
+
+    private void UseB5(Skill skill)
+    {
+        GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+        B5 b5 = skillEffect.AddComponent<B5>();
+        b5.Initialize(skill.skillData, skill.skillLevel);
+
+        // Animator animator = skillEffect.GetComponent<Animator>();
+        // if (animator != null)
+        // {
+        //     animator.Play(skill.skillData.skillName);
+        // }
+    }
+
+    private void UseB6(Skill skill)
+    {
+        GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+        B6 b6 = skillEffect.AddComponent<B6>();
+        b6.Initialize(skill.skillData, skill.skillLevel);
+
+        // Animator animator = skillEffect.GetComponent<Animator>();
+        // if (animator != null)
+        // {
+        //     animator.Play(skill.skillData.skillName);
+        // }
+    }
+
+    private void UseB7(Skill skill)
+    {
+        GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+        B7 b7 = skillEffect.AddComponent<B7>();
+        b7.Initialize(skill.skillData, skill.skillLevel);
+    }
+
+    private void UseB8(Skill skill)
+    {
+        // 이미 존재하는 B8 컴포넌트 확인
+        B8 existingB8 = FindAnyObjectByType<B8>();
+
+        // 없을 때만 새로 생성
+        if (existingB8 == null)
+        {
+            GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+            B8 b8 = skillEffect.AddComponent<B8>();
+            b8.Initialize(skill.skillData, skill.skillLevel);
         }
     }
 }

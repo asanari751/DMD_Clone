@@ -27,27 +27,77 @@ public class B2 : MonoBehaviour
         DetectAndDamageEnemies();
     }
 
-    private void DetectAndDamageEnemies()
+    private bool IsValidAttackDirection(Vector2 directionToTarget)
+    {
+        // 오른쪽 방향(1, 0)을 기준으로 각도 계산
+        float angle = Vector2.SignedAngle(Vector2.right, directionToTarget);
+
+        // 각도를 0~360 범위로 변환
+        if (angle < 0)
+            angle += 360;
+
+        // 공격 가능한 각도: 345~360도, 0~15도(오른쪽) 및 165~195도(왼쪽)
+        bool isValidRight = (angle >= 345 || angle <= 15);
+        bool isValidLeft = (angle >= 165 && angle <= 195);
+
+        return isValidRight || isValidLeft;
+    }
+
+    private Transform FindNearestValidEnemy()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, range, LayerMask.GetMask("Enemy"));
+        Transform nearestEnemy = null;
+        float nearestDistance = float.MaxValue;
 
         foreach (Collider2D col in colliders)
         {
             Vector2 directionToTarget = (col.transform.position - transform.position).normalized;
-            float angleToTarget = Vector2.Angle(transform.right, directionToTarget);
+
+            // 사각지대에 있는 적은 무시
+            if (!IsValidAttackDirection(directionToTarget))
+                continue;
+
+            float distance = Vector2.Distance(transform.position, col.transform.position);
+            if (distance < nearestDistance)
+            {
+                nearestDistance = distance;
+                nearestEnemy = col.transform;
+            }
+        }
+
+        return nearestEnemy;
+    }
+
+    private void DetectAndDamageEnemies()
+    {
+        Transform targetEnemy = FindNearestValidEnemy();
+
+        // 유효한 타겟이 없으면 스킬 취소
+        if (targetEnemy == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        // 타겟 방향으로 회전
+        Vector2 directionToTarget = (targetEnemy.position - transform.position).normalized;
+        transform.right = directionToTarget;
+
+        // 부채꼴 범위 내 적 감지 및 데미지 처리
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, range, LayerMask.GetMask("Enemy"));
+
+        foreach (Collider2D col in colliders)
+        {
+            Vector2 dirToEnemy = (col.transform.position - transform.position).normalized;
+            float angleToTarget = Vector2.Angle(transform.right, dirToEnemy);
 
             if (angleToTarget <= angle / 2)
             {
                 EnemyHealthController enemyHealth = col.GetComponent<EnemyHealthController>();
                 if (enemyHealth != null)
                 {
-                    // 넉백 방향 설정
-                    Vector2 knockbackDirection = directionToTarget;
+                    enemyHealth.TakeDamage(damage, -dirToEnemy * knockbackForce);
 
-                    // 데미지와 넉백 적용
-                    enemyHealth.TakeDamage(damage, knockbackDirection * knockbackForce);
-
-                    // 상태이상 효과 적용
                     if (effectOnHit != SkillData.EffectOnHit.None)
                     {
                         EnemyStatusEffect statusEffect = enemyHealth.GetComponent<EnemyStatusEffect>();
@@ -60,7 +110,6 @@ public class B2 : MonoBehaviour
             }
         }
 
-        // 스킬 이펙트 제거 (약간의 지연 후)
         Destroy(gameObject, 0.5f);
     }
 
@@ -81,6 +130,7 @@ public class B2 : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        // 기존 공격 범위 기즈모 (빨간색)
         Gizmos.color = Color.red;
         Vector3 direction = transform.right;
         Vector3 leftDirection = Quaternion.Euler(0, 0, angle / 2) * direction;
@@ -88,11 +138,49 @@ public class B2 : MonoBehaviour
 
         Gizmos.DrawLine(transform.position, transform.position + leftDirection * range);
         Gizmos.DrawLine(transform.position, transform.position + rightDirection * range);
-
         DrawArc();
+
+        // 공격 가능한 각도 기즈모 (파란색)
+        Gizmos.color = Color.blue;
+
+        // 오른쪽 방향 (345~15도)
+        Vector3 rightStart = Quaternion.Euler(0, 0, -15) * Vector3.right;
+        Vector3 rightEnd = Quaternion.Euler(0, 0, 15) * Vector3.right;
+        DrawArcSegment(-15f, 15f, Color.blue);
+
+        // 왼쪽 방향 (165~195도)
+        Vector3 leftStart = Quaternion.Euler(0, 0, 165) * Vector3.right;
+        Vector3 leftEnd = Quaternion.Euler(0, 0, 195) * Vector3.right;
+        DrawArcSegment(165f, 195f, Color.blue);
     }
 
-    private void DrawArc() // 헬퍼
+    private void DrawArcSegment(float startAngle, float endAngle, Color color)
+    {
+        float arcAngleStep = 1f;
+        Vector3 center = transform.position;
+
+        // Arc의 시작점과 끝점
+        Vector3 startPoint = center + Quaternion.Euler(0, 0, startAngle) * Vector3.right * range;
+        Vector3 endPoint = center + Quaternion.Euler(0, 0, endAngle) * Vector3.right * range;
+
+        // 플레이어 위치에서 Arc의 시작점과 끝점으로 선 그리기
+        Gizmos.DrawLine(center, startPoint);
+        Gizmos.DrawLine(center, endPoint);
+
+        // Arc 그리기
+        for (float i = startAngle; i <= endAngle; i += arcAngleStep)
+        {
+            float start = i;
+            float end = i + arcAngleStep;
+
+            Vector3 startPos = center + Quaternion.Euler(0, 0, start) * Vector3.right * range;
+            Vector3 endPos = center + Quaternion.Euler(0, 0, end) * Vector3.right * range;
+
+            Gizmos.DrawLine(startPos, endPos);
+        }
+    }
+
+    private void DrawArc()
     {
         Vector3 center = transform.position;
         float arcAngleStep = 1f;

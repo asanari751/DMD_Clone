@@ -10,15 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: da4b8bfa5b2cff44bb4a8378ac175508, type: 3}
-  m_Name: S3
+  m_Name: V5
   m_EditorClassIdentifier: 
   skillRangeType: 0
-  skillName: "\uB9DD\uC790\uC758 \uC601\uC5ED"
+  skillName: "\uCCB4\uD398\uC288"
   skillIcon: {fileID: 0}
-  skillLevel: 0
-  skillDescription: "\uC9C0\uC18D \uC2DC\uAC04\uB3D9\uC548 \uD50C\uB808\uC774\uC5B4
-    \uC704\uCE58\uC5D0 \uC6D0\uD615 \uBC94\uC704\uC758 \uC7A5\uD310\uC744 \uC124\uCE58\uD558\uC5EC
-    \uC801\uB4E4\uC5D0\uAC8C \uD53C\uD574\uB97C \uC8FC\uACE0 \uC1E0\uC57D\uC744 \uBD80\uC5EC\uD569\uB2C8\uB2E4.\r"
+  skillLevel: 1
+  skillDescription: "\uC77C\uBC18 \uC801\uC744 \uBAA8\uB450 \uCC98\uD615\uD569\uB2C8\uB2E4.\r"
   skillPrefab: {fileID: 0}
   damage: 0
   duration: 0

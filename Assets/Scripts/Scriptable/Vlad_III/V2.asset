@@ -13,21 +13,22 @@ MonoBehaviour:
   m_Name: V2
   m_EditorClassIdentifier: 
   skillRangeType: 0
-  skillName: 2
+  skillName: "\uAF2C\uCC59\uC774\uD615 "
   skillIcon: {fileID: 0}
-  skillLevel: 1
-  skillDescription: 2
+  skillLevel: 0
+  skillDescription: "\uC801\uC5D0\uAC8C \uD53C\uD574\uB97C \uC8FC\uACE0 \uACBD\uC9C1\uC744
+    \uC77C\uC73C\uD0A4\uB294 \uAC00\uC2DC\uB97C \uC124\uCE58\uD569\uB2C8\uB2E4.\r"
   skillPrefab: {fileID: 0}
-  range: 0
-  radius: 0
-  angle: 0
-  knockbackForce: 0
   damage: 0
   duration: 0
   cooldown: 0
-  attackInterval: 0
   isPassive: 0
+  attackInterval: 0
   effectOnHit: 0
-  castTime: 0
-  isAoe: 0
+  radius: 0
+  range: 0
+  angle: 0
   maxTargets: 0
+  knockbackForce: 0
+  procChance: 0
+  effectValue: 0

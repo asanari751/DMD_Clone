@@ -16,20 +16,26 @@ public class EnemyHealthElite : MonoBehaviour
     private Color originalHealthBarColor;
     private Camera mainCamera;
     private bool isActive = true;
+    private static bool showHealthBar = true;
 
     private void Start()
     {
         mainCamera = Camera.main;
+
+        if (!showHealthBar)
+        {
+            healthBarRoot.SetActive(false);
+            return;
+        }
+
         if (healthFillImage != null)
         {
             originalHealthBarColor = healthFillImage.color;
             healthDelayedImage.fillAmount = healthFillImage.fillAmount;
         }
-        
-        if (healthBarRoot != null)
-        {
-            healthBarRoot.SetActive(true);
-        }
+            
+        healthBarRoot.SetActive(true);
+        showHealthBar = PlayerPrefs.GetInt("ShowDamageIndicator", 1) == 1;
     }
 
     private void Update()
@@ -38,6 +44,11 @@ public class EnemyHealthElite : MonoBehaviour
         {
             HandleHealthBarPosition();
         }
+    }
+
+    public static void SetHealthBarVisibility(bool visible)
+    {
+        showHealthBar = visible;
     }
 
     public void UpdateHealthBar(float currentHealth, float maxHealth)

@@ -23,6 +23,7 @@ public class DamageIndicator : MonoBehaviour
     [SerializeField] private AnimationCurve alphaCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
 
     public static DamageIndicator Instance { get; private set; }
+    private bool isEnabled = true;
 
     private void Awake()
     {
@@ -31,8 +32,9 @@ public class DamageIndicator : MonoBehaviour
         {
             canvas = FindAnyObjectByType<Canvas>();
         }
-    }
 
+        isEnabled = PlayerPrefs.GetInt("ShowDamageIndicator", 1) == 1;
+    }
 
     private void InitializeSingleton()
     {
@@ -57,8 +59,15 @@ public class DamageIndicator : MonoBehaviour
         }
     }
 
+    public void SetEnabled(bool enabled)
+    {
+        isEnabled = enabled;
+    }
+
     public void ShowDamage(Vector3 position, int amount)
     {
+        if (!isEnabled) return;
+
         GameObject damageText = CreateDamageText(position);
         SetDamageTextProperties(damageText, amount);
         StartCoroutine(AnimateText(damageText));

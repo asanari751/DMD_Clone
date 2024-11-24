@@ -8,7 +8,7 @@ public class B3 : MonoBehaviour
     private float range;
     private float duration;
     private int skillLevel;
-    private SkillData.EffectOnHit effectOnHit;
+    private SkillData.StatusEffectOnHit effectOnHit;
     private Vector2 direction;
     private float expandSpeed = 100f; // 콜라이더 확장 속도
     private BoxCollider2D boxCollider;
@@ -39,7 +39,7 @@ public class B3 : MonoBehaviour
         this.knockbackForce = skillData.knockbackForce;
         this.range = skillData.range;
         this.skillLevel = skillLevel;
-        this.effectOnHit = skillData.effectOnHit;
+        this.effectOnHit = skillData.statusEffectOnHit;
         this.duration = skillData.duration;
 
         Transform playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
@@ -94,7 +94,7 @@ public class B3 : MonoBehaviour
             {
                 enemyHealth.TakeDamage(damage, direction * -knockbackForce);
 
-                if (effectOnHit != SkillData.EffectOnHit.None)
+                if (effectOnHit != SkillData.StatusEffectOnHit.None)
                 {
                     EnemyStatusEffect statusEffect = enemyHealth.GetComponent<EnemyStatusEffect>();
                     if (statusEffect != null)
@@ -106,15 +106,15 @@ public class B3 : MonoBehaviour
         }
     }
 
-    private EnemyStatusEffect.StatusEffectType ConvertToEnemyStatusEffectType(SkillData.EffectOnHit effect)
+    private EnemyStatusEffect.StatusEffectType ConvertToEnemyStatusEffectType(SkillData.StatusEffectOnHit effect)
     {
         switch (effect)
         {
-            case SkillData.EffectOnHit.Slow:
+            case SkillData.StatusEffectOnHit.Slow:
                 return EnemyStatusEffect.StatusEffectType.Slow;
-            case SkillData.EffectOnHit.Bleed:
+            case SkillData.StatusEffectOnHit.Bleed:
                 return EnemyStatusEffect.StatusEffectType.Bleed;
-            case SkillData.EffectOnHit.Poison:
+            case SkillData.StatusEffectOnHit.Poison:
                 return EnemyStatusEffect.StatusEffectType.Poison;
             default:
                 return EnemyStatusEffect.StatusEffectType.None;

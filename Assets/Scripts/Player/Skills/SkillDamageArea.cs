@@ -6,17 +6,17 @@ public class SkillDamageArea1 : MonoBehaviour
 {
     private float _damage;
     private float _knockbackForce;
-    private SkillData.EffectOnHit _effectOnHit;
+    private SkillData.StatusEffectOnHit _statusEffectOnHit;
     private float _duration;
     private float _attackInterval;
 
     private List<EnemyHealthController> affectedEnemies = new List<EnemyHealthController>();
 
-    public void Initialize(float damage, float knockbackForce, SkillData.EffectOnHit effectOnHit, float duration, float attackInterval)
+    public void Initialize(float damage, float knockbackForce, SkillData.StatusEffectOnHit effectOnHit, float duration, float attackInterval)
     {
         _damage = damage;
         _knockbackForce = knockbackForce;
-        _effectOnHit = effectOnHit;
+        _statusEffectOnHit = effectOnHit;
         _duration = duration;
         _attackInterval = attackInterval;
 
@@ -37,12 +37,12 @@ public class SkillDamageArea1 : MonoBehaviour
                     enemyHealth.TakeDamage(_damage, Vector2.zero);
 
                     // 상태이상 효과 적용
-                    if (_effectOnHit != SkillData.EffectOnHit.None)
+                    if (_statusEffectOnHit != SkillData.StatusEffectOnHit.None)
                     {
                         EnemyStatusEffect statusEffect = enemyHealth.GetComponent<EnemyStatusEffect>();
                         if (statusEffect != null)
                         {
-                            statusEffect.ApplyStatusEffect(ConvertToEnemyStatusEffectType(_effectOnHit), _duration);
+                            statusEffect.ApplyStatusEffect(ConvertToEnemyStatusEffectType(_statusEffectOnHit), _duration);
                         }
                     }
                 }
@@ -56,15 +56,15 @@ public class SkillDamageArea1 : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private EnemyStatusEffect.StatusEffectType ConvertToEnemyStatusEffectType(SkillData.EffectOnHit effect)
+    private EnemyStatusEffect.StatusEffectType ConvertToEnemyStatusEffectType(SkillData.StatusEffectOnHit effect)
     {
         switch (effect)
         {
-            case SkillData.EffectOnHit.Slow:
+            case SkillData.StatusEffectOnHit.Slow:
                 return EnemyStatusEffect.StatusEffectType.Slow;
-            case SkillData.EffectOnHit.Bleed:
+            case SkillData.StatusEffectOnHit.Bleed:
                 return EnemyStatusEffect.StatusEffectType.Bleed;
-            case SkillData.EffectOnHit.Poison:
+            case SkillData.StatusEffectOnHit.Poison:
                 return EnemyStatusEffect.StatusEffectType.Poison;
             // 필요한 경우 다른 상태이상 추가
             default:

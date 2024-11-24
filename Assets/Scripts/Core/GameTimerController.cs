@@ -40,7 +40,7 @@ public class GameTimerController : MonoBehaviour
         UpdateTimerDisplay();
         OnBossDefeated += HandleStageClear;
     }
-    
+
     private void Update()
     {
         if (!PauseController.Paused && !pauseController.IsGameEnded() && pauseController.IsRunning())
@@ -135,5 +135,10 @@ public class GameTimerController : MonoBehaviour
         pauseController.PauseForGameClear();
         uiManager.ShowStageClearUI();
         RemoveCombatAreaLimits();
+    }
+
+    public float GetElapsedTime() // EnemySpawner
+    {
+        return elapsedTime;
     }
 }

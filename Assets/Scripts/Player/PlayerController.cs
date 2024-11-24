@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
     public Vector2 InputVector { get; private set; }
     private Rigidbody2D rigid;
     public float playerSpeed;
+    public Experience experience; // ExpOrb
 
     private ParticleSystem dustParticle;
 

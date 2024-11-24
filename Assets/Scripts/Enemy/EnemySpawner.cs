@@ -2,38 +2,56 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using System.Linq;
+using Unity.Collections;
 
 public class EnemySpawner : MonoBehaviour
 {
+    [System.Serializable]
+    public class EnemySpawnData
+    {
+        public GameObject enemyPrefab;
+
+        [HideInInspector]
+        public float spawnProbability; // 적이 스폰될 확률 (전체 중 비율)
+        public float spawnTime0;
+        public float spawnTime1;
+
+        [HideInInspector]
+        public List<GameObject> enemyPool;
+    }
+
     [Header("References")]
     [SerializeField] private GameTimerController gameTimerController;
     [SerializeField] private UIManager uiManager;
-    [SerializeField] private EnemyHealthBoss bossHealthUI;
-
-    [Header("Enemys")]
-    [SerializeField] private List<GameObject> enemyPrefabs;
-    [SerializeField] private GameObject eliteEnemy;
-    [SerializeField] private GameObject bossEnemy;
 
     [Header("Spawn Settings")]
+    [SerializeField] private List<EnemySpawnData> enemySpawnDataList;
     [SerializeField] private float spawnInterval;
     [SerializeField] private int maxEnemies;
     [SerializeField] private Transform parent;
 
+    [Header("Special")]
+    [SerializeField] private GameObject eliteEnemy;
+    [SerializeField] private GameObject bossEnemy;
+
     private Camera mainCamera;
-    private List<List<GameObject>> enemyPool;
+    private float gameTime; // 현재 게임 시간
     private int currentEnemyCount = 0;
-    private int currentEnemyType = 0;
     public delegate void EnemyDefeatedHandler(GameObject enemy);
     public event EnemyDefeatedHandler OnEnemyDefeated;
 
+    private void Awake()
+    {
+        AdjustSpawnProbabilities();
+    }
 
     private void Start()
     {
         mainCamera = Camera.main;
         if (mainCamera == null) return;
 
-        InitializeEnemyPool();
+        InitializeEnemyPools();
         StartCoroutine(SpawnEnemies());
 
         if (gameTimerController != null)
@@ -46,19 +64,19 @@ public class EnemySpawner : MonoBehaviour
         bossEnemy.SetActive(false);
     }
 
-    private void InitializeEnemyPool()
+    private void InitializeEnemyPools()
     {
-        enemyPool = new List<List<GameObject>>();
-        for (int i = 0; i < enemyPrefabs.Count; i++)
+        foreach (var enemyData in enemySpawnDataList)
         {
-            List<GameObject> typePool = new List<GameObject>();
-            for (int j = 0; j < maxEnemies / enemyPrefabs.Count; j++)
+            enemyData.enemyPool = new List<GameObject>();
+            int poolSize = maxEnemies;
+
+            for (int i = 0; i < poolSize; i++)
             {
-                GameObject enemy = Instantiate(enemyPrefabs[i], parent);
+                GameObject enemy = Instantiate(enemyData.enemyPrefab, parent);
                 enemy.SetActive(false);
-                typePool.Add(enemy);
+                enemyData.enemyPool.Add(enemy);
             }
-            enemyPool.Add(typePool);
         }
     }
 
@@ -76,46 +94,108 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        GameObject enemy = GetEnemyFromPool(currentEnemyType);
-        if (enemy != null)
+        // 현재 게임 시간 업데이트
+        gameTime = gameTimerController.GetElapsedTime();
+
+        // 현재 시간에 스폰 가능한 적들 필터링
+        List<EnemySpawnData> availableEnemies = enemySpawnDataList.FindAll(enemyData =>
+            gameTime >= enemyData.spawnTime0 && gameTime <= enemyData.spawnTime1);
+
+        if (availableEnemies.Count == 0)
+            return;
+
+        // 스폰 확률에 따른 가중치 합산
+        float totalProbability = availableEnemies.Sum(enemyData => enemyData.spawnProbability);
+        float randomPoint = Random.value * totalProbability;
+
+        // 가중치에 따라 적 선택
+        float currentSum = 0f;
+        EnemySpawnData selectedEnemyData = null;
+        foreach (var enemyData in availableEnemies)
         {
-            Vector2 spawnPosition = GetRandomSpawnPosition();
-            enemy.transform.position = spawnPosition;
-
-            DOTween.Kill(enemy.transform);
-
-            enemy.SetActive(true);
-
-            EnemyAnimationController animController = enemy.GetComponent<EnemyAnimationController>();
-            if (animController != null)
+            currentSum += enemyData.spawnProbability;
+            if (randomPoint <= currentSum)
             {
-                animController.ResetAnimationState();
+                selectedEnemyData = enemyData;
+                break;
             }
+        }
 
-            EnemyMovementController movementController = enemy.GetComponent<EnemyMovementController>();
-            if (movementController != null)
+        if (selectedEnemyData != null)
+        {
+            GameObject enemy = GetEnemyFromPool(selectedEnemyData);
+            if (enemy != null)
             {
-                movementController.ResetMovementController();
-            }
+                Vector2 spawnPosition = GetRandomSpawnPosition();
+                enemy.transform.position = spawnPosition;
 
-            EnemyKnockback knockback = enemy.GetComponent<EnemyKnockback>();
-            if (knockback != null)
-            {
-                knockback.ResetKnockback();
-            }
+                DOTween.Kill(enemy.transform);
 
-            BasicEnemy basicEnemy = enemy.GetComponent<BasicEnemy>();
-            if (basicEnemy != null)
-            {
-                basicEnemy.ResetEnemy();
-                basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;
-                basicEnemy.OnEnemyDeath += ReturnEnemyToPool;
-            }
+                enemy.SetActive(true);
 
-            currentEnemyCount++;
-            currentEnemyType = (currentEnemyType + 1) % enemyPrefabs.Count;
+                // 적의 각종 컴포넌트 초기화
+                EnemyAnimationController animController = enemy.GetComponent<EnemyAnimationController>();
+                if (animController != null)
+                {
+                    animController.ResetAnimationState();
+                }
+
+                EnemyMovementController movementController = enemy.GetComponent<EnemyMovementController>();
+                if (movementController != null)
+                {
+                    movementController.ResetMovementController();
+                }
+
+                EnemyKnockback knockback = enemy.GetComponent<EnemyKnockback>();
+                if (knockback != null)
+                {
+                    knockback.ResetKnockback();
+                }
+
+                BasicEnemy basicEnemy = enemy.GetComponent<BasicEnemy>();
+                if (basicEnemy != null)
+                {
+                    basicEnemy.ResetEnemy();
+                    basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;
+                    basicEnemy.OnEnemyDeath += ReturnEnemyToPool;
+                }
+
+                currentEnemyCount++;
+            }
         }
     }
+
+    private GameObject GetEnemyFromPool(EnemySpawnData enemyData)
+    {
+        foreach (GameObject enemy in enemyData.enemyPool)
+        {
+            if (!enemy.activeInHierarchy)
+            {
+                return enemy;
+            }
+        }
+        return null; // 풀에 사용 가능한 적이 없을 경우 null 반환
+    }
+
+    // 적을 오브젝트 풀로 되돌리기
+    private void ReturnEnemyToPool(GameObject enemy)
+    {
+        BasicEnemy basicEnemy = enemy.GetComponent<BasicEnemy>();
+        if (basicEnemy != null)
+        {
+            basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;
+        }
+
+        OnEnemyDefeated?.Invoke(enemy);  // 이벤트 발생
+
+        DOTween.Kill(enemy.transform);
+        enemy.SetActive(false);
+        currentEnemyCount--;
+    }
+
+    /// <summary>
+    /// Special
+    /// </summary>
 
     private void SpawnEliteEnemy()
     {
@@ -169,32 +249,9 @@ public class EnemySpawner : MonoBehaviour
         return null;
     }
 
-    private GameObject GetEnemyFromPool(int type)
-    {
-        foreach (GameObject enemy in enemyPool[type])
-        {
-            if (!enemy.activeInHierarchy)
-            {
-                return enemy;
-            }
-        }
-        return null;
-    }
-
-    private void ReturnEnemyToPool(GameObject enemy)
-    {
-        BasicEnemy basicEnemy = enemy.GetComponent<BasicEnemy>();
-        if (basicEnemy != null)
-        {
-            basicEnemy.OnEnemyDeath -= ReturnEnemyToPool;
-        }
-
-        OnEnemyDefeated?.Invoke(enemy);  // 이벤트 발생
-
-        DOTween.Kill(enemy.transform);
-        enemy.SetActive(false);
-        currentEnemyCount--;
-    }
+    /// <summary>
+    /// Special
+    /// </summary>
 
     private Vector2 GetRandomSpawnPosition()
     {
@@ -219,6 +276,19 @@ public class EnemySpawner : MonoBehaviour
         else // 왼쪽
         {
             return new Vector2(cameraPosition.x - cameraSize.x - spawnDistance, Random.Range(-cameraSize.y, cameraSize.y) + cameraPosition.y);
+        }
+    }
+
+    private void AdjustSpawnProbabilities()
+    {
+        float totalProbability = enemySpawnDataList.Sum(data => data.spawnProbability);
+        if (totalProbability != 100f)
+        {
+            float scale = 100f / totalProbability;
+            foreach (var data in enemySpawnDataList)
+            {
+                data.spawnProbability = Mathf.Round(data.spawnProbability * scale);
+            }
         }
     }
 }

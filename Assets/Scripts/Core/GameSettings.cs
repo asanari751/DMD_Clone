@@ -34,10 +34,12 @@ public class GameSettings : MonoBehaviour
 
     [Header("Settings Panels")]
     [SerializeField] private GameObject SettingsPanel;
+    [SerializeField] private GameObject majorCategory;
+    [SerializeField] private Button closeSettingsButton;
     [SerializeField] private GameObject videoSettingsPanel;
     [SerializeField] private GameObject soundSettingsPanel;
     [SerializeField] private GameObject keyBindingSettingsPanel;
-    [SerializeField] private GameObject AccessibilitySettingsPanel;
+    [SerializeField] private GameObject accessibilitySettingsPanel;
     [SerializeField] private GameObject textSettingsPanel;
     [SerializeField] private GameObject[] panels;
 
@@ -84,9 +86,18 @@ public class GameSettings : MonoBehaviour
     [SerializeField] private TMP_Text[] keyBindingTexts;
     [SerializeField] private Button[] rebindButtons;
 
+    [Header("Accessibility Settings")]
+    [SerializeField] private Toggle damageIndicatorToggle;
+    [SerializeField] private Image damageIndicatorFill;
+    [SerializeField] private Toggle healthBarToggle;
+    [SerializeField] private Image healthBarFill;
+    [SerializeField] private Toggle cameraShakeToggle;
+    [SerializeField] private Image cameraShakeFill;
+
     [Header("Buttons")]
     [SerializeField] private Button applyButton;
     [SerializeField] private Button resetButton;
+    [SerializeField] private Button cancelButton;
 
     [Header("Pop Up Window")]
     [SerializeField] private GameObject confirmationPopup;
@@ -121,7 +132,7 @@ public class GameSettings : MonoBehaviour
 
     public void ShowAccessibilitySettings()
     {
-        ShowSettingsPanel(AccessibilitySettingsPanel);
+        ShowSettingsPanel(accessibilitySettingsPanel);
     }
 
     public void ShowTextSettings()
@@ -136,6 +147,32 @@ public class GameSettings : MonoBehaviour
             if (panel != null)
                 panel.SetActive(panel == activePanel);
         }
+
+        majorCategory.SetActive(false);
+        cancelButton.gameObject.SetActive(true);
+    }
+
+    private void ReturnToMajorCategory()
+    {
+        foreach (var panel in panels)
+        {
+            if (panel != null)
+                panel.SetActive(false);
+        }
+
+        majorCategory.SetActive(true);
+        cancelButton.gameObject.SetActive(false);
+    }
+
+    public void OpenSettings()
+    {
+        if (SettingsPanel != null)
+        {
+            SettingsPanel.SetActive(true);
+            closeSettingsButton.gameObject.SetActive(true);
+            majorCategory.SetActive(true);
+            cancelButton.gameObject.SetActive(false);
+        }
     }
 
     // =======================================================================
@@ -148,7 +185,7 @@ public class GameSettings : MonoBehaviour
         videoSettingsPanel,
         soundSettingsPanel,
         keyBindingSettingsPanel,
-        AccessibilitySettingsPanel,
+        accessibilitySettingsPanel,
         textSettingsPanel
         };
 
@@ -159,6 +196,9 @@ public class GameSettings : MonoBehaviour
                 panel.SetActive(false);
         }
 
+        cancelButton.gameObject.SetActive(false);
+        cancelButton.onClick.AddListener(ReturnToMajorCategory);
+
         applyButton.onClick.AddListener(ApplySettings);
         resetButton.onClick.AddListener(LoadSettings);
         popupApply.onClick.AddListener(OnConfirmExit);
@@ -166,6 +206,7 @@ public class GameSettings : MonoBehaviour
 
         InitializeSettings();
         InitializeKeyBindings();
+        InitializeAccessibilitySettings();
         LoadSettings();
     }
 
@@ -176,6 +217,9 @@ public class GameSettings : MonoBehaviour
         keyBindingSettingsButton.onClick.AddListener(ShowKeyBindingSettings);
         accessibilitySettingsButton.onClick.AddListener(ShowAccessibilitySettings);
         textSettingsButton.onClick.AddListener(ShowTextSettings);
+
+        if (closeSettingsButton != null)
+            closeSettingsButton.onClick.AddListener(() => OnSettingsExit());
 
         // resolutionSlider.maxValue = availableResolutions.Length - 1;
         // resolutionSlider.wholeNumbers = true; // 정수
@@ -608,6 +652,43 @@ public class GameSettings : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    // 접근성
+
+    private void InitializeAccessibilitySettings()
+    {
+        damageIndicatorToggle.isOn = PlayerPrefs.GetInt("ShowDamageIndicator", 1) == 1;
+        healthBarToggle.isOn = PlayerPrefs.GetInt("ShowHealthBar", 1) == 1;
+        cameraShakeToggle.isOn = PlayerPrefs.GetInt("EnableCameraShake", 1) == 1;
+
+        damageIndicatorToggle.onValueChanged.AddListener(OnDamageIndicatorToggled);
+        healthBarToggle.onValueChanged.AddListener(OnHealthBarToggled);
+        cameraShakeToggle.onValueChanged.AddListener(OnCameraShakeToggled);
+    }
+
+    private void OnDamageIndicatorToggled(bool isOn)
+    {
+        damageIndicatorFill.enabled = isOn;
+        if (DamageIndicator.Instance != null)
+            DamageIndicator.Instance.SetEnabled(isOn);
+        PlayerPrefs.SetInt("ShowDamageIndicator", isOn ? 1 : 0);
+    }
+
+    private void OnHealthBarToggled(bool isOn)
+    {
+        healthBarFill.enabled = isOn;
+        EnemyHealthBoss.SetHealthBarVisibility(isOn);
+        EnemyHealthElite.SetHealthBarVisibility(isOn);
+        PlayerPrefs.SetInt("ShowHealthBar", isOn ? 1 : 0);
+    }
+
+    private void OnCameraShakeToggled(bool isOn)
+    {
+        cameraShakeFill.enabled = isOn;
+        if (CameraManager.Instance != null)
+            CameraManager.Instance.SetShakeEnabled(isOn);
+        PlayerPrefs.SetInt("EnableCameraShake", isOn ? 1 : 0);
+    }
+
     // =====
     // 옵션 설정 확인 프로세스
     // =====
@@ -648,8 +729,9 @@ public class GameSettings : MonoBehaviour
         videoSettingsPanel.SetActive(false);
         soundSettingsPanel.SetActive(false);
         keyBindingSettingsPanel.SetActive(false);
-        AccessibilitySettingsPanel.SetActive(false);
+        accessibilitySettingsPanel.SetActive(false);
         textSettingsPanel.SetActive(false);
         SettingsPanel.SetActive(false);
+        closeSettingsButton.gameObject.SetActive(false);
     }
 }

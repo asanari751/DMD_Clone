@@ -9,7 +9,7 @@ public class B1 : MonoBehaviour
     private float radius;
     private float duration;
     private float attackInterval;
-    private SkillData.EffectOnHit effectOnHit;
+    private SkillData.StatusEffectOnHit statusEffectOnHit;
     private int skillLevel;
 
     private List<EnemyHealthController> affectedEnemies = new List<EnemyHealthController>();
@@ -21,7 +21,7 @@ public class B1 : MonoBehaviour
         this.radius = skillData.radius;
         this.duration = skillData.duration;
         this.attackInterval = skillData.attackInterval;
-        this.effectOnHit = skillData.effectOnHit;
+        this.statusEffectOnHit = skillData.statusEffectOnHit;
         this.skillLevel = skillLevel;
 
         // 스킬 이펙트를 플레이어 위치에 배치
@@ -40,48 +40,53 @@ public class B1 : MonoBehaviour
     private IEnumerator ApplyDamageOverTime()
     {
         float elapsedTime = 0f;
+        float nextAttackTime = 0f;
+        Transform playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
         while (elapsedTime < duration)
         {
-            foreach (EnemyHealthController enemyHealth in affectedEnemies)
+            // 매 물리 업데이트마다 위치 갱신
+            transform.position = playerTransform.position;
+
+            // 공격 간격 체크
+            if (Time.time >= nextAttackTime)
             {
-                if (enemyHealth != null && !enemyHealth.IsDead())
+                foreach (EnemyHealthController enemyHealth in affectedEnemies)
                 {
-                    // 스킬 중심점에서 적 방향으로 향하는 벡터 (밀어내는 방향)
-                    Vector2 knockbackDirection = (enemyHealth.transform.position + transform.position).normalized;
-
-                    // 데미지와 넉백 적용
-                    enemyHealth.TakeDamage(damage, knockbackDirection * knockbackForce);
-
-                    // 상태이상 효과 적용
-                    if (effectOnHit != SkillData.EffectOnHit.None)
+                    if (enemyHealth != null && !enemyHealth.IsDead())
                     {
-                        EnemyStatusEffect statusEffect = enemyHealth.GetComponent<EnemyStatusEffect>();
-                        if (statusEffect != null)
+                        Vector2 knockbackDirection = (enemyHealth.transform.position - transform.position).normalized;
+                        enemyHealth.TakeDamage(damage, -knockbackDirection * knockbackForce);
+
+                        if (statusEffectOnHit != SkillData.StatusEffectOnHit.None)
                         {
-                            statusEffect.ApplyStatusEffect(ConvertToEnemyStatusEffectType(effectOnHit), duration);
+                            EnemyStatusEffect statusEffect = enemyHealth.GetComponent<EnemyStatusEffect>();
+                            if (statusEffect != null)
+                            {
+                                statusEffect.ApplyStatusEffect(ConvertToEnemyStatusEffectType(statusEffectOnHit), duration);
+                            }
                         }
                     }
                 }
+                nextAttackTime = Time.time + attackInterval;
+                elapsedTime += attackInterval;
             }
 
-            yield return new WaitForSeconds(attackInterval);
-            elapsedTime += attackInterval;
+            yield return new WaitForFixedUpdate();
         }
 
-        // 스킬 이펙트 제거
         Destroy(gameObject);
     }
 
-    private EnemyStatusEffect.StatusEffectType ConvertToEnemyStatusEffectType(SkillData.EffectOnHit effect)
+    private EnemyStatusEffect.StatusEffectType ConvertToEnemyStatusEffectType(SkillData.StatusEffectOnHit effect)
     {
         switch (effect)
         {
-            case SkillData.EffectOnHit.Slow:
+            case SkillData.StatusEffectOnHit.Slow:
                 return EnemyStatusEffect.StatusEffectType.Slow;
-            case SkillData.EffectOnHit.Bleed:
+            case SkillData.StatusEffectOnHit.Bleed:
                 return EnemyStatusEffect.StatusEffectType.Bleed;
-            case SkillData.EffectOnHit.Poison:
+            case SkillData.StatusEffectOnHit.Poison:
                 return EnemyStatusEffect.StatusEffectType.Poison;
             // 필요한 경우 다른 상태이상 효과 추가
             default:

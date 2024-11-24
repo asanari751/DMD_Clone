@@ -41868,7 +41868,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 1928920833}
   uiManager: {fileID: 1743977334}
-  debugParameter: 0.1
+  debugParameter: 1
   updateInterval: 1
   timeSinceLastUpdate: 0
   obstacleHierahy: {fileID: 1558981614}
@@ -48656,19 +48656,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e8561338b3efba4699d87b0b1cec39d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1766201581
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 822370006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4e6dc250db01e245b113d1a031faf85, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  experience: {fileID: 390662608}
 --- !u!212 &1766201588 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 4328413215920075902, guid: 887ea8f10e08dca4a8e0bab97d37934d,
@@ -50909,18 +50896,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameTimerController: {fileID: 647825382}
   uiManager: {fileID: 1743977334}
-  bossHealthUI: {fileID: -5363098943912834024, guid: 828a4fd817b8f6643a43fbec72ac9980,
-    type: 3}
-  enemyPrefabs:
-  - {fileID: 4976483147096513540, guid: 59825fa9970cb5244a15edb5125abe5b, type: 3}
-  - {fileID: 4976483147096513540, guid: 08595b27f6b0904419dee2a41153195d, type: 3}
-  - {fileID: 4976483147096513540, guid: b8de2fe49420bec4382ee07f2e0c98ba, type: 3}
-  - {fileID: 4976483147096513540, guid: e7f176f0170d27f4eac4d8cc569023d6, type: 3}
+  enemySpawnDataList:
+  - enemyPrefab: {fileID: 4976483147096513540, guid: 59825fa9970cb5244a15edb5125abe5b,
+      type: 3}
+    spawnProbability: 25
+    spawnTime0: 0
+    spawnTime1: 600
+    enemyPool: []
+  - enemyPrefab: {fileID: 4976483147096513540, guid: e7f176f0170d27f4eac4d8cc569023d6,
+      type: 3}
+    spawnProbability: 25
+    spawnTime0: 60
+    spawnTime1: 600
+    enemyPool: []
+  - enemyPrefab: {fileID: 4976483147096513540, guid: 08595b27f6b0904419dee2a41153195d,
+      type: 3}
+    spawnProbability: 25
+    spawnTime0: 180
+    spawnTime1: 600
+    enemyPool: []
+  - enemyPrefab: {fileID: 4976483147096513540, guid: b8de2fe49420bec4382ee07f2e0c98ba,
+      type: 3}
+    spawnProbability: 25
+    spawnTime0: 360
+    spawnTime1: 600
+    enemyPool: []
+  spawnInterval: 0.01
+  maxEnemies: 1
+  parent: {fileID: 914842388}
   eliteEnemy: {fileID: 6135728234777956250}
   bossEnemy: {fileID: 3011803388326096627}
-  spawnInterval: 0.01
-  maxEnemies: 4
-  parent: {fileID: 914842388}
 --- !u!1 &2078981337
 GameObject:
   m_ObjectHideFlags: 0
@@ -51769,6 +51774,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3700240015915899349, guid: 20e2b83c03423ad4e8962447b1ebdf52,
         type: 3}
+    - target: {fileID: 580798775811891751, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: experience
+      value: 
+      objectReference: {fileID: 390662608}
     - target: {fileID: 1970981162685179035, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -52014,7 +52024,7 @@ PrefabInstance:
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       propertyPath: projectileDamage
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
@@ -52115,10 +52125,6 @@ PrefabInstance:
         type: 3}
       insertIndex: 5
       addedObject: {fileID: 1766201589}
-    - targetCorrespondingSourceObject: {fileID: 4433714712038889224, guid: 887ea8f10e08dca4a8e0bab97d37934d,
-        type: 3}
-      insertIndex: 8
-      addedObject: {fileID: 1766201581}
     - targetCorrespondingSourceObject: {fileID: 4433714712038889224, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       insertIndex: -1

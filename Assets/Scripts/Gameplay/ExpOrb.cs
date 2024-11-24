@@ -15,7 +15,7 @@ public class ExpOrb : MonoBehaviour
     [SerializeField] private float initialScatterSpeed = 5f;
     [SerializeField] private float finalScatterSpeed = 1f;
 
-    private PlayerManager playerManager;
+    private PlayerController playerController;
     private bool isMovingToPlayer = false;
     private float currentMoveSpeed;
     private Vector2 scatterDirection;
@@ -25,7 +25,7 @@ public class ExpOrb : MonoBehaviour
 
     private void Awake()
     {
-        playerManager = FindAnyObjectByType<PlayerManager>();
+        playerController = FindAnyObjectByType<PlayerController>();
     }
 
     private void OnEnable()
@@ -51,9 +51,9 @@ public class ExpOrb : MonoBehaviour
                 currentMoveSpeed = initialMoveSpeed;
             }
         }
-        else if (playerManager != null)
+        else if (playerController != null)
         {
-            Vector2 playerPosition = playerManager.transform.position;
+            Vector2 playerPosition = playerController.transform.position;
             float distanceToPlayer = Vector2.Distance(transform.position, playerPosition);
 
             if (distanceToPlayer <= magnateArea)
@@ -77,9 +77,9 @@ public class ExpOrb : MonoBehaviour
 
     private void CollectExperience()
     {
-        if (playerManager != null && playerManager.experience != null)
+        if (playerController != null && playerController.experience != null)
         {
-            playerManager.experience.AddExperience(experienceValue);
+            playerController.experience.AddExperience(experienceValue);
         }
         gameObject.SetActive(false);
     }

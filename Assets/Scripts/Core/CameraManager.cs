@@ -18,6 +18,7 @@ public class CameraManager : MonoBehaviour
 
     private Vector3 velocity = Vector3.zero;
     private Vector3 originalPos;
+    private bool enableShake = true;
 
     private void Awake()
     {
@@ -35,6 +36,12 @@ public class CameraManager : MonoBehaviour
 
         // 초기 위치 설정
         originalPos = transform.position;
+        enableShake = PlayerPrefs.GetInt("ShowDamageIndicator", 1) == 1;
+    }
+
+    public void SetShakeEnabled(bool enabled)
+    {
+        enableShake = enabled;
     }
 
     private void LateUpdate()
@@ -69,6 +76,8 @@ public class CameraManager : MonoBehaviour
     // 카메라 흔들림 효과 시작
     public void ShakeCamera()
     {
+        if (!enableShake) return;
+
         shakeElapsedTime = shakeDuration;
     }
 

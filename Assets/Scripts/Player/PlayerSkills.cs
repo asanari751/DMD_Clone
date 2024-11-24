@@ -157,11 +157,11 @@ public class PlayerSkills : MonoBehaviour
         B2 b2 = skillEffect.AddComponent<B2>();
         b2.Initialize(skill.skillData, skill.skillLevel);
 
-        // Animator animator = skillEffect.GetComponent<Animator>();
-        // if (animator != null)
-        // {
-        //     animator.Play(skill.skillData.skillName);
-        // }
+        Animator animator = skillEffect.GetComponent<Animator>();
+        if (animator != null)
+        {
+            animator.Play(skill.skillData.skillName);
+        }
     }
 
     private void UseB3(Skill skill)
@@ -170,11 +170,11 @@ public class PlayerSkills : MonoBehaviour
         B3 b3 = skillEffect.AddComponent<B3>();
         b3.Initialize(skill.skillData, skill.skillLevel);
 
-        // Animator animator = skillEffect.GetComponent<Animator>();
-        // if (animator != null)
-        // {
-        //     animator.Play(skill.skillData.skillName);
-        // }
+        Animator animator = skillEffect.GetComponent<Animator>();
+        if (animator != null)
+        {
+            animator.Play(skill.skillData.skillName);
+        }
     }
 
     private void UseB4(Skill skill) // B4
@@ -209,11 +209,11 @@ public class PlayerSkills : MonoBehaviour
         B6 b6 = skillEffect.AddComponent<B6>();
         b6.Initialize(skill.skillData, skill.skillLevel);
 
-        // Animator animator = skillEffect.GetComponent<Animator>();
-        // if (animator != null)
-        // {
-        //     animator.Play(skill.skillData.skillName);
-        // }
+        Animator animator = skillEffect.GetComponent<Animator>();
+        if (animator != null)
+        {
+            animator.Play(skill.skillData.skillName);
+        }
     }
 
     private void UseB7(Skill skill)

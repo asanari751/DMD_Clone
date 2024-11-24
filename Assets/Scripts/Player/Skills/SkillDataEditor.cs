@@ -24,11 +24,11 @@ public class SkillDataEditor : Editor
 
         // 선택된 스킬 타입에 따라 추가 속성 표시
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField("스킬 타입별 속성", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("타입별 속성", EditorStyles.boldLabel);
 
         switch (skillData.skillRangeType)
         {
-            case SkillData.SkillRangeType.Aoe:
+            case SkillData.SkillRangeType.Circle:
                 SerializedProperty radiusProp = serializedObject.FindProperty("radius");
                 EditorGUILayout.PropertyField(radiusProp);
                 break;

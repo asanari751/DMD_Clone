@@ -7,14 +7,14 @@ public class B5 : MonoBehaviour
     private float radius;
     private float duration;
     private float attackInterval;
-    private SkillData.EffectOnHit effectOnHit;
+    private SkillData.StatusEffectOnHit effectOnHit;
 
     public void Initialize(SkillData skillData, int skillLevel)
     {
         damage = skillData.damage * skillLevel;
         radius = skillData.radius;
         duration = skillData.duration;
-        effectOnHit = skillData.effectOnHit;
+        effectOnHit = skillData.statusEffectOnHit;
         attackInterval = skillData.attackInterval;
 
         // 스킬 범위 설정

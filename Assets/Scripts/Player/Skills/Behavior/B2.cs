@@ -4,27 +4,31 @@ using System.Collections;
 public class B2 : MonoBehaviour
 {
     private float damage;
+    private float duration;
     private float knockbackForce;
+    private float attackInterval;
     private float range;
     private float angle;
     private int skillLevel;
-    private SkillData.EffectOnHit effectOnHit;
+    private SkillData.StatusEffectOnHit statusEffectOnHit;
 
     public void Initialize(SkillData skillData, int skillLevel)
     {
         this.damage = skillData.damage * skillLevel;
+        this.duration = skillData.duration;
         this.knockbackForce = skillData.knockbackForce;
+        this.attackInterval = skillData.attackInterval;
         this.range = skillData.range;
         this.angle = skillData.angle;
         this.skillLevel = skillLevel;
-        this.effectOnHit = skillData.effectOnHit;
+        this.statusEffectOnHit = skillData.statusEffectOnHit;
 
         // 플레이어 위치에 스킬 배치
         Transform playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         transform.position = playerTransform.position;
 
         // 부채꼴 범위 내 적 감지 및 데미지 처리
-        DetectAndDamageEnemies();
+        StartCoroutine(DetectAndDamageEnemiesRoutine());
     }
 
     private bool IsValidAttackDirection(Vector2 directionToTarget)
@@ -68,60 +72,64 @@ public class B2 : MonoBehaviour
         return nearestEnemy;
     }
 
-    private void DetectAndDamageEnemies()
+    private IEnumerator DetectAndDamageEnemiesRoutine()
     {
+        float elapsedTime = 0f;
         Transform targetEnemy = FindNearestValidEnemy();
 
-        // 유효한 타겟이 없으면 스킬 취소
         if (targetEnemy == null)
         {
             Destroy(gameObject);
-            return;
+            yield break;
         }
 
-        // 타겟 방향으로 회전
         Vector2 directionToTarget = (targetEnemy.position - transform.position).normalized;
         transform.right = directionToTarget;
 
-        // 부채꼴 범위 내 적 감지 및 데미지 처리
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, range, LayerMask.GetMask("Enemy"));
-
-        foreach (Collider2D col in colliders)
+        while (elapsedTime < duration)
         {
-            Vector2 dirToEnemy = (col.transform.position - transform.position).normalized;
-            float angleToTarget = Vector2.Angle(transform.right, dirToEnemy);
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, range, LayerMask.GetMask("Enemy"));
 
-            if (angleToTarget <= angle / 2)
+            foreach (Collider2D col in colliders)
             {
-                EnemyHealthController enemyHealth = col.GetComponent<EnemyHealthController>();
-                if (enemyHealth != null)
-                {
-                    enemyHealth.TakeDamage(damage, -dirToEnemy * knockbackForce);
+                Vector2 dirToEnemy = (col.transform.position - transform.position).normalized;
+                float angleToTarget = Vector2.Angle(transform.right, dirToEnemy);
 
-                    if (effectOnHit != SkillData.EffectOnHit.None)
+                if (angleToTarget <= angle / 2)
+                {
+                    EnemyHealthController enemyHealth = col.GetComponent<EnemyHealthController>();
+                    if (enemyHealth != null)
                     {
-                        EnemyStatusEffect statusEffect = enemyHealth.GetComponent<EnemyStatusEffect>();
-                        if (statusEffect != null)
+                        enemyHealth.TakeDamage(damage, -dirToEnemy * knockbackForce);
+
+                        if (statusEffectOnHit != SkillData.StatusEffectOnHit.None)
                         {
-                            statusEffect.ApplyStatusEffect(ConvertToEnemyStatusEffectType(effectOnHit), 2f);
+                            EnemyStatusEffect statusEffect = enemyHealth.GetComponent<EnemyStatusEffect>();
+                            if (statusEffect != null)
+                            {
+                                statusEffect.ApplyStatusEffect(ConvertToEnemyStatusEffectType(statusEffectOnHit), 2f);
+                            }
                         }
                     }
                 }
             }
+
+            yield return new WaitForSeconds(attackInterval);
+            elapsedTime += attackInterval;
         }
 
-        Destroy(gameObject, 0.5f);
+        Destroy(gameObject);
     }
 
-    private EnemyStatusEffect.StatusEffectType ConvertToEnemyStatusEffectType(SkillData.EffectOnHit effect)
+    private EnemyStatusEffect.StatusEffectType ConvertToEnemyStatusEffectType(SkillData.StatusEffectOnHit effect)
     {
         switch (effect)
         {
-            case SkillData.EffectOnHit.Slow:
+            case SkillData.StatusEffectOnHit.Slow:
                 return EnemyStatusEffect.StatusEffectType.Slow;
-            case SkillData.EffectOnHit.Bleed:
+            case SkillData.StatusEffectOnHit.Bleed:
                 return EnemyStatusEffect.StatusEffectType.Bleed;
-            case SkillData.EffectOnHit.Poison:
+            case SkillData.StatusEffectOnHit.Poison:
                 return EnemyStatusEffect.StatusEffectType.Poison;
             default:
                 return EnemyStatusEffect.StatusEffectType.None;

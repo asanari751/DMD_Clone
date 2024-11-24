@@ -11,15 +11,28 @@ public class EnemyHealthBoss : MonoBehaviour
     [SerializeField] private Image healthDelayedImage;
     [SerializeField] private float colorChangeDuration;
     [SerializeField] private float delayedDuration;
-    
+
     private Color originalHealthBarColor;
     private bool isActive = true;
+    private static bool showHealthBar = true;
 
     private void Start()
     {
+        if (!showHealthBar)
+        {
+            healthBarRoot.SetActive(false);
+            return;
+        }
+
         originalHealthBarColor = healthFillImage.color;
         healthBarRoot.SetActive(true);
         healthDelayedImage.fillAmount = healthFillImage.fillAmount;
+        showHealthBar = PlayerPrefs.GetInt("ShowDamageIndicator", 1) == 1;
+    }
+
+    public static void SetHealthBarVisibility(bool visible)
+    {
+        showHealthBar = visible;
     }
 
     public void UpdateHealthBar(float currentHealth, float maxHealth)
@@ -27,9 +40,9 @@ public class EnemyHealthBoss : MonoBehaviour
         if (healthFillImage != null)
         {
             float targetFillAmount = currentHealth / maxHealth;
-            
+
             healthFillImage.fillAmount = targetFillAmount;
-            
+
             healthDelayedImage.DOFillAmount(targetFillAmount, delayedDuration)
                 .SetEase(Ease.InOutSine);
         }

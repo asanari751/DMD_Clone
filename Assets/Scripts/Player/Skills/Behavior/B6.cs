@@ -5,14 +5,16 @@ public class B6 : MonoBehaviour
 {
     private float damage;
     private float radius;
+    private float duration;
     private float knockbackForce;
-    private SkillData.EffectOnHit effectOnHit;
+    private SkillData.StatusEffectOnHit effectOnHit;
 
     public void Initialize(SkillData skillData, int skillLevel)
     {
         damage = skillData.damage * skillLevel;
         radius = skillData.radius;
-        effectOnHit = skillData.effectOnHit;
+        duration = skillData.duration;
+        effectOnHit = skillData.statusEffectOnHit;
         knockbackForce = skillData.knockbackForce;
 
         // 스킬 범위 설정
@@ -42,7 +44,7 @@ public class B6 : MonoBehaviour
             }
         }
 
-        Destroy(gameObject, 0.5f);
+        Destroy(gameObject, duration);
     }
 
     private bool IsPositionVisible(Vector2 position)
@@ -55,12 +57,15 @@ public class B6 : MonoBehaviour
 
     private Vector2 FindMostCrowdedPosition(float radius)
     {
-        // 플레이어의 현재 위치를 기준으로 계산
         Vector2 playerPosition = GameObject.FindGameObjectWithTag("Player").transform.position;
+        Camera mainCamera = Camera.main;
+        Vector2 screenCenter = mainCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0));
 
-        // 플레이어 주변의 적 탐지
-        Collider2D[] allEnemies = Physics2D.OverlapCircleAll(playerPosition, radius * 2f, LayerMask.GetMask("Enemy"));
-        if (allEnemies.Length == 0) return playerPosition;
+        // 화면 중앙을 기준으로 적 탐지 (플레이어 위치가 아닌)
+        Collider2D[] allEnemies = Physics2D.OverlapCircleAll(screenCenter, radius * 3f, LayerMask.GetMask("Enemy"));
+
+        if (allEnemies.Length == 0)
+            return playerPosition;
 
         Vector2 bestPosition = playerPosition;
         int maxEnemyCount = 0;
@@ -69,9 +74,12 @@ public class B6 : MonoBehaviour
         {
             Vector2 checkPosition = enemy.transform.position;
 
-            if (!IsPositionVisible(checkPosition))
+            // 화면 내 좌표 확인
+            Vector3 viewportPoint = mainCamera.WorldToViewportPoint(checkPosition);
+            if (viewportPoint.x < 0 || viewportPoint.x > 1 || viewportPoint.y < 0 || viewportPoint.y > 1)
                 continue;
 
+            // 해당 위치 주변의 적 수 확인
             Collider2D[] nearbyEnemies = Physics2D.OverlapCircleAll(checkPosition, radius, LayerMask.GetMask("Enemy"));
 
             if (nearbyEnemies.Length > maxEnemyCount)

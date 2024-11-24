@@ -12,22 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da4b8bfa5b2cff44bb4a8378ac175508, type: 3}
   m_Name: B3
   m_EditorClassIdentifier: 
-  skillRangeType: 3
   skillName: "\uD53C\uC758 \uD654\uC0B4"
   skillIcon: {fileID: 21300000, guid: 469d3985230e88448a03576a851ebffb, type: 3}
   skillLevel: 0
   skillDescription: "\uC801\uC744 \uAD00\uD1B5\uD558\uB294 \uD654\uC0B4\uC744 \uBC1C\uC0AC\uD574
     \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4.\r"
+  skillRangeType: 3
   skillPrefab: {fileID: 5284200110495949324, guid: 30564031c75791a48b3905fcda5a2526,
     type: 3}
-  damage: 5
-  duration: 0.5
-  cooldown: 1
-  attackInterval: 0.5
+  damage: 1
+  duration: 0.45
+  cooldown: 8
   isPassive: 0
-  effectOnHit: 0
+  attackInterval: 0.5
+  statusEffectOnHit: 0
   radius: 0
-  range: 15
+  range: 10
   angle: 0
   maxTargets: 99
   knockbackForce: 3
+  procChance: 0
+  effectValue: 0

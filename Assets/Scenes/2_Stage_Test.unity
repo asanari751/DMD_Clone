@@ -8856,11 +8856,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2a5ceb69d42a3d44b9ef24a8f05a46c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showChunkGizmos: 1
   player: {fileID: 1766201571}
   chunkSize: 24
   viewDistance: 2
   availableTiles:
-  - tile: {fileID: 11400000, guid: 6a83b45e83a8ea545b7e91d5e95758de, type: 2}
+  - tile: {fileID: 11400000, guid: 33147f4d1a1e0ec4e9b506c3aa53b625, type: 2}
     size: {x: 1, y: 1}
   worldLayerTilemap: {fileID: 502918005}
 --- !u!114 &1231763225
@@ -13204,7 +13205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f0d8f957b467394bb15ee2b43404f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalCursor: {fileID: 2800000, guid: cd6587109fea76041befe653240ddd33, type: 3}
+  normalCursor: {fileID: 2800000, guid: 76e863679b9f26749b140a9d09cd7890, type: 3}
   combatCursor: {fileID: 2800000, guid: ca1b29514a23a804da545331328a2fd9, type: 3}
   cursorHotspot: {x: 0, y: 0}
   combatScenes:

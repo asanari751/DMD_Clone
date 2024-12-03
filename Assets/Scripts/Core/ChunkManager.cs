@@ -4,6 +4,7 @@ using UnityEngine.Tilemaps;
 
 public class ChunkManager : MonoBehaviour
 {
+    [SerializeField] private bool showChunkGizmos = true;
     public static ChunkManager Instance;
     public Transform player;
     public int chunkSize = 16;
@@ -106,4 +107,42 @@ public class ChunkManager : MonoBehaviour
         chunks.Add(coord, chunk);
     }
 
+    private void OnDrawGizmos()
+    {
+        if (!Application.isPlaying || !showChunkGizmos) return;
+
+        // 현재 플레이어가 있는 청크와 주변 청크들을 표시
+        Gizmos.color = new Color(0.5f, 1f, 0f, 0.5f);
+
+        foreach (var chunk in chunks)
+        {
+            Vector3 chunkCenter = new Vector3(
+                chunk.Key.x * chunkSize + chunkSize / 2f,
+                chunk.Key.y * chunkSize + chunkSize / 2f,
+                0
+            );
+
+            // 청크 영역 표시
+            Gizmos.DrawWireCube(chunkCenter, new Vector3(chunkSize, chunkSize, 0));
+
+            // 청크 영역 채우기
+            Gizmos.color = new Color(0.2f, 0.8f, 1f, 0.1f);
+            Gizmos.DrawCube(chunkCenter, new Vector3(chunkSize, chunkSize, 0));
+            Gizmos.color = new Color(0.2f, 0.8f, 1f, 0.3f);
+        }
+
+        // 현재 플레이어가 있는 청크 강조 표시
+        if (player != null)
+        {
+            Vector2Int currentChunkCoord = GetChunkCoordFromPosition(player.position);
+            Vector3 currentChunkCenter = new Vector3(
+                currentChunkCoord.x * chunkSize + chunkSize / 2f,
+                currentChunkCoord.y * chunkSize + chunkSize / 2f,
+                0
+            );
+
+            Gizmos.color = new Color(0.5f, 1f, 0f, 0.5f); // 연두색 반투명
+            Gizmos.DrawWireCube(currentChunkCenter, new Vector3(chunkSize, chunkSize, 0));
+        }
+    }
 }

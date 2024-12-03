@@ -5642,7 +5642,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f0d8f957b467394bb15ee2b43404f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalCursor: {fileID: 2800000, guid: cd6587109fea76041befe653240ddd33, type: 3}
+  normalCursor: {fileID: 2800000, guid: 76e863679b9f26749b140a9d09cd7890, type: 3}
   combatCursor: {fileID: 2800000, guid: ca1b29514a23a804da545331328a2fd9, type: 3}
   cursorHotspot: {x: 0, y: 0}
   combatScenes:
@@ -6891,6 +6891,7 @@ MonoBehaviour:
   colorChangeDuration: 0
   delayedDuration: 0
   maxHealth: 100
+  currentHealth: 0
   yOffset: 1.3
   smoothSpeed: 0
   playerTransform: {fileID: 1413334494}

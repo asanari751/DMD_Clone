@@ -60,6 +60,13 @@ public class SkillSelector : MonoBehaviour
 
     // 임시용 화면 가리기, 재가공 필수
     [SerializeField] private Image tempBlackImage;
+    [Header("Status Effect Colors")]
+    [SerializeField] private Color bleedColor = new Color(0.86f, 0.08f, 0.24f); // #DC143C 기본값
+    [SerializeField] private Color slowColor = new Color(0.27f, 0.45f, 0.77f);  // #4472C4 기본값
+    [SerializeField] private Color debilitateColor = new Color(0.08f, 0.63f, 0.08f); // #14A014 기본값
+    [SerializeField] private Color VenomColor = new Color(0.75f, 0.75f, 0.75f); // #BFBFBF 기본값
+    [SerializeField] private Color fearColor = new Color(0.86f, 0.08f, 0.24f);
+    [SerializeField] private Color stiffColor = new Color(0.27f, 0.45f, 0.77f);
 
     public GameObject skillSelectorUI;
     public Button[] skillButtons;
@@ -429,8 +436,12 @@ public class SkillSelector : MonoBehaviour
                 if (skillDescriptionTexts.Length > i && skillDescriptionTexts[i] != null)
                 {
                     string coloredDescription = skill.skillDescription
-                        .Replace("출혈", "<color=#DC143C>출혈</color>")
-                        .Replace("둔화", "<color=#4472C4>둔화</color>");
+    .Replace("출혈", $"<color=#{ColorUtility.ToHtmlStringRGB(bleedColor)}>출혈</color>")
+    .Replace("둔화", $"<color=#{ColorUtility.ToHtmlStringRGB(slowColor)}>둔화</color>")
+    .Replace("쇠약", $"<color=#{ColorUtility.ToHtmlStringRGB(debilitateColor)}>쇠약</color>")
+    .Replace("중독", $"<color=#{ColorUtility.ToHtmlStringRGB(VenomColor)}>중독</color>")
+    .Replace("공포", $"<color=#{ColorUtility.ToHtmlStringRGB(fearColor)}>공포</color>")
+    .Replace("경직", $"<color=#{ColorUtility.ToHtmlStringRGB(stiffColor)}>경직</color>");
                     skillDescriptionTexts[i].text = coloredDescription;
                 }
 

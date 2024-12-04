@@ -49,6 +49,9 @@ TagManager:
   - name: Shadow
     uniqueID: 3187885517
     locked: 0
+  - name: Enemy
+    uniqueID: 2991664819
+    locked: 0
   - name: Sprites
     uniqueID: 2425651459
     locked: 0

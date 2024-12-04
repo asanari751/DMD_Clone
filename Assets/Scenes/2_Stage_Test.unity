@@ -252,8 +252,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uACF5\uACA9\uB825\n\uCFE8\uB2E4\uC6B4\n\uBC94\uC704 \uB4F1\uB4F1\n\uAC08\uBB34\uB9AC
-    26px\n\uD328\uB529 1px"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d11e61ae9e266f044b8353c558b60a35, type: 2}
   m_sharedMaterial: {fileID: 73764385409227716, guid: d11e61ae9e266f044b8353c558b60a35,
@@ -1639,8 +1638,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uACF5\uACA9\uB825\n\uCFE8\uB2E4\uC6B4\n\uBC94\uC704 \uB4F1\uB4F1\n\uB465\uADFC\uBAA8
-    28px\n\uD328\uB529 0px"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d11e61ae9e266f044b8353c558b60a35, type: 2}
   m_sharedMaterial: {fileID: 73764385409227716, guid: d11e61ae9e266f044b8353c558b60a35,
@@ -1934,8 +1932,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uACF5\uACA9\uB825\n\uCFE8\uB2E4\uC6B4\n\uBC94\uC704 \uB4F1\uB4F1\n\uB178\uD1A0
-    22px\n\uD328\uB529 5px"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d11e61ae9e266f044b8353c558b60a35, type: 2}
   m_sharedMaterial: {fileID: 73764385409227716, guid: d11e61ae9e266f044b8353c558b60a35,
@@ -8957,10 +8954,6 @@ MonoBehaviour:
   availableTiles:
   - tile: {fileID: 11400000, guid: 33147f4d1a1e0ec4e9b506c3aa53b625, type: 2}
     size: {x: 1, y: 1}
-  - tile: {fileID: 11400000, guid: a0d64ec9b18780342b5e62d4c09115b6, type: 2}
-    size: {x: 1, y: 1}
-  - tile: {fileID: 11400000, guid: 336aaffaef0b24549b675586034f675c, type: 2}
-    size: {x: 1, y: 1}
   worldLayerTilemap: {fileID: 502918005}
 --- !u!114 &1231763225
 MonoBehaviour:
@@ -10501,16 +10494,15 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 996
-  m_Sprite: {fileID: -7872743376864655428, guid: c8924fe1ecc5dc646b864bcd0782bd34,
-    type: 3}
+  m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 5.625, y: 3.125}
+  m_Size: {x: 3.75, y: 3.75}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &1505759185
@@ -12222,9 +12214,9 @@ MonoBehaviour:
   animator: {fileID: 1766201590}
   spriteRenderer: {fileID: 1766201588}
   moveThreshold: 0.1
-  idleStateName: Idle
-  walkSideStateName: Walk_Side
-  deathStateName: Death
+  idleStateName: 0_Player_Idle
+  walkSideStateName: 1_Player_Walk
+  deathStateName: 2_Player_Death
 --- !u!95 &1766201590
 Animator:
   serializedVersion: 7
@@ -15291,7 +15283,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -44025399
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 50
   m_Sprite: {fileID: 7812820661483254461, guid: 215687feeab0b7445b4a1cd86c82c2e1,
     type: 3}
@@ -15327,12 +15319,12 @@ PrefabInstance:
     - target: {fileID: 1970981162685179035, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1970981162685179035, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1970981162685179035, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
@@ -15423,7 +15415,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -1784782533756910241, guid: 57a6fef20a012084199d5d562ac35f00,
+      objectReference: {fileID: -364325116, guid: 4ef72606cf88ced45ac502d6d2e3c681,
         type: 3}
     - target: {fileID: 4328413215920075902, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
@@ -15448,7 +15440,7 @@ PrefabInstance:
     - target: {fileID: 4328413215920075902, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       propertyPath: m_SortingLayer
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4328413215920075902, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
@@ -15493,7 +15485,7 @@ PrefabInstance:
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       propertyPath: atkDelay
-      value: 0.3
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
@@ -15503,7 +15495,7 @@ PrefabInstance:
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       propertyPath: attackAngle
-      value: 180
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
@@ -15516,6 +15508,16 @@ PrefabInstance:
       propertyPath: attackDamage
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: clawAnimator
+      value: 
+      objectReference: {fileID: 1505759185}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: slashAnimator
+      value: 
+      objectReference: {fileID: 1505759185}
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       propertyPath: trailDuration
@@ -15544,7 +15546,7 @@ PrefabInstance:
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       propertyPath: detectionRadius
-      value: 10
+      value: 5.5
       objectReference: {fileID: 0}
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
@@ -15561,6 +15563,11 @@ PrefabInstance:
       propertyPath: trailStartWidth
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: clawEffectSprite
+      value: 
+      objectReference: {fileID: 1188504734}
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       propertyPath: meeleAttackRange
@@ -15584,6 +15591,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
+      propertyPath: meleeAttackPrefab
+      value: 
+      objectReference: {fileID: 131342133516954262, guid: 7c22db16dbd69d54abd984ad02e6b077,
+        type: 3}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
       propertyPath: trailStartColor.a
       value: 0.31764707
       objectReference: {fileID: 0}
@@ -15600,12 +15613,12 @@ PrefabInstance:
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       propertyPath: attackEffectOffset.x
-      value: 0.5
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       propertyPath: attackEffectOffset.y
-      value: 0.5
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
@@ -15642,6 +15655,104 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8035919368643098079, guid: a1886f06b34f896438b03680aaca1a39,
         type: 3}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: meleeAttackPrefabs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: 'meleeAttackPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 131342133516954262, guid: 7c22db16dbd69d54abd984ad02e6b077,
+        type: 3}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: 'meleeAttackPrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 131342133516954262, guid: a076097579c39604d82ca8b68fe380a6,
+        type: 3}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: 'meleeAttackPrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 131342133516954262, guid: f78cb351b03dad54fa750e6b57aa21a4,
+        type: 3}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: clawAttackSet.attackPrefabs.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: clawAttackSet.animationNames.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: swordAttackSet.attackPrefabs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: swordAttackSet.animationNames.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: 'clawAttackSet.attackPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 131342133516954262, guid: 7c22db16dbd69d54abd984ad02e6b077,
+        type: 3}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: 'clawAttackSet.attackPrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 131342133516954262, guid: a076097579c39604d82ca8b68fe380a6,
+        type: 3}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: 'clawAttackSet.attackPrefabs.Array.data[2]'
+      value: 
+      objectReference: {fileID: 131342133516954262, guid: f78cb351b03dad54fa750e6b57aa21a4,
+        type: 3}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: 'clawAttackSet.animationNames.Array.data[0]'
+      value: Claw 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: 'clawAttackSet.animationNames.Array.data[1]'
+      value: Claw 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: 'clawAttackSet.animationNames.Array.data[2]'
+      value: Claw 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: 'swordAttackSet.attackPrefabs.Array.data[0]'
+      value: 
+      objectReference: {fileID: 131342133516954262, guid: 87dcc7a797d6dce4199b705e8f349f84,
+        type: 3}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: 'swordAttackSet.attackPrefabs.Array.data[1]'
+      value: 
+      objectReference: {fileID: 131342133516954262, guid: eeb5c845bf2901a40b1ef5618d56ae17,
+        type: 3}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: 'swordAttackSet.animationNames.Array.data[0]'
+      value: Sword 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: 'swordAttackSet.animationNames.Array.data[1]'
+      value: Sword 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -17326,7 +17437,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -44025399
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 50
   m_Sprite: {fileID: 7812820661483254461, guid: 215687feeab0b7445b4a1cd86c82c2e1,
     type: 3}

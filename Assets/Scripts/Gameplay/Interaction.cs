@@ -18,19 +18,11 @@ public class Interaction : MonoBehaviour
         public string[] dialogueTexts;
     }
 
-    [System.Serializable]
-    public class ButtonFrame
-    {
-        public Image normalFrame;
-        public Image selectedFrame;
-    }
-
     [Header("Interaction UI")]
     [SerializeField] private GameObject interactionField;
     [SerializeField] private Image backgroundOverlay;
     [SerializeField] private float typingSpeed;
     [SerializeField] private GameObject titleImage;
-    [SerializeField] private CanvasGroup titleImageCanvasGroup;
 
     [Header("Interaction Prompt")]
     [SerializeField] private GameObject interactionPrompt;
@@ -53,7 +45,6 @@ public class Interaction : MonoBehaviour
     [SerializeField] private GameObject godChoosePanel;
     [SerializeField] private Button[] godChooseButtons;
     [SerializeField] private float animationDuration;
-    [SerializeField] private ButtonFrame[] buttonFrames;
 
     [Header("Close Button")]
     [SerializeField] private Button closeButton;
@@ -73,7 +64,6 @@ public class Interaction : MonoBehaviour
         titleImage.SetActive(false);
         godChoosePanel.SetActive(false);
         interactionPrompt.SetActive(false);
-        backgroundOverlay.gameObject.SetActive(false);
 
         if (interactionPromptCanvasGroup != null)
         {
@@ -99,14 +89,6 @@ public class Interaction : MonoBehaviour
         {
             originalButtonPositions[i] = godChooseButtons[i].transform.position;
             godChooseButtons[i].gameObject.SetActive(false);
-
-            // 프레임 초기 상태 설정
-            if (buttonFrames[i] != null)
-            {
-                buttonFrames[i].normalFrame.gameObject.SetActive(true);
-                buttonFrames[i].selectedFrame.gameObject.SetActive(false);
-            }
-
             int index = i;
             godChooseButtons[i].onClick.AddListener(() => OnGodChooseButtonClicked(index));
         }
@@ -246,11 +228,6 @@ public class Interaction : MonoBehaviour
         {
             interactionField.SetActive(enable);
         }
-
-        if (backgroundOverlay != null)
-        {
-            backgroundOverlay.gameObject.SetActive(enable);
-        }
     }
 
     private void DisplayCharacterData(CharacterData characterToDisplay, string selectedDialogue)
@@ -304,7 +281,6 @@ public class Interaction : MonoBehaviour
         PauseController.Paused = true;
         Time.timeScale = 0f;
         godChoosePanel.SetActive(true);
-        backgroundOverlay.gameObject.SetActive(true);
 
         for (int i = 0; i < godChooseButtons.Length; i++)
         {
@@ -314,10 +290,9 @@ public class Interaction : MonoBehaviour
         areButtonsVisible = true;
         titleImage.SetActive(true);
 
-        titleImage.SetActive(true);
-        if (titleImageCanvasGroup != null)
+        if (backgroundOverlay != null && backgroundOverlay.gameObject != null)
         {
-            titleImageCanvasGroup.alpha = 1f;
+            backgroundOverlay.gameObject.SetActive(true);
         }
     }
 
@@ -327,6 +302,7 @@ public class Interaction : MonoBehaviour
         {
             DisableAllButtonComponents();
             AnimateButtonSelection(index);
+            titleImage.SetActive(false);
 
             CharacterData selectedCharacter = characters[index];
 
@@ -339,30 +315,11 @@ public class Interaction : MonoBehaviour
 
     private void AnimateButtonSelection(int selectedIndex)
     {
-        if (titleImageCanvasGroup != null)
-        {
-            titleImageCanvasGroup.DOFade(0f, animationDuration)
-                .SetUpdate(true)
-                .OnComplete(() => titleImage.SetActive(false));
-        }
-
-        // 정렬 순서 변경
-        godChooseButtons[selectedIndex].transform.SetAsLastSibling();
-
         for (int i = 0; i < godChooseButtons.Length; i++)
         {
             Button button = godChooseButtons[i];
-            ButtonFrame frame = buttonFrames[i];
-
             if (i == selectedIndex)
             {
-                // 선택된 버튼의 프레임 변경
-                if (frame != null)
-                {
-                    frame.normalFrame.gameObject.SetActive(false);
-                    frame.selectedFrame.gameObject.SetActive(true);
-                }
-
                 button.transform.DOScale(Vector3.one * 1.2f, 0.3f).SetUpdate(true);
                 button.transform.DOMove(originalButtonPositions[i], 0.3f).SetUpdate(true);
                 button.image.DOColor(Color.white, animationDuration).SetUpdate(true).OnComplete(() =>
@@ -375,22 +332,19 @@ public class Interaction : MonoBehaviour
                     SetInteractionUI(true);
                 });
             }
+
             else
             {
-                // 선택되지 않은 버튼들은 기본 프레임 유지
-                if (frame != null)
-                {
-                    frame.normalFrame.gameObject.SetActive(true);
-                    frame.selectedFrame.gameObject.SetActive(false);
-                }
-
                 Color targetColor = new Color(0x44 / 255f, 0x44 / 255f, 0x44 / 255f);
-                button.image.DOColor(targetColor, animationDuration)
-                    .OnComplete(() => button.gameObject.SetActive(false))
-                    .SetUpdate(true);
+                button.image.DOColor(targetColor, animationDuration).OnComplete(() => button.gameObject.SetActive(false)).SetUpdate(true);
+
+                Image[] childImages = button.GetComponentsInChildren<Image>();
+                foreach (Image img in childImages)
+                {
+                    img.DOColor(targetColor, animationDuration).SetUpdate(true);
+                }
             }
         }
-
         nowInteract = false;
         DOVirtual.DelayedCall(animationDuration, () => { EnableAllButtonComponents(); }).SetUpdate(true);
     }
@@ -433,16 +387,6 @@ public class Interaction : MonoBehaviour
 
                 button.transform.localScale = Vector3.one;
                 button.transform.position = originalButtonPositions[System.Array.IndexOf(godChooseButtons, button)];
-            }
-        }
-
-        // 프레임 초기화
-        for (int i = 0; i < buttonFrames.Length; i++)
-        {
-            if (buttonFrames[i] != null)
-            {
-                buttonFrames[i].normalFrame.gameObject.SetActive(true);
-                buttonFrames[i].selectedFrame.gameObject.SetActive(false);
             }
         }
 

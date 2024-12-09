@@ -16,9 +16,6 @@ public class LoadingProgress : MonoBehaviour
     [SerializeField] private float textChangeInterval = 0.3f;
     [SerializeField] private float[] loadingStopPoints;
     [SerializeField] private float stopDuration = 0.25f;
-    [SerializeField] private RectTransform runnerImage;
-    [SerializeField] private Animator runnerAnimator;
-    [SerializeField] private RectTransform progressBarRect;
 
     private float targetProgress;
     private float currentProgress;
@@ -32,11 +29,6 @@ public class LoadingProgress : MonoBehaviour
         loadingStartTime = Time.time;
         StartCoroutine(CycleLoadingImages());
         StartCoroutine(CycleLoadingTexts());
-
-        if (runnerAnimator != null)
-        {
-            runnerAnimator.Play("0_Run");
-        }
     }
 
     private void Update()
@@ -68,8 +60,6 @@ public class LoadingProgress : MonoBehaviour
             currentProgress = Mathf.Lerp(currentProgress, finalProgress, Time.deltaTime * smoothSpeed);
             progressBar.fillAmount = currentProgress;
         }
-
-        UpdateRunnerPosition();
     }
 
     private IEnumerator CycleLoadingImages()
@@ -102,21 +92,5 @@ public class LoadingProgress : MonoBehaviour
     {
         float elapsedTime = Time.time - loadingStartTime;
         return elapsedTime >= minimumLoadingTime && Mathf.Approximately(currentProgress, 1f);
-    }
-
-    private void UpdateRunnerPosition()
-    {
-        if (runnerImage == null || progressBarRect == null) return;
-
-        // 프로그레스바의 전체 너비
-        float barWidth = progressBarRect.rect.width;
-
-        // 현재 진행도에 따른 x 위치 계산
-        float xPosition = (barWidth * currentProgress) - (barWidth * 0.5f);
-
-        // 캐릭터의 현재 위치 업데이트
-        Vector3 newPosition = runnerImage.localPosition;
-        newPosition.x = xPosition;
-        runnerImage.localPosition = newPosition;
     }
 }

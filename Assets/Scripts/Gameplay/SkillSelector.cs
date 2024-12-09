@@ -30,11 +30,8 @@ public class SkillSelector : MonoBehaviour
     [System.Serializable]
     public class GodData
     {
-        public int godId;
         public Image godImage;
         public string godName;
-        public Sprite skillButtonImage;
-        public Sprite selectedButtonImage;
         [TextArea(3, 10)]
         public string[] dialogueTexts;
         public List<Skilldata> availableSkills;
@@ -64,18 +61,15 @@ public class SkillSelector : MonoBehaviour
     // 임시용 화면 가리기, 재가공 필수
     [SerializeField] private Image tempBlackImage;
     [Header("Status Effect Colors")]
-    [SerializeField] private Color bleedColor = new Color(0.86f, 0.08f, 0.24f);
-    [SerializeField] private Color slowColor = new Color(0.27f, 0.45f, 0.77f);
-    [SerializeField] private Color debilitateColor = new Color(0.08f, 0.63f, 0.08f);
-    [SerializeField] private Color VenomColor = new Color(0.75f, 0.75f, 0.75f);
+    [SerializeField] private Color bleedColor = new Color(0.86f, 0.08f, 0.24f); // #DC143C 기본값
+    [SerializeField] private Color slowColor = new Color(0.27f, 0.45f, 0.77f);  // #4472C4 기본값
+    [SerializeField] private Color debilitateColor = new Color(0.08f, 0.63f, 0.08f); // #14A014 기본값
+    [SerializeField] private Color VenomColor = new Color(0.75f, 0.75f, 0.75f); // #BFBFBF 기본값
     [SerializeField] private Color fearColor = new Color(0.86f, 0.08f, 0.24f);
     [SerializeField] private Color stiffColor = new Color(0.27f, 0.45f, 0.77f);
 
     public GameObject skillSelectorUI;
-    [SerializeField] private Sprite normalButtonSprite;
-    [SerializeField] private Sprite selectedButtonSprite;
     public Button[] skillButtons;
-    public TextMeshProUGUI[] skillLevelTexts;
     public TextMeshProUGUI[] skillDescriptionTexts;
 
     public Transform skillPanel;
@@ -271,17 +265,8 @@ public class SkillSelector : MonoBehaviour
 
         cursorManager.SetNormalCursor();
 
-        GodData currentGod = gods[currentGodIndex];
-        List<Skilldata> selectedGodSkills = currentGod.availableSkills;
-
-        foreach (Button button in skillButtons)
-        {
-            Image buttonImage = button.GetComponent<Image>();
-            if (buttonImage != null)
-            {
-                buttonImage.sprite = currentGod.skillButtonImage;
-            }
-        }
+        // 현재 선택된 신의 스킬 리스트 가져오기
+        List<Skilldata> selectedGodSkills = gods[currentGodIndex].availableSkills;
 
         ShuffleSkills(selectedGodSkills);
         currentSkillSet = new List<Skilldata>(selectedGodSkills.Take(3));
@@ -310,7 +295,7 @@ public class SkillSelector : MonoBehaviour
         for (int i = 0; i < skillButtons.Length; i++)
         {
             skillButtons[i].transform.localScale = originalScales[i];
-            // RemoveColor(skillButtons[i].gameObject);
+            RemoveColor(skillButtons[i].gameObject);
         }
     }
 
@@ -407,11 +392,6 @@ public class SkillSelector : MonoBehaviour
                 Skilldata skill = currentSkillSet[i];
                 int skillLevel = PlayerSkills.Instance.GetSkillLevel(skill.skillName);
 
-                if (skillLevelTexts.Length > i && skillLevelTexts[i] != null)
-                {
-                    skillLevelTexts[i].text = $"레벨 {skillLevel + 1}";
-                }
-
                 TextMeshProUGUI buttonText = skillButtons[i].GetComponentInChildren<TextMeshProUGUI>();
                 if (buttonText != null)
                 {
@@ -479,6 +459,9 @@ public class SkillSelector : MonoBehaviour
     private void AddHoverListeners(Button button)
     {
         button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() => { if (!isProducing) SelectSkill(System.Array.IndexOf(skillButtons, button)); });
+
+        button.transition = Selectable.Transition.None;
 
         EventTrigger trigger = button.gameObject.GetComponent<EventTrigger>() ?? button.gameObject.AddComponent<EventTrigger>();
 
@@ -488,13 +471,10 @@ public class SkillSelector : MonoBehaviour
             if (!isProducing)
             {
                 button.transform.DOScale(originalScales[System.Array.IndexOf(skillButtons, button)] * maximizeButton, 0.2f).SetUpdate(true);
-                Image buttonImage = button.GetComponent<Image>();
-                if (buttonImage != null)
-                {
-                    buttonImage.sprite = gods[currentGodIndex].selectedButtonImage;
-                }
+                AddColor(button.gameObject, buttonEdge);
             }
         });
+        trigger.triggers.Add(enterEntry);
 
         EventTrigger.Entry exitEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
         exitEntry.callback.AddListener((data) =>
@@ -502,40 +482,33 @@ public class SkillSelector : MonoBehaviour
             if (!isProducing)
             {
                 button.transform.DOScale(originalScales[System.Array.IndexOf(skillButtons, button)], 0.2f).SetUpdate(true);
-                Image buttonImage = button.GetComponent<Image>();
-                if (buttonImage != null)
-                {
-                    buttonImage.sprite = gods[currentGodIndex].skillButtonImage;
-                }
+                RemoveColor(button.gameObject);
             }
         });
-        trigger.triggers.Clear();
-        trigger.triggers.Add(enterEntry);
         trigger.triggers.Add(exitEntry);
     }
 
-    // private void AddColor(GameObject obj, float edgeSize)
-    // {
-    //     Outline outline = obj.GetComponent<Outline>();
-    //     if (outline == null)
-    //     {
-    //         outline = obj.AddComponent<Outline>();
-    //     }
-    //     // 반투명 효과를 준 색상 사용
-    //     outline.effectColor = new Color(1f, 1f, 1f, 0.7f);
-    //     outline.effectDistance = new Vector2(edgeSize, -edgeSize);
-    //     outline.useGraphicAlpha = true;
-    //     outline.enabled = true;
-    // }
+    private void AddColor(GameObject obj, float edgeSize)
+    {
+        Outline outline = obj.GetComponent<Outline>();
+        if (outline == null)
+        {
+            outline = obj.AddComponent<Outline>();
+        }
+        outline.effectColor = Color.white;
+        outline.effectDistance = new Vector2(edgeSize, -edgeSize);
+        outline.useGraphicAlpha = false;
+        outline.enabled = true;
+    }
 
-    // private void RemoveColor(GameObject obj)
-    // {
-    //     Outline outline = obj.GetComponent<Outline>();
-    //     if (outline != null)
-    //     {
-    //         outline.enabled = false;
-    //     }
-    // }
+    private void RemoveColor(GameObject obj)
+    {
+        Outline outline = obj.GetComponent<Outline>();
+        if (outline != null)
+        {
+            outline.enabled = false;
+        }
+    }
 
     // ============================== Dice
 
@@ -573,31 +546,19 @@ public class SkillSelector : MonoBehaviour
         float moveDistance = 100f;
         float animationDuration = 0.5f;
 
-        // 현재 진행 중인 모든 트윈 즉시 완료
-        for (int i = 0; i < skillButtons.Length; i++)
-        {
-            skillButtons[i].transform.DOKill(true);
-        }
-
-        // 모든 버튼을 원래 위치로 즉시 이동
-        for (int i = 0; i < skillButtons.Length; i++)
-        {
-            skillButtons[i].transform.position = originalPositions[i];
-        }
-
-        // 새로운 애니메이션 시작
         for (int i = 0; i < skillButtons.Length; i++)
         {
             Button button = skillButtons[i];
-            button.transform.DOMoveY(originalPositions[i].y + moveDistance, animationDuration / 2)
+            Vector3 originalPosition = button.transform.position;
+
+            button.transform.DOMoveY(originalPosition.y + moveDistance, animationDuration / 2)
                 .SetEase(Ease.OutQuad)
-                .SetUpdate(true)
-                .OnComplete(() =>
-                {
-                    button.transform.DOMoveY(originalPositions[System.Array.IndexOf(skillButtons, button)].y, animationDuration / 2)
-                        .SetEase(Ease.InQuad)
-                        .SetUpdate(true);
-                });
+                .SetUpdate(true);
+
+            button.transform.DOMoveY(originalPosition.y, animationDuration / 2)
+                .SetEase(Ease.InQuad)
+                .SetDelay(animationDuration / 2)
+                .SetUpdate(true);
         }
 
         int maxAttempts = 10;
@@ -636,8 +597,8 @@ public class SkillSelector : MonoBehaviour
 
     private void UpdateDiceUI()
     {
-        redDiceCountText.text = $"{currentRedDiceCount}";
-        blueDiceCountText.text = $"{currentBlueDiceCount}";
+        redDiceCountText.text = $"{currentRedDiceCount}/{maxRedDiceCount}";
+        blueDiceCountText.text = $"{currentBlueDiceCount}/{maxBlueDiceCount}";
 
         redDiceButton.interactable = currentRedDiceCount > 0;
         blueDiceButton.interactable = currentBlueDiceCount > 0;

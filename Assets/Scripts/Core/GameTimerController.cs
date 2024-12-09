@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
 using System;
-using UnityEngine.UI;
 
 public class GameTimerController : MonoBehaviour
 {
@@ -12,7 +11,6 @@ public class GameTimerController : MonoBehaviour
     [SerializeField] private float timeSinceLastUpdate;
     [SerializeField] private Transform obstacleHierahy;
     [SerializeField] private PauseController pauseController;
-    [SerializeField] private Image timerFillImage;
 
     [Header("Pause Times")]
     [SerializeField] private float elitePauseTime;
@@ -22,7 +20,6 @@ public class GameTimerController : MonoBehaviour
 
     private float elapsedTime;
     private float[] pauseTimes;
-    private float maxTime = 600f;
     private int currentPauseIndex;
 
     [SerializeField] private float xOffset = 1f; // X 방향 오프셋
@@ -50,11 +47,6 @@ public class GameTimerController : MonoBehaviour
         {
             elapsedTime += Time.deltaTime * debugParameter;
             timeSinceLastUpdate += Time.deltaTime;
-
-            if (timerFillImage != null)
-            {
-                timerFillImage.fillAmount = Mathf.Clamp01(elapsedTime / maxTime);
-            }
 
             if (timeSinceLastUpdate >= updateInterval)
             {

@@ -40,7 +40,6 @@ public class PlayerStateManager : MonoBehaviour
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float projectileDamage;
     [SerializeField] private int penetrateCount;
-    [SerializeField] private Transform firePosition;
 
     [Header("Projectile Trail")]
     [SerializeField] private TrailRenderer projectileTrailPrefab;
@@ -151,13 +150,14 @@ public class PlayerStateManager : MonoBehaviour
             return;
         }
 
-        Vector2 direction = (targetPosition - (Vector2)firePosition.position).normalized;
+        Vector2 direction = (targetPosition - (Vector2)transform.position).normalized;
 
         GameObject projectileObj = projectilePool.GetProjectile();
-        projectileObj.transform.position = firePosition.position;
+        projectileObj.transform.position = transform.position;
         projectileObj.transform.right = direction;
 
         Projectile projectile = projectileObj.GetComponent<Projectile>();
+
         TrailRenderer trail = projectileObj.GetComponent<TrailRenderer>();
 
         trail.time = projectileTrailSettings.trailDuration;

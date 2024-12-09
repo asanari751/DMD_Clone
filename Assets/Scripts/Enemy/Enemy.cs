@@ -28,7 +28,7 @@ public class BasicEnemy : MonoBehaviour
     private ExpOrbPool expOrbPool;
     private EnemyKnockback enemyKnockback;
     public event System.Action<GameObject> OnEnemyDeath;
-    private Transform playerTransform;
+    protected Transform playerTransform;
     private GameObject attackAreaInstance;
     private SpriteRenderer attackAreaSpriteRenderer;
     private Vector2 attackDirection;
@@ -136,7 +136,7 @@ public class BasicEnemy : MonoBehaviour
             DOTween.Kill(spriteRenderer);
         }
     }
-    public void CheckAttack()
+    public virtual void CheckAttack()
     {
         if (GetComponent<EnemyHealthController>().IsDead() || playerTransform == null) return;
 

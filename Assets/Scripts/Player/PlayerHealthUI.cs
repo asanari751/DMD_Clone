@@ -20,11 +20,13 @@ public class PlayerHealthUI : MonoBehaviour
     [SerializeField] private float currentHealth;
     [SerializeField] private float yOffset;
     [SerializeField] private float smoothSpeed;
+    [SerializeField] private GameObject playerShadow;
 
     [Header("Ref")]
     [SerializeField] private Transform playerTransform;
     [SerializeField] private string hubScene = "1_Hub";
     [SerializeField] private bool InCombatArea = false;
+    private Rigidbody2D playerRigidbody;
 
     private Vector3 currentPosition;
     private Color originalHealthBarColor;
@@ -34,6 +36,9 @@ public class PlayerHealthUI : MonoBehaviour
 
     private void Start()
     {
+        playerShadow.SetActive(true);
+        playerRigidbody = GetComponent<Rigidbody2D>();
+
         if (SceneManager.GetActiveScene().name != hubScene)
         {
             healthBarRoot.SetActive(InCombatArea);
@@ -96,6 +101,31 @@ public class PlayerHealthUI : MonoBehaviour
             Die();
     }
 
+    public void TakeDamageWithKnockback(float damage, Vector2 knockbackDirection, float knockbackForce)
+    {
+        TakeDamage(damage);
+
+        var playerController = GetComponent<PlayerController>();
+        if (playerController != null)
+        {
+            playerController.ApplyKnockback();
+        }
+
+        var rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            Vector2 targetPosition = (Vector2)transform.position + (knockbackDirection * knockbackForce);
+
+            transform.DOMove(targetPosition, 0.5f)
+                .SetEase(Ease.OutCubic)
+                .OnComplete(() =>
+                {
+                    rb.linearVelocity = Vector2.zero;
+                });
+        }
+    }
+
     public bool IsDead()
     {
         return isDead;
@@ -147,6 +177,7 @@ public class PlayerHealthUI : MonoBehaviour
     {
         isDead = true;
         DisablePlayerComponents();
+        playerShadow.SetActive(false);
 
         var animController = GetComponent<AnimationController>();
         if (animController != null)

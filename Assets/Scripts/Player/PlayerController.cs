@@ -8,6 +8,10 @@ public class PlayerController : MonoBehaviour
     public float playerSpeed;
     public Experience experience; // ExpOrb
 
+    private bool isKnockedback = false;
+    private float knockbackDuration = 0.5f;
+    private float knockbackTimer = 0f;
+
     private ParticleSystem dustParticle;
 
     void Awake()
@@ -18,6 +22,17 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isKnockedback)
+        {
+            knockbackTimer += Time.fixedDeltaTime;
+            if (knockbackTimer >= knockbackDuration)
+            {
+                isKnockedback = false;
+                knockbackTimer = 0f;
+            }
+            return; // 넉백 중에는 일반 이동 처리 건너뛰기
+        }
+
         Vector2 nextVec2 = InputVector * playerSpeed * Time.fixedDeltaTime;
         rigid.MovePosition(rigid.position + nextVec2);
     }
@@ -56,5 +71,11 @@ public class PlayerController : MonoBehaviour
     void OnMove(InputValue value)
     {
         InputVector = value.Get<Vector2>();
+    }
+
+    public void ApplyKnockback()
+    {
+        isKnockedback = true;
+        knockbackTimer = 0f;
     }
 }

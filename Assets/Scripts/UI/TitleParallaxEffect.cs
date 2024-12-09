@@ -1,27 +1,34 @@
+using System.Collections;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class TitleParallaxEffect : MonoBehaviour 
+public class TitleParallaxEffect : MonoBehaviour
 {
     [Header("Foreground Layer")]
     [SerializeField] private RectTransform foregroundImage;
-    [SerializeField] [Range(0f, 100f)] private float foreIntensityX = 40f;
-    [SerializeField] [Range(0f, 100f)] private float foreIntensityY = 40f;
+    [SerializeField][Range(0f, 100f)] private float foreIntensityX = 40f;
+    [SerializeField][Range(0f, 100f)] private float foreIntensityY = 40f;
 
     [Header("Middleground Layer")]
     [SerializeField] private RectTransform middlegroundImage;
-    [SerializeField] [Range(0f, 100f)] private float middleIntensityX = 20f;
-    [SerializeField] [Range(0f, 100f)] private float middleIntensityY = 20f;
+    [SerializeField][Range(0f, 100f)] private float middleIntensityX = 20f;
+    [SerializeField][Range(0f, 100f)] private float middleIntensityY = 20f;
 
     [Header("Background Layer")]
     [SerializeField] private RectTransform backgroundImage;
-    [SerializeField] [Range(0f, 100f)] private float backIntensityX = 10f;
-    [SerializeField] [Range(0f, 100f)] private float backIntensityY = 10f;
+    [SerializeField][Range(0f, 100f)] private float backIntensityX = 10f;
+    [SerializeField][Range(0f, 100f)] private float backIntensityY = 10f;
 
     [Header("Movement Settings")]
     [SerializeField] private float movementDuration = 0.5f;
     [SerializeField] private Ease moveEase = Ease.OutQuad;
-    [SerializeField] [Range(0f, 0.5f)] private float deadZone = 0.1f;
+    [SerializeField][Range(0f, 0.5f)] private float deadZone = 0.1f;
+
+    [Header("Character Animation")]
+    [SerializeField] private Image characterImage;  // 캐릭터 이미지 컴포넌트
+    [SerializeField] private Sprite[] characterSprites;  // 캐릭터 스프라이트 배열
+    [SerializeField] private float spriteChangeInterval = 0.3f;  // 스프라이트 변경 간격
 
     private Vector2 foregroundInitialPos;
     private Vector2 middlegroundInitialPos;
@@ -32,6 +39,8 @@ public class TitleParallaxEffect : MonoBehaviour
         foregroundInitialPos = foregroundImage.anchoredPosition;
         middlegroundInitialPos = middlegroundImage.anchoredPosition;
         backgroundInitialPos = backgroundImage.anchoredPosition;
+
+        StartCoroutine(CycleCharacterSprites());
     }
 
     private void Update()
@@ -67,6 +76,33 @@ public class TitleParallaxEffect : MonoBehaviour
         layer.DOAnchorPos(targetPos, movementDuration)
             .SetEase(moveEase)
             .SetUpdate(true);
+    }
+
+    private IEnumerator CycleCharacterSprites()
+    {
+        int currentSpriteIndex = 0;
+        RectTransform imageRect = characterImage.GetComponent<RectTransform>();
+
+        while (true)
+        {
+            if (characterImage != null && characterSprites != null && characterSprites.Length > 0)
+            {
+                characterImage.sprite = characterSprites[currentSpriteIndex];
+
+                // 스프라이트 인덱스에 따라 크기 조절
+                if (currentSpriteIndex == 2)  // 마지막 스프라이트
+                {
+                    imageRect.sizeDelta = new Vector2(97f, 188f);
+                }
+                else
+                {
+                    imageRect.sizeDelta = new Vector2(100f, 189f);
+                }
+
+                currentSpriteIndex = (currentSpriteIndex + 1) % characterSprites.Length;
+            }
+            yield return new WaitForSeconds(spriteChangeInterval);
+        }
     }
 
     private void OnDestroy()

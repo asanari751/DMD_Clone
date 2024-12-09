@@ -26,10 +26,14 @@ public class EnemyMovementController : MonoBehaviour
     {
         if (flowfield != null && rb != null && playerTransform != null && !basicEnemy.IsKnockedBack() && !enemyHealthController.IsDead())
         {
+            BossAnimationController bossAnimController = GetComponent<BossAnimationController>();
             if (!basicEnemy.CanMove())
             {
                 rb.linearVelocity = Vector2.zero;
-                if (animationController != null) animationController.UpdateMovement(Vector2.zero);
+                if (bossAnimController != null)
+                    bossAnimController.UpdateMovement(Vector2.zero);
+                else if (animationController != null)
+                    animationController.UpdateMovement(Vector2.zero);
                 return;
             }
 
@@ -56,7 +60,12 @@ public class EnemyMovementController : MonoBehaviour
             }
 
             rb.linearVelocity = movement;
-            if (animationController != null) animationController.UpdateMovement(movement);
+
+            if (bossAnimController != null)
+                bossAnimController.UpdateMovement(movement);
+            else if (animationController != null)
+                animationController.UpdateMovement(movement);
+
             basicEnemy.CheckAttack();
         }
         else

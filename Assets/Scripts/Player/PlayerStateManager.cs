@@ -8,17 +8,8 @@ public class PlayerStateManager : MonoBehaviour
 {
     public enum AttackType
     {
-        Claw,
-        Sword,
+        Melee,
         Arrow
-    }
-
-    [System.Serializable]
-    public class MeleeAttackSet
-    {
-        public GameObject[] attackPrefabs;
-        public string[] animationNames;
-        public int ComboCount => attackPrefabs.Length;
     }
 
     [Header("Common")]
@@ -46,10 +37,8 @@ public class PlayerStateManager : MonoBehaviour
     [SerializeField] private TrailRenderer projectileTrailPrefab;
     [SerializeField] private ProjectileTrailSettings projectileTrailSettings;
 
-    [Header("Melee Attack Sets")]
-    [SerializeField] private MeleeAttackSet clawAttackSet;
-    [SerializeField] private MeleeAttackSet swordAttackSet;
-    [SerializeField] private float comboResetTime = 2f;
+    [Header("Attack Effect")]
+    [SerializeField] private SpriteRenderer attackEffectSprite;
     [SerializeField] private Vector2 attackEffectOffset = Vector2.zero;
 
     private Camera mainCamera;
@@ -58,9 +47,6 @@ public class PlayerStateManager : MonoBehaviour
     private float lastAttackTime = 0f;
     private float lastRangedAttackTime = 0f;
     public event Action<float, float, int> OnStatsUpdated;
-    private int currentComboCount = 0;
-    private float lastComboTime = 0f;
-    private GameObject currentAttackEffect;
 
     private void Awake()
     {
@@ -127,21 +113,8 @@ public class PlayerStateManager : MonoBehaviour
         if (PauseController.Paused == true) return;
 
         Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 direction = ((Vector2)mousePosition - (Vector2)transform.position).normalized;
-        float distanceToMouse = Vector2.Distance(transform.position, mousePosition);
-
-        Vector2 attackPosition;
-        if (distanceToMouse <= detectionRadius)
-        {
-            attackPosition = mousePosition;
-        }
-        else
-        {
-            attackPosition = (Vector2)transform.position + (direction * meeleAttackRange);
-        }
-
         Action<Vector2> attackAction = currentAttackType == AttackType.Arrow ? PerformRangedAttack : PerformAttack;
-        attackAction(attackPosition);
+        attackAction(mousePosition);
     }
 
     private void PerformRangedAttack(Vector2 targetPosition)
@@ -201,7 +174,7 @@ public class PlayerStateManager : MonoBehaviour
                 if (enemyHealth != null)
                 {
                     Vector2 knockbackDirection = (collider.transform.position - transform.position).normalized;
-                    enemyHealth.TakeDamage(attackDamage, -knockbackDirection);
+                    enemyHealth.TakeDamage(attackDamage, knockbackDirection);
                 }
             }
         }
@@ -217,63 +190,38 @@ public class PlayerStateManager : MonoBehaviour
 
     private void ShowAttackEffect(Vector2 targetPosition)
     {
-        if (Time.time - lastComboTime > comboResetTime)
-        {
-            currentComboCount = 0;
-        }
+        if (attackEffectSprite == null) return;
 
-        if (currentAttackEffect != null)
-        {
-            Destroy(currentAttackEffect);
-        }
+        DOTween.Kill(attackEffectSprite);
+        attackEffectSprite.gameObject.SetActive(true);
+        attackEffectSprite.color = Color.white;
 
-        MeleeAttackSet currentAttackSet = currentAttackType == AttackType.Claw ? clawAttackSet : swordAttackSet;
-        Vector2 spawnPosition = targetPosition;
-        Quaternion rotation = Quaternion.identity;
+        SetAttackEffectTransform(targetPosition);
 
-        if (currentAttackType == AttackType.Sword)
-        {
-            Vector2 direction = ((Vector2)targetPosition - (Vector2)transform.position).normalized;
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-            // Sword 타입일 때만 offset 적용
-            Vector2 adjustedOffset = CalculateDirectionalOffset(direction);
-            spawnPosition = (Vector2)transform.position + adjustedOffset;
-
-            rotation = Quaternion.Euler(0, 0, angle);
-        }
-
-        currentAttackEffect = Instantiate(currentAttackSet.attackPrefabs[currentComboCount], spawnPosition, rotation);
-
-        Animator animator = currentAttackEffect.GetComponent<Animator>();
-        if (animator != null)
-        {
-            animator.Play(currentAttackSet.animationNames[currentComboCount]);
-            Destroy(currentAttackEffect, atkDelay);
-        }
-
-        currentComboCount = (currentComboCount + 1) % currentAttackSet.ComboCount;
-        lastComboTime = Time.time;
+        DOTween.Sequence()
+            .Append(attackEffectSprite.DOFade(0.5f, attackEffectDuration * 0.1f))
+            .Append(attackEffectSprite.DOFade(0f, attackEffectDuration * 0.4f))
+            .OnComplete(() => attackEffectSprite.gameObject.SetActive(false));
     }
 
-    // private void SetAttackEffectTransform(Vector2 targetPosition)
-    // {
-    //     Vector2 directionToTarget = (targetPosition - (Vector2)transform.position).normalized;
-    //     float angleToTarget = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
+    private void SetAttackEffectTransform(Vector2 targetPosition)
+    {
+        Vector2 directionToTarget = (targetPosition - (Vector2)transform.position).normalized;
+        float angleToTarget = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg;
 
-    //     Vector2 originalSize = attackEffectSprite.sprite.bounds.size;
-    //     float scaleX = meeleAttackRange * 2 / originalSize.x;
-    //     float scaleY = meeleAttackRange / originalSize.y;
+        Vector2 originalSize = attackEffectSprite.sprite.bounds.size;
+        float scaleX = meeleAttackRange * 2 / originalSize.x;
+        float scaleY = meeleAttackRange / originalSize.y;
 
-    //     attackEffectSprite.transform.localScale = new Vector3(scaleX, scaleY, 1f);
+        attackEffectSprite.transform.localScale = new Vector3(scaleX, scaleY, 1f);
 
-    //     Vector2 adjustedOffset = CalculateDirectionalOffset(directionToTarget);
+        Vector2 adjustedOffset = CalculateDirectionalOffset(directionToTarget);
 
-    //     Vector3 basePosition = transform.position + (Vector3)adjustedOffset;
-    //     attackEffectSprite.transform.position = (Vector2)basePosition + directionToTarget * (meeleAttackRange / 2f);
+        Vector3 basePosition = transform.position + (Vector3)adjustedOffset;
+        attackEffectSprite.transform.position = (Vector2)basePosition + directionToTarget * (meeleAttackRange / 2f);
 
-    //     attackEffectSprite.transform.rotation = Quaternion.Euler(0, 0, angleToTarget - 90);
-    // }
+        attackEffectSprite.transform.rotation = Quaternion.Euler(0, 0, angleToTarget - 90);
+    }
 
     private Vector2 CalculateDirectionalOffset(Vector2 direction)
     {
@@ -295,51 +243,5 @@ public class PlayerStateManager : MonoBehaviour
     private void UpdateStats()
     {
         OnStatsUpdated?.Invoke(attackDamage, projectileDamage, penetrateCount);
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = new Color(0, 1, 1, 0.3f);
-        Gizmos.DrawWireSphere(transform.position, detectionRadius);
-
-        Gizmos.color = new Color(1, 0, 0, 0.3f);
-        Gizmos.DrawWireSphere(transform.position, meeleAttackRange);
-
-        if (currentAttackType == AttackType.Claw || currentAttackType == AttackType.Sword)
-        {
-            Gizmos.color = Color.yellow;
-            Vector2 mousePos = Camera.main != null ? Camera.main.ScreenToWorldPoint(Input.mousePosition) : Vector2.zero;
-            Vector2 direction = (mousePos - (Vector2)transform.position).normalized;
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-            Vector3 leftLine = Quaternion.Euler(0, 0, angle - attackAngle / 2) * Vector3.right * meeleAttackRange;
-            Vector3 rightLine = Quaternion.Euler(0, 0, angle + attackAngle / 2) * Vector3.right * meeleAttackRange;
-
-            Gizmos.DrawLine(transform.position, transform.position + leftLine);
-            Gizmos.DrawLine(transform.position, transform.position + rightLine);
-        }
-
-        Collider2D[] detectedEnemies = Physics2D.OverlapCircleAll(transform.position, detectionRadius, targetLayers);
-        foreach (Collider2D enemy in detectedEnemies)
-        {
-            Vector2 enemyPos = enemy.transform.position;
-            Vector2 direction = ((Vector2)transform.position - (Vector2)enemy.transform.position).normalized;
-
-            // 삼각형 크기 설정
-            float triangleSize = 0.5f;
-            Vector2 triangleTop = enemyPos + direction * triangleSize;
-            Vector2 triangleLeft = enemyPos + Vector2.Perpendicular(direction) * triangleSize * 0.5f;
-            Vector2 triangleRight = enemyPos - Vector2.Perpendicular(direction) * triangleSize * 0.5f;
-
-            // 삼각형 그리기 (녹색)
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(triangleLeft, triangleTop);
-            Gizmos.DrawLine(triangleTop, triangleRight);
-            Gizmos.DrawLine(triangleRight, triangleLeft);
-
-            // 진행 방향 표시 (화살표, 적색)
-            Gizmos.color = Color.red;
-            Gizmos.DrawRay(triangleTop, direction * triangleSize);
-        }
     }
 }

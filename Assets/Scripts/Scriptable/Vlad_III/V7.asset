@@ -12,20 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da4b8bfa5b2cff44bb4a8378ac175508, type: 3}
   m_Name: V7
   m_EditorClassIdentifier: 
-  skillRangeType: 0
   skillName: "\uC6A9\uC758 \uC544\uB4E4"
-  skillIcon: {fileID: 0}
+  skillIcon: {fileID: 3441598732482457857, guid: d801950b3110c414f97215c711bca602,
+    type: 3}
   skillLevel: 0
   skillDescription: "\uC6A9\uC758 \uD53C\uB97C \uBC1B\uC544\uB4E4\uC5EC \uCD5C\uB300
     \uCCB4\uB825\uC774 \uC99D\uAC00\uD569\uB2C8\uB2E4.\n\uC77C\uBC18 \uACF5\uACA9\uC2DC
     \uD655\uB960 \uC801\uC73C\uB85C \uACF5\uD3EC\uB97C \uBD80\uC5EC\uD569\uB2C8\uB2E4."
+  skillRangeType: 0
   skillPrefab: {fileID: 0}
   damage: 0
   duration: 0
   cooldown: 0
   isPassive: 0
   attackInterval: 0
-  effectOnHit: 0
+  statusEffectOnHit: 0
   radius: 0
   range: 0
   angle: 0

@@ -3589,9 +3589,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Textbox
-
-'
+  m_text: "\uC8FC\uC2E0\uC744 \uC120\uD0DD\uD558\uC138\uC694"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d11e61ae9e266f044b8353c558b60a35, type: 2}
   m_sharedMaterial: {fileID: 73764385409227716, guid: d11e61ae9e266f044b8353c558b60a35,
@@ -3629,7 +3627,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: -10
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3735,7 +3733,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &728383254
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9337,7 +9335,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Textbox
+  m_text: "\uD53C\uC758 \uC81C\uB2E8"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d11e61ae9e266f044b8353c558b60a35, type: 2}
   m_sharedMaterial: {fileID: 73764385409227716, guid: d11e61ae9e266f044b8353c558b60a35,
@@ -9375,7 +9373,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: -10
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0

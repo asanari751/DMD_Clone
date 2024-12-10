@@ -6289,8 +6289,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 116, y: -162}
-  m_SizeDelta: {x: 425, y: 249}
+  m_AnchoredPosition: {x: 237.40918, y: -162}
+  m_SizeDelta: {x: 522.1274, y: 249}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1243722216
 MonoBehaviour:
@@ -7425,6 +7425,7 @@ MonoBehaviour:
   currentHealth: 0
   yOffset: 1.3
   smoothSpeed: 0
+  playerShadow: {fileID: 558519762}
   playerTransform: {fileID: 1413334494}
   hubScene: 1_Hub
   InCombatArea: 0
@@ -8533,7 +8534,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -99, y: 72}
+  m_AnchoredPosition: {x: -132.1, y: 74.5}
   m_SizeDelta: {x: 158, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1640936708

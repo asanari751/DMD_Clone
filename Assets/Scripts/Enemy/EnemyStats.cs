@@ -15,4 +15,5 @@ public class EnemyStats
     public float attackCooldown = 2f;
     public float attackDamage = 10f;
     public float RetreatSpeed;
+    public float attackAngleRange = 30f;
 }

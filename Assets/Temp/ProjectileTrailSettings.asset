@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fddb48d35fd85754fbeeb450d2e9cc43, type: 3}
   m_Name: ProjectileTrailSettings
   m_EditorClassIdentifier: 
-  trailDuration: 0.1
+  trailDuration: 0
   trailMaxLength: 0
-  trailStartWidth: 0.1
+  trailStartWidth: 0
   trailEndWidth: 0
-  trailStartColor: {r: 1, g: 1, b: 1, a: 0.6862745}
-  trailEndColor: {r: 1, g: 1, b: 1, a: 0.09803922}
+  trailStartColor: {r: 1, g: 1, b: 1, a: 0}
+  trailEndColor: {r: 1, g: 1, b: 1, a: 0}

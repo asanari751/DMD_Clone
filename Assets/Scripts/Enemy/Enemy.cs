@@ -223,7 +223,7 @@ public class BasicEnemy : MonoBehaviour
             attackAreaInstance.transform.rotation = Quaternion.Euler(0, 0, attackAngle);
 
             float range = stats.AttackRange;
-            attackAreaInstance.transform.localScale = new Vector3(range, range, 1);
+            attackAreaInstance.transform.localScale = new Vector3(range / 3, range / 3, 1);
 
             attackAreaSpriteRenderer.color = startColor; // 시작 색을 startColor로 변경
             attackAreaSpriteRenderer.DOColor(endcolor, stats.attackDelay)
@@ -244,7 +244,7 @@ public class BasicEnemy : MonoBehaviour
                 Vector2 directionToTarget = (hit.transform.position - transform.position).normalized;
                 float angleToTarget = Vector2.Angle(attackDirection, directionToTarget);
 
-                if (angleToTarget <= 30f)
+                if (angleToTarget <= stats.attackAngleRange)
                 {
                     PlayerHealthUI playerHealth = hit.GetComponent<PlayerHealthUI>();
                     if (playerHealth != null)
@@ -318,5 +318,27 @@ public class BasicEnemy : MonoBehaviour
     public bool CanMove()
     {
         return canMove && !IsKnockedBack() && !IsAttacking;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (stats != null)
+        {
+            // 공격 범위 시각화 (흰색 와이어프레임)
+            Gizmos.color = new Color(1, 1, 1, 0.3f);
+            Gizmos.DrawWireSphere(transform.position, stats.AttackRange);
+
+            // 공격 범위 채우기 (반투명 흰색)
+            Gizmos.color = new Color(1, 1, 1, 0.1f);
+            Gizmos.DrawSphere(transform.position, stats.AttackRange);
+
+            // 공격 방향 시각화 (빨간색 선)
+            if (IsAttacking && playerTransform != null)
+            {
+                Gizmos.color = Color.red;
+                Vector3 direction = (playerTransform.position - transform.position).normalized;
+                Gizmos.DrawLine(transform.position, transform.position + direction * stats.AttackRange);
+            }
+        }
     }
 }

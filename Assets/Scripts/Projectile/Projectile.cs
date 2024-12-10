@@ -8,12 +8,14 @@ public class Projectile : MonoBehaviour
     private ProjectilePool pool;
     private int penetrateCount;
     private int currentPenetrateCount = 0;
+    private Animator animator;
 
     private TrailRenderer trailRenderer;
 
     private void Awake()
     {
         trailRenderer = GetComponent<TrailRenderer>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -28,7 +30,7 @@ public class Projectile : MonoBehaviour
         {
             Vector2 knockbackDirection = (collision.transform.position - transform.position).normalized;
             damageable.TakeDamage(damage, knockbackDirection);
-            
+
             currentPenetrateCount++;
             if (currentPenetrateCount >= penetrateCount)
             {
@@ -51,6 +53,12 @@ public class Projectile : MonoBehaviour
         {
             trailRenderer.enabled = true;
             trailRenderer.Clear();
+        }
+
+        // 애니메이션 실행
+        if (animator != null)
+        {
+            animator.Play("Bat"); // "ProjectileAnimation"을 실제 애니메이션 이름으로 변경하세요
         }
     }
 

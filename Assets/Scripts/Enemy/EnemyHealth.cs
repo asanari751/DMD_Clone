@@ -1,9 +1,12 @@
+using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 
 public class EnemyHealthController : MonoBehaviour, IDamageable
 {
     [SerializeField] private float deathTime;
+    [SerializeField] private GameObject hitEffectPrefab;
+    private GameObject hitEffectInstance;
     protected float currentHealth;
     protected BasicEnemy basicEnemy;
     private EnemyKnockback enemyKnockback;
@@ -27,6 +30,8 @@ public class EnemyHealthController : MonoBehaviour, IDamageable
 
         enemyHealthElite = GetComponent<EnemyHealthElite>();
         enemyHealthBoss = GetComponent<EnemyHealthBoss>();
+        hitEffectInstance = Instantiate(hitEffectPrefab, transform);
+        hitEffectInstance.SetActive(false);
     }
 
     public virtual void TakeDamage(float damage, Vector2 knockbackDirection)
@@ -38,6 +43,8 @@ public class EnemyHealthController : MonoBehaviour, IDamageable
 
         float finalDamage = damage * damageMultiplier;
         currentHealth -= finalDamage;
+
+        PlayHitEffect();
 
         if (animationController != null)
         {
@@ -121,5 +128,18 @@ public class EnemyHealthController : MonoBehaviour, IDamageable
     public void SetDamageMultiplier(float multiplier)
     {
         damageMultiplier = multiplier;
+    }
+
+    private void PlayHitEffect()
+    {
+        hitEffectInstance.SetActive(true);
+        // 애니메이션 종료 후 자동으로 비활성화되도록 설정
+        StartCoroutine(DeactivateEffect());
+    }
+
+    private IEnumerator DeactivateEffect()
+    {
+        yield return new WaitForSeconds(0.3f); // 애니메이션 길이만큼 대기
+        hitEffectInstance.SetActive(false);
     }
 }

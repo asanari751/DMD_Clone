@@ -89,15 +89,14 @@ public class TitleParallaxEffect : MonoBehaviour
             {
                 characterImage.sprite = characterSprites[currentSpriteIndex];
 
-                // 스프라이트 인덱스에 따라 크기 조절
-                if (currentSpriteIndex == 2)  // 마지막 스프라이트
-                {
-                    imageRect.sizeDelta = new Vector2(97f, 188f);
-                }
-                else
-                {
-                    imageRect.sizeDelta = new Vector2(100f, 189f);
-                }
+                // if (currentSpriteIndex == 2)
+                // {
+                //     imageRect.sizeDelta = new Vector2(97f, 188f);
+                // }
+                // else
+                // {
+                //     imageRect.sizeDelta = new Vector2(100f, 189f);
+                // }
 
                 currentSpriteIndex = (currentSpriteIndex + 1) % characterSprites.Length;
             }

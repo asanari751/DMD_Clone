@@ -162,10 +162,10 @@ AnimatorStateMachine:
     m_Position: {x: -180, y: 190, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7367011032218048680}
-    m_Position: {x: 240, y: 340, z: 0}
+    m_Position: {x: 30, y: 340, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7491588660697507805}
-    m_Position: {x: 30, y: 340, z: 0}
+    m_Position: {x: 240, y: 340, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 7087594149568569851}
     m_Position: {x: -180, y: 340, z: 0}
@@ -180,7 +180,7 @@ AnimatorStateMachine:
     m_Position: {x: 30, y: 290, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -6253519563370040609}
-    m_Position: {x: 240, y: 180, z: 0}
+    m_Position: {x: 240, y: 190, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5680466651738925800}
     m_Position: {x: 240, y: 240, z: 0}
@@ -405,7 +405,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Ghost
+  m_Name: "\uC6D0\uADC0"
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -431,7 +431,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Scythe
+  m_Name: "\uC369\uC740 \uD53C\uC758 \uB0AB"
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -457,7 +457,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Fog
+  m_Name: "\uC369\uC740 \uD53C \uC548\uAC1C"
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []

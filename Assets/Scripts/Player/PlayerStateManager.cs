@@ -201,7 +201,7 @@ public class PlayerStateManager : MonoBehaviour
                 if (enemyHealth != null)
                 {
                     Vector2 knockbackDirection = (collider.transform.position - transform.position).normalized;
-                    enemyHealth.TakeDamage(attackDamage, -knockbackDirection);
+                    enemyHealth.TakeDamage(attackDamage, knockbackDirection);
                 }
             }
         }

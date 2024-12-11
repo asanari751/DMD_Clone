@@ -29,7 +29,7 @@ public class Projectile : MonoBehaviour
         if (damageable != null)
         {
             Vector2 knockbackDirection = (collision.transform.position - transform.position).normalized;
-            damageable.TakeDamage(damage, knockbackDirection);
+            damageable.TakeDamage(damage, -knockbackDirection);
 
             currentPenetrateCount++;
             if (currentPenetrateCount >= penetrateCount)

@@ -136,6 +136,8 @@ public class B2 : MonoBehaviour
         }
     }
 
+    // =================================
+
     private void OnDrawGizmos()
     {
         // 기존 공격 범위 기즈모 (빨간색)

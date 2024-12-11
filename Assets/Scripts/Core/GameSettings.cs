@@ -30,6 +30,7 @@ public class GameSettings : MonoBehaviour
         public InputActionReference autoAttack;
         public InputActionReference dash;
         public InputActionReference showInfo;
+        public InputActionReference cancle;
     }
 
     [Header("Settings Panels")]
@@ -203,6 +204,8 @@ public class GameSettings : MonoBehaviour
         resetButton.onClick.AddListener(LoadSettings);
         popupApply.onClick.AddListener(OnConfirmExit);
         popupCancle.onClick.AddListener(() => confirmationPopup.SetActive(false));
+        defaultProfile.cancle.action.performed += _ => cancelButton.onClick.Invoke(); // 세부 설정 닫음
+        defaultProfile.cancle.action.performed += _ => OnSettingsExit(); // 설정 창 닫음
 
         InitializeSettings();
         InitializeKeyBindings();
@@ -526,6 +529,7 @@ public class GameSettings : MonoBehaviour
             case 5: return defaultProfile.autoAttack.action; // Q
             case 6: return defaultProfile.dash.action; // Shift
             case 7: return defaultProfile.showInfo.action; // Tab
+            case 8: return defaultProfile.cancle.action; // Esc
             default: return null;
         }
     }
@@ -553,6 +557,7 @@ public class GameSettings : MonoBehaviour
             {
                 "Left Shift" => "LShift",
                 "Right Shift" => "RShift",
+                "Escape" => "Esc",
                 _ => keyName
             };
 
@@ -579,6 +584,7 @@ public class GameSettings : MonoBehaviour
                 5 => "자동 공격",
                 6 => "대쉬",
                 7 => "스킬 정보",
+                8 => "취소",
                 _ => "알 수 없음"
             };
             keyBindingTexts[i].text = actionName;
@@ -695,14 +701,7 @@ public class GameSettings : MonoBehaviour
 
     public void OnSettingsExit()
     {
-        if (HasUnsavedChanges())
-        {
-            confirmationPopup.SetActive(true);
-        }
-        else
-        {
-            CloseSettings();
-        }
+        CloseSettings();
     }
 
     private bool HasUnsavedChanges()

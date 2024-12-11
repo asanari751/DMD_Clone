@@ -228,14 +228,16 @@ public class EnemySpawner : MonoBehaviour
             EnemyBoss bossEnemyScript = bossEnemy.GetComponent<EnemyBoss>();
             if (bossEnemyScript != null)
             {
-                bossEnemyScript.OnBossEnemyDeath += OnBossEnemyDeath;
+                bossEnemyScript.OnBossEnemyDeath += () => StartCoroutine(OnBossEnemyDeath());
             }
         }
     }
 
-    private void OnBossEnemyDeath()
+    private IEnumerator OnBossEnemyDeath()
     {
         gameTimerController.RemoveCombatAreaLimits();
+        yield return new WaitForSeconds(2f);
+
         gameTimerController.TriggerBossDefeated();
     }
 

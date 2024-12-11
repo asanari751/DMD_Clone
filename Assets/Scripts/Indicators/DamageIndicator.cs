@@ -17,10 +17,12 @@ public class DamageIndicator : MonoBehaviour
     [SerializeField] private float minScale = 0.5f;
     [SerializeField] private float minAlpha = 0f;
     [SerializeField] private float fontSize = 36f;
+    [SerializeField] private float randomOffsetRange = 1f;
 
     [Header("Curve")]
     [SerializeField] private AnimationCurve scaleCurve = AnimationCurve.EaseInOut(0, 1, 1, 0.5f);
     [SerializeField] private AnimationCurve alphaCurve = AnimationCurve.EaseInOut(0, 1, 1, 0);
+    [SerializeField] private Vector2 moveDirection = new Vector2(1f, 1f);
 
     public static DamageIndicator Instance { get; private set; }
     private bool isEnabled = true;
@@ -77,11 +79,18 @@ public class DamageIndicator : MonoBehaviour
     {
         GameObject damageText = Instantiate(textPrefab, damageTextParent != null ? damageTextParent : canvas.transform);
         RectTransform rectTransform = damageText.GetComponent<RectTransform>();
+
+        Vector2 randomOffset = new Vector2(
+            Random.Range(-randomOffsetRange, randomOffsetRange),
+            Random.Range(-randomOffsetRange, randomOffsetRange)
+        );
+
         Vector2 viewportPosition = Camera.main.WorldToViewportPoint(position + damageOffset);
         Vector2 worldObjectScreenPosition = new Vector2(
             ((viewportPosition.x * canvas.pixelRect.width) - (canvas.pixelRect.width * 0.5f)),
             ((viewportPosition.y * canvas.pixelRect.height) - (canvas.pixelRect.height * 0.5f)));
-        rectTransform.anchoredPosition = worldObjectScreenPosition;
+
+        rectTransform.anchoredPosition = worldObjectScreenPosition + randomOffset;
         return damageText;
     }
 
@@ -120,6 +129,7 @@ public class DamageIndicator : MonoBehaviour
             Destroy(damageText);
     }
 
+
     private void UpdateTextAnimation(GameObject damageText, TextMeshProUGUI textMesh, Vector3 startPosition, Vector3 startScale, Color startColor, float elapsedTime)
     {
         if (damageText == null) return;
@@ -128,7 +138,8 @@ public class DamageIndicator : MonoBehaviour
         float scale = Mathf.Lerp(1f, minScale, scaleCurve.Evaluate(t));
         float alpha = Mathf.Lerp(1f, minAlpha, alphaCurve.Evaluate(t));
 
-        damageText.transform.position = startPosition + Vector3.up * moveSpeed * elapsedTime;
+        Vector3 normalizedDirection = moveDirection.normalized;
+        damageText.transform.position = startPosition + (Vector3)(normalizedDirection * moveSpeed * elapsedTime);
         damageText.transform.localScale = startScale * scale;
         textMesh.color = new Color(startColor.r, startColor.g, startColor.b, alpha);
     }

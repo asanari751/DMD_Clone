@@ -72,7 +72,6 @@ public class PlayerSkills : MonoBehaviour
 
     private IEnumerator AutoCastSkill(Skill skill)
     {
-        // 패시브 스킬은 코루틴 실행하지 않음
         if (skill.skillData.isPassive)
         {
             UseSkill(skill);
@@ -85,10 +84,20 @@ public class PlayerSkills : MonoBehaviour
             {
                 UseSkill(skill);
                 skill.isReady = false;
-                yield return new WaitForSeconds(skill.skillData.cooldown);
+
+                float elapsedTime = 0f;
+                int skillIndex = activeSkills.IndexOf(skill);
+
+                while (elapsedTime < skill.skillData.cooldown)
+                {
+                    elapsedTime += Time.deltaTime;
+                    SkillSelector.Instance.UpdateSkillCooldown(skillIndex, elapsedTime, skill.skillData.cooldown);
+                    yield return null;
+                }
+
                 skill.isReady = true;
             }
-            yield return new WaitForSeconds(0.1f);
+            yield return null;
         }
     }
 

@@ -48,26 +48,23 @@ public class CameraManager : MonoBehaviour
     {
         if (target != null)
         {
-            // 카메라 흔들림 효과 적용
             if (shakeElapsedTime > 0)
             {
                 Vector3 shakeOffset = Random.insideUnitSphere * shakeMagnitude;
-                shakeOffset.z = 0f; // 2D 게임의 경우 z축 움직임 방지
+                shakeOffset.z = 0f;
 
                 Vector3 targetPosition = target.position + offset + shakeOffset;
-                targetPosition.z = transform.position.z; // Z축 고정
+                targetPosition.z = transform.position.z;
 
                 transform.position = targetPosition;
 
-                shakeElapsedTime -= Time.deltaTime;
+                // Time.deltaTime 대신 Time.unscaledDeltaTime 사용
+                shakeElapsedTime -= Time.unscaledDeltaTime;
             }
             else
             {
-                // 목표 오브젝트를 따라감 (Ease-In 효과 적용)
                 Vector3 desiredPosition = target.position + offset;
-                desiredPosition.z = transform.position.z; // Z축 고정
-
-                // SmoothDamp를 사용하여 부드러운 움직임 구현
+                desiredPosition.z = transform.position.z;
                 transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothTime);
             }
         }

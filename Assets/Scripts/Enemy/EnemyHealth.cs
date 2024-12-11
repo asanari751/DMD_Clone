@@ -19,6 +19,7 @@ public class EnemyHealthController : MonoBehaviour, IDamageable
 
     private EnemyHealthElite enemyHealthElite;
     private EnemyHealthBoss enemyHealthBoss;
+    private ResultManager resultManager;
     public event System.Action OnDie;
 
     protected virtual void Awake()
@@ -36,12 +37,10 @@ public class EnemyHealthController : MonoBehaviour, IDamageable
 
     public virtual void TakeDamage(float damage, Vector2 knockbackDirection)
     {
-        if (IsDead())
-        {
-            return; // 사망시 중단
-        }
+        if (IsDead()) return;
 
         float finalDamage = damage * damageMultiplier;
+        ResultManager.Instance.AddDamage(finalDamage);
         currentHealth -= finalDamage;
 
         PlayHitEffect();
@@ -92,6 +91,7 @@ public class EnemyHealthController : MonoBehaviour, IDamageable
 
         basicEnemy.SpawnExpOrbs();
         OnDie?.Invoke();
+        ResultManager.Instance.AddKill();
 
         FadeOutAndDestroy();
     }
@@ -139,7 +139,7 @@ public class EnemyHealthController : MonoBehaviour, IDamageable
 
     private IEnumerator DeactivateEffect()
     {
-        yield return new WaitForSeconds(0.3f); // 애니메이션 길이만큼 대기
+        yield return new WaitForSeconds(0.4f); // 애니메이션 길이만큼 대기
         hitEffectInstance.SetActive(false);
     }
 }

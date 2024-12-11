@@ -16,6 +16,7 @@ MonoBehaviour:
   skillIcon: {fileID: 21300000, guid: 2ac7671c026cfad4e9a2fb232d72fc32, type: 3}
   skillLevel: 1
   skillDescription: "\uC77C\uBC18 \uC801\uC744 \uBAA8\uB450 \uCC98\uD615\uD569\uB2C8\uB2E4.\r"
+  godOwner: 2
   skillRangeType: 0
   skillPrefab: {fileID: 0}
   damage: 0

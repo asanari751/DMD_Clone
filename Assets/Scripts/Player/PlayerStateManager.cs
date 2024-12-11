@@ -26,7 +26,7 @@ public class PlayerStateManager : MonoBehaviour
     [SerializeField] private InputActionReference attackAction;
     [SerializeField] private LayerMask targetLayers;
     [SerializeField] private float detectionRadius;
-    [SerializeField] private AttackType currentAttackType;
+    [SerializeField] public AttackType currentAttackType;
     [SerializeField] private float atkDelay;
 
     [Header("Melee")]
@@ -84,6 +84,14 @@ public class PlayerStateManager : MonoBehaviour
         {
             PerformManualAttack();
         }
+
+        // 현재 공격 타입에 따라 적절한 lastAttackTime 선택
+        float currentCooldown = currentAttackType == AttackType.Arrow ?
+            Time.time - lastRangedAttackTime :
+            Time.time - lastAttackTime;
+
+        // UpdateSkillCooldown에서 UpdateBasicAttackCooldown으로 변경
+        SkillSelector.Instance?.UpdateBasicAttackCooldown(currentCooldown, atkDelay);
     }
 
     private void ToggleAutoAttack()

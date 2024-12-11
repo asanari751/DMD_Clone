@@ -3,9 +3,16 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewSkillData", menuName = "Skill/SkillData")]
 public class SkillData : ScriptableObject
 {
+    public enum GodOwner
+    {
+        Bathory = 0,
+        Strigoi = 1,
+        Vlad = 2,
+    }
+
     // 스킬의 범위 유형 정의
     public enum SkillRangeType { Single, Circle, Cone, Line, Self }
-    
+
     // 적중 시 발생하는 상태이상 효과
     public enum StatusEffectOnHit { None, Fear, Bleed, Slow, Weakness, Poison, Stun }
 
@@ -25,9 +32,10 @@ public class SkillData : ScriptableObject
     public int skillLevel;
 
     [Tooltip("스킬 설명")]
-    
+
     [TextArea]
     public string skillDescription;
+    public GodOwner godOwner;
 
     // ============================
     // 스킬의 기본 정보

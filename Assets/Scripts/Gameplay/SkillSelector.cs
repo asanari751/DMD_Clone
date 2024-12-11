@@ -40,12 +40,18 @@ public class SkillSelector : MonoBehaviour
         public List<Skilldata> availableSkills;
     }
 
+    public static SkillSelector Instance { get; private set; }
+
     // [SerializeField] private GameObject darkBackground;
     [SerializeField] private float productionTime = 1f;
     [SerializeField] private float maximizeButton = 1.1f;
     [SerializeField] private float buttonEdge = 10f;
     [SerializeField] private SkillLevelColor[] skillLevelColors = new SkillLevelColor[3];
     [SerializeField] private TMP_Text selectorTitle;
+    [SerializeField] private GameObject cooldownPrefab;
+    [SerializeField] private Sprite clawSkillIcon;
+    [SerializeField] private Sprite swordSkillIcon;
+    [SerializeField] private Sprite arrowSkillIcon;
 
     [Header("Dices")]
     [SerializeField] private Button redDiceButton;
@@ -80,8 +86,10 @@ public class SkillSelector : MonoBehaviour
 
     public Transform skillPanel;
     public Transform skillInventory;
-    public List<Image> skillIconImages = new List<Image>();
-    public List<Image> skillInventoryIcons = new List<Image>();
+    private List<Image> skillIconImages = new List<Image>();
+    private Image basicAttackCooldown;
+    private Dictionary<int, Image> skillCooldownImages = new Dictionary<int, Image>();
+    private List<Image> skillInventoryIcons = new List<Image>();
     public int currentSkillSlot = 0;
 
     private int maxRedDiceCount = 99;
@@ -102,6 +110,18 @@ public class SkillSelector : MonoBehaviour
     private Dictionary<int, int> lastDialogueIndices = new Dictionary<int, int>();
     private float repeatWeight = 0.5f;
     private int currentGodIndex = -1;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
@@ -124,7 +144,40 @@ public class SkillSelector : MonoBehaviour
 
         UpdateDiceUI();
 
-        for (int j = 1; j <= 4; j++)
+        PlayerStateManager playerStateManager = FindAnyObjectByType<PlayerStateManager>();
+
+        Transform firstIconTransform = skillPanel.Find("Skill Icon 1");
+        if (firstIconTransform != null)
+        {
+            Image firstIconImage = firstIconTransform.GetComponent<Image>();
+            if (firstIconImage != null)
+            {
+                skillIconImages.Add(firstIconImage);
+                skillInventoryIcons.Add(firstIconImage);
+
+                GameObject cooldown = Instantiate(cooldownPrefab, firstIconImage.transform);
+                basicAttackCooldown = cooldown.GetComponent<Image>();
+
+                if (playerStateManager != null)
+                {
+                    switch (playerStateManager.currentAttackType)
+                    {
+                        case PlayerStateManager.AttackType.Claw:
+                            firstIconImage.sprite = GetClawSkillIcon();
+                            break;
+                        case PlayerStateManager.AttackType.Sword:
+                            firstIconImage.sprite = GetSwordSkillIcon();
+                            break;
+                        case PlayerStateManager.AttackType.Arrow:
+                            firstIconImage.sprite = GetArrowSkillIcon();
+                            break;
+                    }
+                    currentSkillSlot = 1;  // 다음 스킬은 1번부터 시작
+                }
+            }
+        }
+
+        for (int j = 2; j <= 4; j++)
         {
             Transform iconTransform = skillPanel.Find($"Skill Icon {j}");
             if (iconTransform != null)
@@ -147,6 +200,23 @@ public class SkillSelector : MonoBehaviour
                 AddHoverListeners(skillButtons[i]);
             }
         }
+    }
+
+    // 기본공격 아이콘 반환
+
+    private Sprite GetClawSkillIcon()
+    {
+        return clawSkillIcon;
+    }
+
+    private Sprite GetSwordSkillIcon()
+    {
+        return swordSkillIcon;
+    }
+
+    private Sprite GetArrowSkillIcon()
+    {
+        return arrowSkillIcon;
     }
 
     // 인터랙션 영역
@@ -367,13 +437,9 @@ public class SkillSelector : MonoBehaviour
     {
         Skilldata selectedSkill = currentSkillSet[index];
 
-        // PlayerSkills에 스킬 추가 또는 업그레이드
         PlayerSkills.Instance.AddOrUpgradeSkill(selectedSkill.skillDataSO);
-
-        // UI 업데이트 등 기타 처리
         UpdateSkillUI();
 
-        // 스킬 아이콘 업데이트
         bool isAlreadySelected = false;
         for (int i = 0; i < currentSkillSlot; i++)
         {
@@ -387,6 +453,13 @@ public class SkillSelector : MonoBehaviour
         if (!isAlreadySelected && currentSkillSlot < skillIconImages.Count)
         {
             skillIconImages[currentSkillSlot].sprite = selectedSkill.skillIcon;
+
+            if (selectedSkill.skillDataSO.skillRangeType != SkillData.SkillRangeType.Self)
+            {
+                GameObject cooldown = Instantiate(cooldownPrefab, skillIconImages[currentSkillSlot].transform);
+                skillCooldownImages[currentSkillSlot - 1] = cooldown.GetComponent<Image>();
+            }
+
             currentSkillSlot++;
         }
 
@@ -536,6 +609,28 @@ public class SkillSelector : MonoBehaviour
     //         outline.enabled = false;
     //     }
     // }
+
+    // ============================== Cooldown
+
+    // 기본 공격 쿨다운 업데이트
+    public void UpdateBasicAttackCooldown(float currentCooldown, float maxCooldown)
+    {
+        if (basicAttackCooldown != null)
+        {
+            float fillAmount = Mathf.Clamp01(1 - (currentCooldown / maxCooldown));
+            basicAttackCooldown.fillAmount = fillAmount;
+        }
+    }
+
+    // 스킬 쿨다운 업데이트
+    public void UpdateSkillCooldown(int skillIndex, float currentCooldown, float maxCooldown)
+    {
+        if (skillCooldownImages.ContainsKey(skillIndex))
+        {
+            float fillAmount = Mathf.Clamp01(1 - (currentCooldown / maxCooldown));
+            skillCooldownImages[skillIndex].fillAmount = fillAmount;
+        }
+    }
 
     // ============================== Dice
 

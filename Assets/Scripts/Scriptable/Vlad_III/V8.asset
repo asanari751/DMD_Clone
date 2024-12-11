@@ -17,6 +17,7 @@ MonoBehaviour:
     type: 3}
   skillLevel: 0
   skillDescription: "\uCE58\uBA85\uD0C0 \uD655\uB960\uC774 \uC99D\uAC00\uD569\uB2C8\uB2E4.\r"
+  godOwner: 2
   skillRangeType: 0
   skillPrefab: {fileID: 0}
   damage: 0

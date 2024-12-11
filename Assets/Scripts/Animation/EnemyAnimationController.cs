@@ -84,7 +84,7 @@ public class EnemyAnimationController : MonoBehaviour
             currentStateName = idleStateName;
         }
 
-        Debug.Log($"Playing Hit animation: {hitStateName}");
+        // Debug.Log($"Playing Hit animation: {hitStateName}");
 
         yield return new WaitForSeconds(hitAnimationDuration);
 

@@ -20,6 +20,10 @@ public class GameTimerController : MonoBehaviour
     [SerializeField] private GameObject prefabToSpawn;
     [SerializeField] private Transform playerTransform;
 
+    [Header("Reference")]
+    [SerializeField] private ResultManager resultManager;
+    [SerializeField] private ResultUIManager resultUIManager;
+
     private float elapsedTime;
     private float[] pauseTimes;
     private float maxTime = 600f;
@@ -41,6 +45,7 @@ public class GameTimerController : MonoBehaviour
     private void Start()
     {
         UpdateTimerDisplay();
+        // resultManager = ResultManager.Instance;
         OnBossDefeated += HandleStageClear;
     }
 
@@ -135,6 +140,7 @@ public class GameTimerController : MonoBehaviour
 
     public void TriggerBossDefeated()
     {
+        resultUIManager.ShowResults();
         OnBossDefeated?.Invoke();
     }
 

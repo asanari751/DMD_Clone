@@ -18,6 +18,7 @@ MonoBehaviour:
   skillDescription: "\uC774\uB3D9 \uC18D\uB3C4\uAC00 \uC99D\uAC00\uD558\uBA70, \uC9C0\uB098\uAC04
     \uC790\uB9AC\uC5D0 \uC801\uC5D0\uAC8C \uC1E0\uC57D\uC744 \uBD80\uC5EC\uD558\uB294
     \uC8FD\uC74C\uC758 \uBC1C\uC790\uCDE8\uB97C \uB0A8\uAE41\uB2C8\uB2E4.\r\n"
+  godOwner: 1
   skillRangeType: 0
   skillPrefab: {fileID: 0}
   damage: 0

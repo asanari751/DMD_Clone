@@ -121,7 +121,7 @@ public class DamageIndicator : MonoBehaviour
         while (elapsedTime < lifetime && damageText != null)
         {
             UpdateTextAnimation(damageText, textMesh, startPosition, startScale, startColor, elapsedTime);
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime;
             yield return null;
         }
 

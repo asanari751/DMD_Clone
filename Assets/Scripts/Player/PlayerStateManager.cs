@@ -22,6 +22,7 @@ public class PlayerStateManager : MonoBehaviour
     }
 
     [Header("Common")]
+    [SerializeField] private PlayerStats playerStats;
     [SerializeField] private ProjectilePool projectilePool;
     [SerializeField] private InputActionReference attackAction;
     [SerializeField] private LayerMask targetLayers;
@@ -32,7 +33,6 @@ public class PlayerStateManager : MonoBehaviour
     [Header("Melee")]
     [SerializeField] private float attackAngle;
     [SerializeField] private float attackDamage;
-    [SerializeField] private float attackEffectDuration;
     [SerializeField] private float meeleAttackRange;
 
     [Header("Arrow")]
@@ -57,7 +57,7 @@ public class PlayerStateManager : MonoBehaviour
     private Tween autoAttackTween;
     private float lastAttackTime = 0f;
     private float lastRangedAttackTime = 0f;
-    public event Action<float, float, int> OnStatsUpdated;
+    public event Action<float> OnStatsUpdated;
     private int currentComboCount = 0;
     private float lastComboTime = 0f;
     private GameObject currentAttackEffect;
@@ -175,7 +175,7 @@ public class PlayerStateManager : MonoBehaviour
         trail.endColor = projectileTrailSettings.trailEndColor;
         trail.enabled = true;
 
-        projectile.Initialize(projectileSpeed, projectileDamage, penetrateCount, projectilePool);
+        projectile.Initialize(projectileSpeed, playerStats.defaultDamage, penetrateCount, projectilePool);
 
         lastRangedAttackTime = Time.time;
     }
@@ -302,7 +302,7 @@ public class PlayerStateManager : MonoBehaviour
 
     private void UpdateStats()
     {
-        OnStatsUpdated?.Invoke(attackDamage, projectileDamage, penetrateCount);
+        OnStatsUpdated?.Invoke(playerStats.defaultDamage);
     }
 
     private void OnDrawGizmos()

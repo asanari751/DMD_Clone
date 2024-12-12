@@ -17,24 +17,29 @@ public class CharacterInfo : MonoBehaviour
     public struct PlayerStats
     {
         // 1. Attack
-        public float attackDamage;
-        public float projectileDamage;
-        public float attackSpeed;
+        public float damageMultiplier;
+        public float criticalDamage;
         public float criticalChance;
+        public float range;
 
         // 2. Defense
         public float maxHealth;
-        public float defense;
-        public float moveSpeed;
-        public float dashCooldown;
+        public float armor;
+        public float reduction;
+        public float dodge;
 
         // 3. Default Attack
-        public int penetrateCount;
-        public float projectileSpeed;
-        public float projectileSize;
+        public float defaultDamage;
+        public float defaultAttackSpeed;
+        public float defaultRange;
+        public float defaultCriticalChance;
 
         // 4. Utility
+        public float moveSpeed;
         public float lootRange;
+        public float dashCooldown;
+        public float dashCount;
+
     }
 
     [SerializeField] private GameObject InfoUI;
@@ -56,8 +61,50 @@ public class CharacterInfo : MonoBehaviour
     [SerializeField] private GameObject vladContainer;
     [SerializeField] private Button undoButton;
 
+    // =======================================
+
+    [Header("Attack")]
     [SerializeField] private TextMeshProUGUI attackDamageLabel;
     [SerializeField] private TextMeshProUGUI attackDamageValue;
+    [SerializeField] private TextMeshProUGUI criticalChanceLabel;
+    [SerializeField] private TextMeshProUGUI criticalChanceValue;
+    [SerializeField] private TextMeshProUGUI criticalDamageLabel;
+    [SerializeField] private TextMeshProUGUI criticalDamageValue;
+    [SerializeField] private TextMeshProUGUI rangeLabel;
+    [SerializeField] private TextMeshProUGUI rangeValue;
+
+    [Header("Defense")]
+    [SerializeField] private TextMeshProUGUI maxHealthLabel;
+    [SerializeField] private TextMeshProUGUI maxHealthValue;
+    [SerializeField] private TextMeshProUGUI armorLabel;
+    [SerializeField] private TextMeshProUGUI armorValue;
+    [SerializeField] private TextMeshProUGUI reductionLabel;
+    [SerializeField] private TextMeshProUGUI reductionValue;
+    [SerializeField] private TextMeshProUGUI dodgeLabel;
+    [SerializeField] private TextMeshProUGUI dodgeValue;
+
+    [Header("Default")]
+    [SerializeField] private TextMeshProUGUI defaultDamageLabel;
+    [SerializeField] private TextMeshProUGUI defaultDamageValue;
+    [SerializeField] private TextMeshProUGUI defaultASPDLabel;
+    [SerializeField] private TextMeshProUGUI defaultASPDValue;
+    [SerializeField] private TextMeshProUGUI defaultRangeLabel;
+    [SerializeField] private TextMeshProUGUI defaultRangeValue;
+    [SerializeField] private TextMeshProUGUI defaultCriticalChanceLabel;
+    [SerializeField] private TextMeshProUGUI defaultCriticalChanceValue;
+
+    [Header("Utility")]
+    [SerializeField] private TextMeshProUGUI moveSpeedLabel;
+    [SerializeField] private TextMeshProUGUI moveSpeedValue;
+    [SerializeField] private TextMeshProUGUI lootRangeLabel;
+    [SerializeField] private TextMeshProUGUI lootRangeValue;
+    [SerializeField] private TextMeshProUGUI dashCountLabel;
+    [SerializeField] private TextMeshProUGUI dashCountValue;
+    [SerializeField] private TextMeshProUGUI dashRangeLabel;
+    [SerializeField] private TextMeshProUGUI dashRangeValue;
+
+
+    // ========================================
 
     private GodType currentGod;
     private float attackDamage;
@@ -106,18 +153,14 @@ public class CharacterInfo : MonoBehaviour
         InfoUI.SetActive(InfoVisible);
         skillInventory.SetActive(InfoVisible);
 
+        pauseController.ToggleUIState();
         if (InfoVisible)
         {
             UpdateSkillInventory();
-            pauseController.ToggleUIState();
-        }
-        else
-        {
-            pauseController.ToggleUIState();
         }
     }
 
-    private void UpdateCharacterInfo(float atk, float projDmg, int penCount)
+    private void UpdateCharacterInfo(float atk)
     {
         attackDamage = atk;
         UpdateInfoUI();
@@ -126,7 +169,32 @@ public class CharacterInfo : MonoBehaviour
     private void UpdateInfoUI()
     {
         attackDamageLabel.text = $"피해량:";
+        criticalChanceLabel.text = $"치명타 확률:";
+        criticalDamageLabel.text = $"치명타 피해:";
+        rangeLabel.text = $"공격 범위:";
+
         attackDamageValue.text = $"{attackDamage}";
+
+        // =======================================
+
+        maxHealthLabel.text = $"최대 체력:";
+        armorLabel.text = $"방어력:";
+        reductionLabel.text = $"피해 감소:";
+        dodgeLabel.text = $"회피율:";
+
+        // =======================================
+
+        defaultDamageLabel.text = $"피해량:";
+        defaultASPDLabel.text = $"공격속도:";
+        defaultRangeLabel.text = $"사거리:";
+        defaultCriticalChanceLabel.text = $"치명타 확률:";
+
+        // =======================================
+
+        moveSpeedLabel.text = $"이동 속도:";
+        lootRangeLabel.text = $"획득 범위:";
+        dashCountLabel.text = $"대쉬 횟수:";
+        dashRangeLabel.text = $"대쉬 거리:";
     }
 
     // =======================================
@@ -160,7 +228,6 @@ public class CharacterInfo : MonoBehaviour
             }
         }
 
-        // 기존 코드 계속...
         var playerSkills = PlayerSkills.Instance;
         if (playerSkills != null)
         {
@@ -184,24 +251,18 @@ public class CharacterInfo : MonoBehaviour
 
                 if (parentContainer != null)
                 {
-                    // 현재 컨테이너의 아이콘 개수 확인
                     if (!iconCounts.ContainsKey(parentContainer))
                         iconCounts[parentContainer] = 0;
 
-                    // 스킬 아이콘 생성
                     GameObject skillIcon = new GameObject("SkillIcon", typeof(Image), typeof(RectTransform));
                     skillIcon.transform.SetParent(parentContainer, false);
-
-                    // RectTransform 설정
                     RectTransform rectTransform = skillIcon.GetComponent<RectTransform>();
                     rectTransform.anchoredPosition = new Vector2(iconCounts[parentContainer] * 100f, 0); // 100px 간격
-                    rectTransform.sizeDelta = new Vector2(100, 100); // 아이콘 크기 설정
+                    rectTransform.sizeDelta = new Vector2(100, 100);
 
-                    // 이미지 설정
                     Image iconImage = skillIcon.GetComponent<Image>();
                     iconImage.sprite = skill.skillData.skillIcon;
 
-                    // 아이콘 카운트 증가
                     iconCounts[parentContainer]++;
                 }
             }

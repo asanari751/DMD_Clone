@@ -52,6 +52,7 @@ public class SkillSelector : MonoBehaviour
     [SerializeField] private Sprite clawSkillIcon;
     [SerializeField] private Sprite swordSkillIcon;
     [SerializeField] private Sprite arrowSkillIcon;
+    [SerializeField] private GameObject spinnerPrefab;
 
     [Header("Dices")]
     [SerializeField] private Button redDiceButton;
@@ -610,6 +611,41 @@ public class SkillSelector : MonoBehaviour
     //     }
     // }
 
+    // ============================== Spinner
+
+    public void ToggleAutoAttackIndicator(bool isActive)
+    {
+        Transform firstIconTransform = skillPanel.Find("Skill Icon 1");
+        if (firstIconTransform != null)
+        {
+            Transform existingSpinner = firstIconTransform.Find("AutoAttackSpinner");
+            if (existingSpinner != null)
+                Destroy(existingSpinner.gameObject);
+
+            if (isActive)
+            {
+                GameObject spinner = Instantiate(spinnerPrefab, firstIconTransform);
+                spinner.name = "AutoAttackSpinner";
+                spinner.transform.SetAsLastSibling();
+            }
+        }
+    }
+
+    // ============================== Skill Hover
+
+    public SkillData GetSkillDataByIndex(int index)
+    {
+        // 스킬 (인덱스 1-3)
+        foreach (var skill in currentSkillSet)
+        {
+            if (skillIconImages[index].sprite == skill.skillIcon)
+            {
+                return skill.skillDataSO;
+            }
+        }
+
+        return null;
+    }
     // ============================== Cooldown
 
     // 기본 공격 쿨다운 업데이트

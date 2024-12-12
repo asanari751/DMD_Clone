@@ -4,6 +4,8 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using TMPro;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public class SkillHoverManager : MonoBehaviour
 {
@@ -11,6 +13,10 @@ public class SkillHoverManager : MonoBehaviour
     [SerializeField] private Vector3 skillIconInfoThreshold;
     [SerializeField] private Vector3 inventoryIconInfoThreshold;
     [SerializeField] private TextMeshProUGUI skillOrderText;
+    [SerializeField] private TextMeshProUGUI skillLevelText;
+    [SerializeField] private TextMeshProUGUI skillDamageText;
+    [SerializeField] private TextMeshProUGUI skillCooldownText;
+    [SerializeField] private TextMeshProUGUI skillEffectText;
     private SkillSelector skillSelector;
     private string currentHoveredSkillName;
 
@@ -58,9 +64,42 @@ public class SkillHoverManager : MonoBehaviour
 
     private void ShowHoverUI(bool isSkillIcon)
     {
+        int index = int.Parse(currentHoveredSkillName.Split(' ').Last()) - 1;
+        SkillData skillData = skillSelector.GetSkillDataByIndex(index);
+
+        if (skillData == null) return;
+
         skillInfoImage.gameObject.SetActive(true);
-        skillOrderText.text = currentHoveredSkillName;
+        // skillOrderText.text = currentHoveredSkillName;
+        skillLevelText.text = $"레벨: {skillData.skillLevel + 1}";
+        skillDamageText.text = $"공격력: {skillData.damage}";
+        skillCooldownText.text = $"대기시간: {skillData.cooldown}초";
+        skillEffectText.text = $"상태이상: {GetKoreanStatusEffect(skillData.statusEffectOnHit)}";
+
         StartCoroutine(UpdateHoverUIPosition(isSkillIcon));
+    }
+
+    private string GetKoreanStatusEffect(SkillData.StatusEffectOnHit effect)
+    {
+        switch (effect)
+        {
+            case SkillData.StatusEffectOnHit.None:
+                return "없음";
+            case SkillData.StatusEffectOnHit.Fear:
+                return "공포";
+            case SkillData.StatusEffectOnHit.Bleed:
+                return "출혈";
+            case SkillData.StatusEffectOnHit.Slow:
+                return "둔화";
+            case SkillData.StatusEffectOnHit.Weakness:
+                return "쇠약";
+            case SkillData.StatusEffectOnHit.Poison:
+                return "중독";
+            case SkillData.StatusEffectOnHit.Stun:
+                return "기절";
+            default:
+                return "알 수 없음";
+        }
     }
 
     private void HideHoverUI()

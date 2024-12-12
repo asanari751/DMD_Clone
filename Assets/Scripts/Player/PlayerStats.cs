@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[DefaultExecutionOrder(-100)]
 [System.Serializable]
 public class PlayerStats : MonoBehaviour
 {
@@ -28,7 +29,7 @@ public class PlayerStats : MonoBehaviour
     // 4. Utility
     public float moveSpeed { get; private set; }
     public float lootRange { get; private set; }
-    public float dashCooldown { get; private set; }
+    public float dashRange { get; private set; }
     public float dashCount { get; private set; }
 
     // ===============================================
@@ -50,6 +51,29 @@ public class PlayerStats : MonoBehaviour
 
     public void SetMoveSpeed(float value) => moveSpeed = value;
     public void SetLootRange(float value) => lootRange = value;
-    public void SetDashCooldown(float value) => dashCooldown = value;
+    public void SetDashRange(float value) => dashRange = value;
     public void SetDashCount(float value) => dashCount = value;
+
+    private void Awake()
+    {
+        SetDamageMultiplier(1f);
+        SetCriticalDamage(3f);
+        SetCriticalChance(0.01f);
+        SetRange(1f);
+
+        SetMaxHealth(25f);
+        SetArmor(0f);
+        SetReduction(0f);
+        SetDodge(0f);
+
+        SetDefaultDamage(45f);
+        SetDefaultAttackSpeed(0.5f);
+        SetDefaultRange(5f);
+        SetDefaultCriticalChance(0.1f);
+
+        SetMoveSpeed(5f);
+        SetLootRange(2.5f);
+        SetDashRange(5f);
+        SetDashCount(2f);
+    }
 }

@@ -21,28 +21,24 @@ public class PlayerStateManager : MonoBehaviour
         public int ComboCount => attackPrefabs.Length;
     }
 
-    [Header("Common")]
+    [Header("References")]
     [SerializeField] private PlayerStats playerStats;
     [SerializeField] private ProjectilePool projectilePool;
     [SerializeField] private InputActionReference attackAction;
-    [SerializeField] private LayerMask targetLayers;
-    [SerializeField] private float detectionRadius;
-    [SerializeField] public AttackType currentAttackType;
-    [SerializeField] private float atkDelay;
-
-    [Header("Melee")]
-    [SerializeField] private float attackAngle;
-    [SerializeField] private float attackDamage;
-    [SerializeField] private float meeleAttackRange;
-
-    [Header("Arrow")]
-    [SerializeField] private GameObject projectilePrefab;
-    [SerializeField] private float projectileSpeed;
-    [SerializeField] private float projectileDamage;
-    [SerializeField] private int penetrateCount;
     [SerializeField] private Transform firePosition;
+    private Camera mainCamera;
 
-    [Header("Projectile Trail")]
+    [Header("Default")]
+    [SerializeField] private LayerMask targetLayers;
+    [SerializeField] public AttackType currentAttackType;
+    [SerializeField] private float detectionRadius;
+    [SerializeField] private float attackAngle;
+    [SerializeField] private float meeleAttackRange;
+    [SerializeField] private float atkDelay;
+    [SerializeField] private int penetrateCount;
+    [SerializeField] private float projectileSpeed;
+
+    [Header("Projectile Trail")] // Unused
     [SerializeField] private TrailRenderer projectileTrailPrefab;
     [SerializeField] private ProjectileTrailSettings projectileTrailSettings;
 
@@ -52,15 +48,17 @@ public class PlayerStateManager : MonoBehaviour
     [SerializeField] private float comboResetTime = 2f;
     [SerializeField] private Vector2 attackEffectOffset = Vector2.zero;
 
-    private Camera mainCamera;
+    // 런타임 상태 변수
     private bool isAutoAttack = false;
     private Tween autoAttackTween;
     private float lastAttackTime = 0f;
     private float lastRangedAttackTime = 0f;
-    public event Action<float> OnStatsUpdated;
     private int currentComboCount = 0;
     private float lastComboTime = 0f;
     private GameObject currentAttackEffect;
+
+    // 런타임
+    public event Action<CharacterInfo.PlayerStats> OnStatsUpdated;
 
     private void Awake()
     {
@@ -72,6 +70,11 @@ public class PlayerStateManager : MonoBehaviour
             projectilePool = FindAnyObjectByType<ProjectilePool>();
         }
 
+        UpdateStats();
+    }
+
+    private void Start()
+    {
         UpdateStats();
     }
 
@@ -97,6 +100,8 @@ public class PlayerStateManager : MonoBehaviour
     private void ToggleAutoAttack()
     {
         isAutoAttack = !isAutoAttack;
+        SkillSelector.Instance?.ToggleAutoAttackIndicator(isAutoAttack);
+
         if (isAutoAttack)
         {
             if (autoAttackTween != null)
@@ -209,7 +214,7 @@ public class PlayerStateManager : MonoBehaviour
                 if (enemyHealth != null)
                 {
                     Vector2 knockbackDirection = (collider.transform.position - transform.position).normalized;
-                    enemyHealth.TakeDamage(attackDamage, knockbackDirection);
+                    enemyHealth.TakeDamage(playerStats.defaultDamage, -knockbackDirection);
                 }
             }
         }
@@ -302,7 +307,34 @@ public class PlayerStateManager : MonoBehaviour
 
     private void UpdateStats()
     {
-        OnStatsUpdated?.Invoke(playerStats.defaultDamage);
+        var stats = new CharacterInfo.PlayerStats
+        {
+            // 1. Attack
+            damageMultiplier = playerStats.damageMultiplier,
+            criticalDamage = playerStats.criticalDamage,
+            criticalChance = playerStats.criticalChance,
+            range = playerStats.range,
+
+            // 2. Defense
+            maxHealth = playerStats.maxHealth,
+            armor = playerStats.armor,
+            reduction = playerStats.reduction,
+            dodge = playerStats.dodge,
+
+            // 3. Default Attack
+            defaultDamage = playerStats.defaultDamage,
+            defaultAttackSpeed = playerStats.defaultAttackSpeed,
+            defaultRange = playerStats.defaultRange,
+            defaultCriticalChance = playerStats.defaultCriticalChance,
+
+            // 4. Utility
+            moveSpeed = playerStats.moveSpeed,
+            lootRange = playerStats.lootRange,
+            dashRange = playerStats.dashRange,
+            dashCount = playerStats.dashCount
+        };
+
+        OnStatsUpdated?.Invoke(stats);
     }
 
     private void OnDrawGizmos()

@@ -37,7 +37,7 @@ public class CharacterInfo : MonoBehaviour
         // 4. Utility
         public float moveSpeed;
         public float lootRange;
-        public float dashCooldown;
+        public float dashRange;
         public float dashCount;
 
     }
@@ -136,12 +136,6 @@ public class CharacterInfo : MonoBehaviour
         playerStateManager.OnStatsUpdated -= UpdateCharacterInfo;
     }
 
-    private void UpdateCharacterInfo(PlayerStats newStats)
-    {
-        currentStats = newStats;
-        UpdateInfoUI();
-    }
-
     private void OnToggleInfo(InputAction.CallbackContext context)
     {
         ToggleInfo();
@@ -160,9 +154,9 @@ public class CharacterInfo : MonoBehaviour
         }
     }
 
-    private void UpdateCharacterInfo(float atk)
+    private void UpdateCharacterInfo(PlayerStats newStats)
     {
-        attackDamage = atk;
+        currentStats = newStats;
         UpdateInfoUI();
     }
 
@@ -173,7 +167,10 @@ public class CharacterInfo : MonoBehaviour
         criticalDamageLabel.text = $"치명타 피해:";
         rangeLabel.text = $"공격 범위:";
 
-        attackDamageValue.text = $"{attackDamage}";
+        attackDamageValue.text = $"{currentStats.damageMultiplier * 100}%";
+        criticalChanceValue.text = $"{currentStats.criticalChance * 100}%";
+        criticalDamageValue.text = $"{currentStats.criticalDamage * 100}%";
+        rangeValue.text = $"{currentStats.range * 100}%";
 
         // =======================================
 
@@ -182,6 +179,11 @@ public class CharacterInfo : MonoBehaviour
         reductionLabel.text = $"피해 감소:";
         dodgeLabel.text = $"회피율:";
 
+        maxHealthValue.text = $"{currentStats.maxHealth}";
+        armorValue.text = $"{currentStats.armor}";
+        reductionValue.text = $"{currentStats.reduction}%";
+        dodgeValue.text = $"{currentStats.dodge}%";
+
         // =======================================
 
         defaultDamageLabel.text = $"피해량:";
@@ -189,12 +191,22 @@ public class CharacterInfo : MonoBehaviour
         defaultRangeLabel.text = $"사거리:";
         defaultCriticalChanceLabel.text = $"치명타 확률:";
 
+        defaultDamageValue.text = $"{currentStats.defaultDamage}";
+        defaultASPDValue.text = $"{currentStats.defaultAttackSpeed}초";
+        defaultRangeValue.text = $"{currentStats.defaultRange}";
+        defaultCriticalChanceValue.text = $"{currentStats.defaultCriticalChance * 100}%";
+
         // =======================================
 
         moveSpeedLabel.text = $"이동 속도:";
         lootRangeLabel.text = $"획득 범위:";
         dashCountLabel.text = $"대쉬 횟수:";
         dashRangeLabel.text = $"대쉬 거리:";
+
+        moveSpeedValue.text = $"{currentStats.moveSpeed}";
+        lootRangeValue.text = $"{currentStats.lootRange * 100}px";
+        dashCountValue.text = $"{currentStats.dashCount}회";
+        dashRangeValue.text = $"{currentStats.dashRange * 100}px";
     }
 
     // =======================================

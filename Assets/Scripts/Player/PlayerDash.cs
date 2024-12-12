@@ -4,10 +4,11 @@ using DG.Tweening;
 
 public class PlayerDash : MonoBehaviour
 {
-    [SerializeField] private float dashDistance = 50f;
-    [SerializeField] private float dashDuration = 0.2f;
-    [SerializeField] private int dashGaugeCount = 3;
-    [SerializeField] private float dashGaugeRecoveryRate = 0.25f;
+    [SerializeField] private PlayerStats playerStats;
+    private float dashDistance;
+    private float dashDuration = 0.2f;
+    private int dashGaugeCount;
+    private float dashGaugeRecoveryRate = 1f;
 
     private float[] dashGauges;
     private PlayerController playerController;
@@ -16,14 +17,12 @@ public class PlayerDash : MonoBehaviour
 
     public event System.Action OnDashStateChanged;
 
-    private void Awake()
-    {
-        InitializeDashGauges();
-    }
-
     private void Start()
     {
+        playerStats = GetComponent<PlayerStats>();
         playerController = GetComponent<PlayerController>();
+        dashGaugeCount = (int)playerStats.dashCount;
+        InitializeDashGauges();
     }
 
     private void Update()
@@ -48,37 +47,37 @@ public class PlayerDash : MonoBehaviour
         }
     }
 
-private bool CanDash()
-{
-    if (playerController.InputVector.magnitude < 0.1f)
+    private bool CanDash()
     {
+        if (playerController.InputVector.magnitude < 0.1f)
+        {
+            return false;
+        }
+
+        for (int i = dashGaugeCount - 1; i >= 0; i--)
+        {
+            if (dashGauges[i] >= 1f)
+            {
+                return true;
+            }
+        }
         return false;
     }
-
-    for (int i = dashGaugeCount - 1; i >= 0; i--)
-    {
-        if (dashGauges[i] >= 1f)
-        {
-            return true;
-        }
-    }
-    return false;
-}
 
     private void PerformDash()
     {
         isDashing = true;
         Vector2 dashDirection = playerController.InputVector.normalized;
-        Vector2 dashTarget = (Vector2)transform.position + dashDirection * dashDistance;
+        Vector2 dashTarget = (Vector2)transform.position + dashDirection * playerStats.dashRange;
 
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, dashDirection, dashDistance, collisionMask);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, dashDirection, playerStats.dashRange, collisionMask);
         if (hit.collider != null)
         {
             dashTarget = hit.point - (dashDirection * 0.1f);
         }
 
         float actualDashDistance = Vector2.Distance(transform.position, dashTarget);
-        float adjustedDashDuration = dashDuration * (actualDashDistance / dashDistance);
+        float adjustedDashDuration = dashDuration * (actualDashDistance / playerStats.dashRange);
 
         transform.DOMove(dashTarget, adjustedDashDuration)
             .SetEase(Ease.OutQuad)

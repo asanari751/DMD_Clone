@@ -105,6 +105,8 @@ public class GameSettings : MonoBehaviour
     [SerializeField] private Button popupApply;
     [SerializeField] private Button popupCancle;
 
+    public event System.Action onKeyBindingsChanged;
+
     private float tempResolutionIndex;
     private bool tempFullscreen;
     private float tempFrameRate;
@@ -113,6 +115,23 @@ public class GameSettings : MonoBehaviour
     private float tempAmbientVolume;
     private float tempBGMVolume;
     private float tempUIVolume;
+
+    // Singleton =============================================================
+
+    public static GameSettings Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     // Panel =================================================================
 
@@ -517,7 +536,7 @@ public class GameSettings : MonoBehaviour
 
     }
 
-    private InputAction GetActionByIndex(int index)
+    public InputAction GetActionByIndex(int index)
     {
         switch (index)
         {
@@ -610,6 +629,8 @@ public class GameSettings : MonoBehaviour
             string bindingPath = action.bindings[bindingIndex].effectivePath;
             PlayerPrefs.SetString($"KeyBinding_{i}", bindingPath);
         }
+
+        onKeyBindingsChanged?.Invoke();
     }
 
     // private void LoadKeyBindings()

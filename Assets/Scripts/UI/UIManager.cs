@@ -5,6 +5,8 @@ using DG.Tweening;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
+using System.Linq;
 
 public class UIManager : MonoBehaviour
 {
@@ -19,6 +21,13 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform controlsUI;
     [SerializeField] private float bindingTime = 3f;
     [SerializeField] private float fadeDuration = 0.5f;
+    [SerializeField] private TextMeshProUGUI[] keyBindingTexts;
+    [SerializeField] private Image[] keyBindingImages;
+
+    [Header("Key Sprites")]
+    [SerializeField] private Sprite normalKeySprite;
+    [SerializeField] private Sprite wideKeySprite;
+    [SerializeField] private Sprite longKeySprite; // 스페이스바 전용 
 
     [Header("Image")]
     [SerializeField] private GameObject pauseOverlay;
@@ -33,6 +42,7 @@ public class UIManager : MonoBehaviour
     private CanvasGroup controlsCanvasGroup;
     private PauseController pauseController;
     private SceneTransitionManager sceneTransitionManager;
+    private GameSettings gameSettings;
 
     private void Start()
     {
@@ -41,6 +51,9 @@ public class UIManager : MonoBehaviour
 
         pauseController = FindAnyObjectByType<PauseController>();
         sceneTransitionManager = FindAnyObjectByType<SceneTransitionManager>();
+        gameSettings = FindAnyObjectByType<GameSettings>();
+
+        gameSettings = GameSettings.Instance;
 
         if (controlsUI != null)
         {
@@ -49,8 +62,12 @@ public class UIManager : MonoBehaviour
             {
                 controlsCanvasGroup = controlsUI.gameObject.AddComponent<CanvasGroup>();
             }
+
             ShowControlsUI();
+
         }
+
+        UpdateKeyBindingDisplay();
 
         // if (resumeButton != null)
         // {
@@ -125,7 +142,7 @@ public class UIManager : MonoBehaviour
     {
         stageClearUI.SetActive(true);
         stageClearUI.transform.SetAsLastSibling();
-        
+
         endGameButton.onClick.AddListener(() =>
         {
             Time.timeScale = 1f;
@@ -142,5 +159,62 @@ public class UIManager : MonoBehaviour
             pauseController.ResumeForGameClear();
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
+    }
+
+    private void UpdateKeyBindingDisplay()
+    {
+        for (int i = 0; i < keyBindingTexts.Length; i++)
+        {
+            InputAction action = gameSettings.GetActionByIndex(i);
+            Debug.Log($"Index {i}: Action = {action}");
+
+            int bindingIndex = i switch
+            {
+                0 => action.bindings.IndexOf(x => x.name == "up"),
+                1 => action.bindings.IndexOf(x => x.name == "down"),
+                2 => action.bindings.IndexOf(x => x.name == "left"),
+                3 => action.bindings.IndexOf(x => x.name == "right"),
+                _ => 0
+            };
+            Debug.Log($"Index {i}: BindingIndex = {bindingIndex}");
+
+            string keyName = InputControlPath.ToHumanReadableString(
+                action.bindings[bindingIndex].effectivePath,
+                InputControlPath.HumanReadableStringOptions.OmitDevice);
+            Debug.Log($"Index {i}: KeyName = {keyName}");
+
+            keyBindingTexts[i].text = keyName;
+            keyBindingImages[i].sprite = GetKeySprite(keyName, i);
+        }
+    }
+
+    private Sprite GetKeySprite(string keyName, int index)
+    {
+        RectTransform imageRect = keyBindingImages[index].GetComponent<RectTransform>();
+
+        // SPACE (50x200)
+        if (keyName.Equals("Space", System.StringComparison.OrdinalIgnoreCase))
+        {
+            imageRect.sizeDelta = new Vector2(200f, 50f);
+            return longKeySprite;
+        }
+
+        // WIDE (50x100)
+        string[] wideKeys = new[] {
+        "Left Shift", "Right Shift",
+        "Tab", "Caps Lock",
+        "Left Ctrl", "Right Ctrl",
+        "Left Alt", "Right Alt"
+    };
+
+        if (wideKeys.Any(k => keyName.Equals(k, System.StringComparison.OrdinalIgnoreCase)))
+        {
+            imageRect.sizeDelta = new Vector2(100f, 50f);
+            return wideKeySprite;
+        }
+
+        // Normal (50x50)
+        imageRect.sizeDelta = new Vector2(50f, 50f);
+        return normalKeySprite;
     }
 }

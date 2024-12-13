@@ -1080,6 +1080,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3059626078114314240, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
+      propertyPath: playerStats
+      value: 
+      objectReference: {fileID: 1413334495}
+    - target: {fileID: 3059626078114314240, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
       propertyPath: dashDistance
       value: 2.5
       objectReference: {fileID: 0}
@@ -1367,6 +1372,10 @@ PrefabInstance:
         type: 3}
       insertIndex: 4
       addedObject: {fileID: 1413334490}
+    - targetCorrespondingSourceObject: {fileID: 4433714712038889224, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1413334495}
     - targetCorrespondingSourceObject: {fileID: 4433714712038889224, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       insertIndex: -1
@@ -7479,6 +7488,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 138967521}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1413334495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413334482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3138b42fab2d62d4d96d86e4414d9665, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1423590171
 GameObject:
   m_ObjectHideFlags: 0
@@ -11242,8 +11263,8 @@ SceneRoots:
   - {fileID: 716304330}
   - {fileID: 619394802}
   - {fileID: 1170049491}
+  - {fileID: 2033697769}
   - {fileID: 1098295603}
   - {fileID: 927445083}
   - {fileID: 854225079}
-  - {fileID: 2033697769}
   - {fileID: 1226895859}

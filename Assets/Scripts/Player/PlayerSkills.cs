@@ -137,7 +137,15 @@ public class PlayerSkills : MonoBehaviour
             case "영원한 젊음": // B8
                 UseB8(skill);
                 break;
-            // ===================== 바토리
+            // ===================== 블라드
+
+            case "용의 아들": // B7
+                UseV7(skill);
+                break;
+
+            case "군주의 위엄": // B8
+                UseV8(skill);
+                break;
 
             // ===================== 스트리고이
             case "원귀": // S1
@@ -152,7 +160,13 @@ public class PlayerSkills : MonoBehaviour
                 UseS5(skill);
                 break;
 
-            // ===================== 스트리고이
+            case "죽음의 속삭임": // S7
+                UseS7(skill);
+                break;
+
+            case "죽음의 인도자": // S8
+                UseS8(skill);
+                break;
 
             default:
                 Debug.LogWarning($"알 수 없는 스킬: {skill.skillData.skillName}");
@@ -261,6 +275,34 @@ public class PlayerSkills : MonoBehaviour
         }
     }
 
+    // ===================== 블라드
+
+    private void UseV7(Skill skill)
+    {
+        V7 existingV7 = FindAnyObjectByType<V7>();
+
+        if (existingV7 == null)
+        {
+            GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+            V7 v7 = skillEffect.AddComponent<V7>();
+            v7.Initialize(skill.skillData, skill.skillLevel);
+        }
+    }
+
+    private void UseV8(Skill skill)
+    {
+        V8 existingV8 = FindAnyObjectByType<V8>();
+
+        if (existingV8 == null)
+        {
+            GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+            V8 v8 = skillEffect.AddComponent<V8>();
+            v8.Initialize(skill.skillData, skill.skillLevel);
+        }
+    }
+
+    // ===================== 스트리고이
+
     private void UseS1(Skill skill)
     {
         GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
@@ -297,6 +339,30 @@ public class PlayerSkills : MonoBehaviour
         if (animator != null)
         {
             animator.Play(skill.skillData.skillName);
+        }
+    }
+
+    private void UseS7(Skill skill)
+    {
+        S7 existingS7 = FindAnyObjectByType<S7>();
+
+        if (existingS7 == null)
+        {
+            GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+            S7 s7 = skillEffect.AddComponent<S7>();
+            s7.Initialize(skill.skillData, skill.skillLevel);
+        }
+    }
+
+    private void UseS8(Skill skill)
+    {
+        S8 existingS8 = FindAnyObjectByType<S8>();
+
+        if (existingS8 == null)
+        {
+            GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+            S8 s8 = skillEffect.AddComponent<S8>();
+            s8.Initialize(skill.skillData, skill.skillLevel);
         }
     }
 }

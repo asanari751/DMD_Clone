@@ -4,6 +4,8 @@ using UnityEngine;
 [System.Serializable]
 public class PlayerStats : MonoBehaviour
 {
+    [SerializeField] private PlayerStateManager playerStateManager;
+
     // 1. Attack
     public float damageMultiplier { get; private set; }
     public float criticalDamage { get; private set; }
@@ -32,14 +34,45 @@ public class PlayerStats : MonoBehaviour
     public float dashRange { get; private set; }
     public float dashCount { get; private set; }
 
+    public event System.Action<CharacterInfo.PlayerStats> OnStatsUpdated;
+
     // ===============================================
 
-    public void SetDamageMultiplier(float value) => damageMultiplier = value;
+    private void Start()
+    {
+        playerStateManager = FindAnyObjectByType<PlayerStateManager>();
+    }
+
+    public void SetDamageMultiplier(float value)
+    {
+        damageMultiplier = value;
+        if (playerStateManager != null)
+        {
+            playerStateManager.UpdateStats();
+        }
+    }
+    
     public void SetCriticalDamage(float value) => criticalDamage = value;
-    public void SetCriticalChance(float value) => criticalChance = value;
+    public void SetCriticalChance(float value)
+    {
+        criticalChance = value;
+        if (playerStateManager != null)
+        {
+            playerStateManager.UpdateStats();
+        }
+    }
+
     public void SetRange(float value) => range = value;
 
-    public void SetMaxHealth(float value) => maxHealth = value;
+    public void SetMaxHealth(float value)
+    {
+        maxHealth = value;
+        if (playerStateManager != null)
+        {
+            playerStateManager.UpdateStats();
+        }
+    }
+
     public void SetArmor(float value) => armor = value;
     public void SetReduction(float value) => reduction = value;
     public void SetDodge(float value) => dodge = value;
@@ -75,5 +108,35 @@ public class PlayerStats : MonoBehaviour
         SetLootRange(2.5f);
         SetDashRange(5f);
         SetDashCount(2f);
+    }
+
+    private CharacterInfo.PlayerStats GetCurrentStats()
+    {
+        return new CharacterInfo.PlayerStats
+        {
+            // Attack
+            damageMultiplier = this.damageMultiplier,
+            criticalDamage = this.criticalDamage,
+            criticalChance = this.criticalChance,
+            range = this.range,
+
+            // Defense
+            maxHealth = this.maxHealth,
+            armor = this.armor,
+            reduction = this.reduction,
+            dodge = this.dodge,
+
+            // Default
+            defaultDamage = this.defaultDamage,
+            defaultAttackSpeed = this.defaultAttackSpeed,
+            defaultRange = this.defaultRange,
+            defaultCriticalChance = this.defaultCriticalChance,
+
+            // Utility
+            moveSpeed = this.moveSpeed,
+            lootRange = this.lootRange,
+            dashRange = this.dashRange,
+            dashCount = this.dashCount
+        };
     }
 }

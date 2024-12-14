@@ -305,7 +305,7 @@ public class PlayerStateManager : MonoBehaviour
         }
     }
 
-    private void UpdateStats()
+    public void UpdateStats()
     {
         var stats = new CharacterInfo.PlayerStats
         {

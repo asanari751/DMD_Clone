@@ -24,7 +24,7 @@ public class EnemyStatusEffect : MonoBehaviour
     [Header("Status Effect Values")]
     [SerializeField] private float slowDebuff = 0.75f;
     [SerializeField] private float weaknessDebuff = 1.3f;
-    [SerializeField] private float poisonDebuff = 3f;
+    [SerializeField] public float poisonDebuff = 3f;
     [SerializeField] private float bleedDebuff = 0.1f;
 
     public enum StatusEffectType

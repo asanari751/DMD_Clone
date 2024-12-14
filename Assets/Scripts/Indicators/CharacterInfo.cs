@@ -154,8 +154,9 @@ public class CharacterInfo : MonoBehaviour
         }
     }
 
-    private void UpdateCharacterInfo(PlayerStats newStats)
+    private void UpdateCharacterInfo(CharacterInfo.PlayerStats newStats)
     {
+        Debug.Log($"새로운 최대 체력: {newStats.maxHealth}");
         currentStats = newStats;
         UpdateInfoUI();
     }

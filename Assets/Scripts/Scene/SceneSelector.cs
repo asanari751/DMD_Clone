@@ -14,6 +14,7 @@ public class SceneSelector : MonoBehaviour
         public Sprite thumbnail;
     }
 
+    [SerializeField] private AudioManager audioManager;
     [SerializeField] private Image backgroundOverlay;
     [SerializeField] private GameObject uiPanel;
     [SerializeField] private Image capsuleArt;
@@ -43,6 +44,7 @@ public class SceneSelector : MonoBehaviour
         uiPanel.SetActive(true);
         backgroundOverlay.gameObject.SetActive(true);
         UpdateStageInfo(stages[currentStageIndex]);
+        audioManager.PlayAmbient("A2");
     }
 
     private void SetupButtons()
@@ -108,11 +110,13 @@ public class SceneSelector : MonoBehaviour
 
     private void StartGame()
     {
+        audioManager.PlayAmbient("A3");
         SelectStage(currentStageIndex);
     }
 
-    private void Cancle()
+    public void Cancle()
     {
+        audioManager.PlayAmbient("A3");
         backgroundOverlay.gameObject.SetActive(false);
         uiPanel.SetActive(false);
     }

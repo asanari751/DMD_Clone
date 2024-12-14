@@ -25,6 +25,8 @@ public class Interaction : MonoBehaviour
         public Image selectedFrame;
     }
 
+    [SerializeField] private AudioManager audioManager;
+
     [Header("Interaction UI")]
     [SerializeField] private GameObject interactionField;
     [SerializeField] private Image backgroundOverlay;
@@ -301,6 +303,7 @@ public class Interaction : MonoBehaviour
 
     private void ShowGodChooseButtons()
     {
+        audioManager.PlayAmbient("A4");
         PauseController.Paused = true;
         Time.timeScale = 0f;
         godChoosePanel.SetActive(true);

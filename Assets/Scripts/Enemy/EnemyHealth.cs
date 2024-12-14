@@ -124,11 +124,24 @@ public class EnemyHealthController : MonoBehaviour, IDamageable
         currentHealth = basicEnemy.GetMaxHealth();
         isDead = false;
 
+        // 모든 자식 스프라이트 초기화
         SpriteRenderer[] allSprites = GetComponentsInChildren<SpriteRenderer>();
         foreach (SpriteRenderer sprite in allSprites)
         {
             Color color = sprite.color;
             sprite.color = new Color(color.r, color.g, color.b, 1f);
+        }
+
+        // hitEffectInstance 초기화
+        if (hitEffectInstance != null)
+        {
+            hitEffectInstance.SetActive(false);
+            SpriteRenderer[] hitEffectSprites = hitEffectInstance.GetComponentsInChildren<SpriteRenderer>();
+            foreach (SpriteRenderer sprite in hitEffectSprites)
+            {
+                Color color = sprite.color;
+                sprite.color = new Color(color.r, color.g, color.b, 1f);
+            }
         }
     }
 

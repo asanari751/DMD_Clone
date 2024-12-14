@@ -6,6 +6,7 @@ using System.Linq;
 
 public class Experience : MonoBehaviour
 {
+	[SerializeField] private AudioManager audioManager;
 	[SerializeField] private Image expFillImage;
 	[SerializeField] private float lerpSpeed = 5f;
 	[SerializeField] private int[] skillSelectableLevels;
@@ -45,6 +46,7 @@ public class Experience : MonoBehaviour
 		currentExp += amount;
 		while (currentExp >= expForNextLevel && currentLevel < expTable.Count)
 		{
+			audioManager.PlayAmbient("A7");
 			LevelUp();
 		}
 		UpdateExpBar();

@@ -53,6 +53,7 @@ public class SkillSelector : MonoBehaviour
     [SerializeField] private Sprite swordSkillIcon;
     [SerializeField] private Sprite arrowSkillIcon;
     [SerializeField] private GameObject spinnerPrefab;
+    [SerializeField] private AudioManager audioManager;
 
     [Header("Dices")]
     [SerializeField] private Button redDiceButton;
@@ -246,6 +247,7 @@ public class SkillSelector : MonoBehaviour
         string selectedDialogue = GetWeightedRandomDialogue(randomGodIndex);
 
         interactionField.SetActive(true);
+        audioManager.PlayAmbient("A9");
         backgroundOverlay.gameObject.SetActive(true);
 
         DisplayGodDialogue(selectedGod, selectedDialogue);
@@ -441,6 +443,7 @@ public class SkillSelector : MonoBehaviour
 
         PlayerSkills.Instance.AddOrUpgradeSkill(selectedSkill.skillDataSO);
         UpdateSkillUI();
+        audioManager.PlayAmbient("A8");
 
         bool isAlreadySelected = false;
         for (int i = 0; i < currentSkillSlot; i++)
@@ -679,6 +682,7 @@ public class SkillSelector : MonoBehaviour
         if (isRed)
         {
             currentRedDiceCount--;
+            audioManager.PlayAmbient("A10");
             currentSkillSet = new List<Skilldata>(gods[currentGodIndex].availableSkills.Take(3));
             StartCoroutine(RollDiceAnimation());
             UpdateDiceUI();
@@ -687,6 +691,7 @@ public class SkillSelector : MonoBehaviour
         else
         {
             currentBlueDiceCount--;
+            audioManager.PlayAmbient("A11");
             skillSelectorUI.SetActive(false);
             tempBlackImage.gameObject.SetActive(false);
 

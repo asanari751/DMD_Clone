@@ -19,6 +19,14 @@ public class SceneTransition : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            sceneSelector.Cancle();
+        }
+    }
+
     public void LoadScene(string sceneName)
     {
         SceneTransitionManager.Instance.LoadSceneWithTransition(sceneName);

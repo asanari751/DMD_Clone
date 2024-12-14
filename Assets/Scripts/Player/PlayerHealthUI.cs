@@ -24,6 +24,7 @@ public class PlayerHealthUI : MonoBehaviour
 
     [Header("Ref")]
     [SerializeField] private Transform playerTransform;
+    [SerializeField] private AudioManager audioManager;
     [SerializeField] private string hubScene = "1_Hub";
     [SerializeField] private bool InCombatArea = false;
     private Rigidbody2D playerRigidbody;
@@ -91,6 +92,7 @@ public class PlayerHealthUI : MonoBehaviour
         currentHealth = Mathf.Max(currentHealth - damage, 0);
         UpdateHealthBar(currentHealth, maxHealth);
         HandleDamageVisuals();
+        audioManager.PlayAmbient("A15");
 
         if (CameraManager.Instance != null)
         {
@@ -104,6 +106,7 @@ public class PlayerHealthUI : MonoBehaviour
     public void TakeDamageWithKnockback(float damage, Vector2 knockbackDirection, float knockbackForce)
     {
         TakeDamage(damage);
+        audioManager.PlayAmbient("A15");
 
         var playerController = GetComponent<PlayerController>();
         if (playerController != null)
@@ -177,18 +180,32 @@ public class PlayerHealthUI : MonoBehaviour
     {
         isDead = true;
         DisablePlayerComponents();
-        playerShadow.SetActive(false);
+        if (playerShadow != null)
+        {
+            playerShadow.SetActive(false);
+        }
 
         var animController = GetComponent<AnimationController>();
         if (animController != null)
         {
             animController.PlayDeathAnimation();
-            StartCoroutine(TransitionAfterAnimation(deathAnimationDuration));
+            StartCoroutine(ShowResultsAfterAnimation());
         }
-        else
+    }
+
+    private IEnumerator ShowResultsAfterAnimation()
+    {
+        yield return new WaitForSeconds(deathAnimationDuration);
+
+        ResultUIManager resultUI = FindAnyObjectByType<ResultUIManager>();
+        UIManager uIManager = FindAnyObjectByType<UIManager>();
+        if (resultUI != null)
         {
-            SceneTransitionManager.Instance.LoadSceneWithTransition(hubScene);
+            uIManager.ShowStageClearUI();
+            resultUI.ShowResults();
         }
+
+        Time.timeScale = 0f;
     }
 
     private IEnumerator TransitionAfterAnimation(float delay)
@@ -221,6 +238,7 @@ public class PlayerHealthUI : MonoBehaviour
     public void Heal(float amount)
     {
         currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
+        audioManager.PlayAmbient("A12");
         UpdateHealthBarForHeal(currentHealth, maxHealth);
     }
 

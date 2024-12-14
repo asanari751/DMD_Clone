@@ -23,6 +23,7 @@ public class PlayerStateManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private PlayerStats playerStats;
+    [SerializeField] private AudioManager audioManager;
     [SerializeField] private ProjectilePool projectilePool;
     [SerializeField] private InputActionReference attackAction;
     [SerializeField] private Transform firePosition;
@@ -104,6 +105,19 @@ public class PlayerStateManager : MonoBehaviour
 
         if (isAutoAttack)
         {
+            switch (currentAttackType)
+            {
+                case AttackType.Sword:
+                    audioManager.PlaySFX("S2");
+                    break;
+                case AttackType.Claw:
+                    audioManager.PlaySFX("S3");
+                    break;
+                case AttackType.Arrow:
+                    audioManager.PlaySFX("S4");
+                    break;
+            }
+
             if (autoAttackTween != null)
             {
                 autoAttackTween.Kill();
@@ -165,6 +179,7 @@ public class PlayerStateManager : MonoBehaviour
         }
 
         Vector2 direction = (targetPosition - (Vector2)firePosition.position).normalized;
+        audioManager.PlaySFX("S4");
 
         GameObject projectileObj = projectilePool.GetProjectile();
         projectileObj.transform.position = firePosition.position;
@@ -190,6 +205,16 @@ public class PlayerStateManager : MonoBehaviour
         if (Time.time - lastAttackTime < atkDelay)
         {
             return;
+        }
+
+        switch (currentAttackType)
+        {
+            case AttackType.Sword:
+                audioManager.PlaySFX("S2");
+                break;
+            case AttackType.Claw:
+                audioManager.PlaySFX("S3");
+                break;
         }
 
         AttackInSemicircle(targetPosition);

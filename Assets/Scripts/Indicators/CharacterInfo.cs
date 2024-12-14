@@ -42,6 +42,7 @@ public class CharacterInfo : MonoBehaviour
 
     }
 
+    [SerializeField] private AudioManager audioManager;
     [SerializeField] private GameObject InfoUI;
     [SerializeField] private InputActionReference toggleInfoAction;
     [SerializeField] private bool InfoVisible = false;
@@ -146,6 +147,15 @@ public class CharacterInfo : MonoBehaviour
         InfoVisible = !InfoVisible;
         InfoUI.SetActive(InfoVisible);
         skillInventory.SetActive(InfoVisible);
+
+        if (InfoVisible)
+        {
+            audioManager.PlayAmbient("A13");
+        }
+        else
+        {
+            audioManager.PlayAmbient("A14");
+        }
 
         pauseController.ToggleUIState();
         if (InfoVisible)

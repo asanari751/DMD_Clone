@@ -5,6 +5,7 @@ using DG.Tweening;
 public class PlayerDash : MonoBehaviour
 {
     [SerializeField] private PlayerStats playerStats;
+    [SerializeField] private AudioManager audioManager;
     private float dashDistance;
     private float dashDuration = 0.2f;
     private int dashGaugeCount;
@@ -35,6 +36,7 @@ public class PlayerDash : MonoBehaviour
         if (value.isPressed && !isDashing && CanDash())
         {
             PerformDash();
+            audioManager.PlaySFX("S1");
         }
     }
 

@@ -9,6 +9,7 @@ public class BasicEnemy : MonoBehaviour
     [SerializeField] private GameObject expOrbPrefab;
     [SerializeField] private int expOrbCount;
     [SerializeField] private EnemyStats stats;
+    private AudioManager audioManager;
 
     [Header("Attack Settings")]
     [SerializeField] private GameObject attackAreaPrefab;    // 공격 범위 시각화를 위한 프리팹
@@ -51,6 +52,7 @@ public class BasicEnemy : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         enemyKnockback = GetComponent<EnemyKnockback>();
         statusEffect = GetComponent<EnemyStatusEffect>();
+        audioManager = FindAnyObjectByType<AudioManager>();
         rb = GetComponent<Rigidbody2D>();
         currentMoveSpeed = stats.MoveSpeed;
         DOTween.SetTweensCapacity(1000, 500);
@@ -236,6 +238,15 @@ public class BasicEnemy : MonoBehaviour
 
     private void ExecuteAttack()
     {
+        if (stats.enemyType == EnemyStats.EnemyType.Melee)
+        {
+            audioManager.PlaySFX("S21");
+        }
+        else if (stats.enemyType == EnemyStats.EnemyType.Arrow)
+        {
+            audioManager.PlaySFX("S22");
+        }
+
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, stats.AttackRange);
         foreach (var hit in hits)
         {

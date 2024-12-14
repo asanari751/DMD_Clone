@@ -3059,6 +3059,92 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1001 &592397484
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1226895859}
+    m_Modifications:
+    - target: {fileID: 1200702539569150159, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_Name
+      value: Audio Manager
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5bb6939206ecd6b4899874ba3d7273b1, type: 3}
+--- !u!4 &592397485 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+    type: 3}
+  m_PrefabInstance: {fileID: 592397484}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &592397486 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+    type: 3}
+  m_PrefabInstance: {fileID: 592397484}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52db4ea1ca998b44c8dd66df8db48bb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &609120813
 GameObject:
   m_ObjectHideFlags: 0
@@ -5078,6 +5164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7778456a019a24841bd7794b80586fa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioManager: {fileID: 592397486}
   backgroundOverlay: {fileID: 1487705023}
   uiPanel: {fileID: 81171108}
   capsuleArt: {fileID: 1471904103}
@@ -6165,6 +6252,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 988315335}
+  - {fileID: 592397485}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1226895860
@@ -7500,6 +7588,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3138b42fab2d62d4d96d86e4414d9665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerStateManager: {fileID: 0}
 --- !u!1 &1423590171
 GameObject:
   m_ObjectHideFlags: 0
@@ -8144,6 +8233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a07570f1ec7215749bfc194f7071a7b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioManager: {fileID: 592397486}
   interactionField: {fileID: 1223663543}
   backgroundOverlay: {fileID: 1487705023}
   typingSpeed: 64

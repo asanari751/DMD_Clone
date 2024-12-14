@@ -19050,6 +19050,109 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!1001 &1429157833587364574
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 695557163948575675, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1200702539569150159, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_Name
+      value: Audio Manager
+      objectReference: {fileID: 0}
+    - target: {fileID: 1831614422927354992, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2854093571973338932, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: sfxSounds.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: sfxSounds.Array.data[0].clip
+      value: 
+      objectReference: {fileID: 8300000, guid: 1d96b25364ff5b64bb23223adccd060d, type: 3}
+    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: sfxSounds.Array.data[0].name
+      value: S2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: sfxSounds.Array.data[0].volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6769181361661243147, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5bb6939206ecd6b4899874ba3d7273b1, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -19059,3 +19162,4 @@ SceneRoots:
   - {fileID: 1373682610}
   - {fileID: 1995602140}
   - {fileID: 1490679256}
+  - {fileID: 1429157833587364574}

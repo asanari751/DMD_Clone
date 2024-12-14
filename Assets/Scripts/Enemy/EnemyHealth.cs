@@ -40,7 +40,7 @@ public class EnemyHealthController : MonoBehaviour, IDamageable
     {
         if (IsDead()) return;
 
-        float finalDamage = ( damage * damageMultiplier ) * damageModifier;
+        float finalDamage = (damage * damageMultiplier) * damageModifier;
         ResultManager.Instance.AddDamage(finalDamage);
         currentHealth -= finalDamage;
 
@@ -123,6 +123,13 @@ public class EnemyHealthController : MonoBehaviour, IDamageable
     {
         currentHealth = basicEnemy.GetMaxHealth();
         isDead = false;
+
+        SpriteRenderer[] allSprites = GetComponentsInChildren<SpriteRenderer>();
+        foreach (SpriteRenderer sprite in allSprites)
+        {
+            Color color = sprite.color;
+            sprite.color = new Color(color.r, color.g, color.b, 1f);
+        }
     }
 
     // 상태이상 관련 메서드

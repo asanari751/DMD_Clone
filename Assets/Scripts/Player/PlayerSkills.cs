@@ -138,12 +138,15 @@ public class PlayerSkills : MonoBehaviour
                 UseB8(skill);
                 break;
             // ===================== 블라드
+            case "박쥐 폭풍": // V3
+                UseV3(skill);
+                break;
 
-            case "용의 아들": // B7
+            case "용의 아들": // V7
                 UseV7(skill);
                 break;
 
-            case "군주의 위엄": // B8
+            case "군주의 위엄": // V8
                 UseV8(skill);
                 break;
 
@@ -154,6 +157,10 @@ public class PlayerSkills : MonoBehaviour
 
             case "썩은 피의 낫":
                 UseS2(skill);
+                break;
+
+            case "망자의 영역": // S3
+                UseS3(skill);
                 break;
 
             case "썩은 피 안개": // S5
@@ -277,6 +284,13 @@ public class PlayerSkills : MonoBehaviour
 
     // ===================== 블라드
 
+    private void UseV3(Skill skill)
+    {
+        GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+        V3 v3 = skillEffect.AddComponent<V3>();
+        v3.Initialize(skill.skillData, skill.skillLevel);
+    }
+
     private void UseV7(Skill skill)
     {
         V7 existingV7 = FindAnyObjectByType<V7>();
@@ -321,6 +335,19 @@ public class PlayerSkills : MonoBehaviour
         GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
         S2 s2 = skillEffect.AddComponent<S2>();
         s2.Initialize(skill.skillData, skill.skillLevel);
+
+        Animator animator = skillEffect.GetComponent<Animator>();
+        if (animator != null)
+        {
+            animator.Play(skill.skillData.skillName);
+        }
+    }
+
+    private void UseS3(Skill skill)
+    {
+        GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+        S3 s3 = skillEffect.AddComponent<S3>();
+        s3.Initialize(skill.skillData, skill.skillLevel);
 
         Animator animator = skillEffect.GetComponent<Animator>();
         if (animator != null)

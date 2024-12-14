@@ -18,18 +18,19 @@ MonoBehaviour:
   skillDescription: "\uC801\uC744 \uBC00\uCCD0\uB0B4\uACE0 \uB370\uBBF8\uC9C0\uB97C
     \uC785\uD788\uB294 \uBC15\uC950\uD3ED\uD48D\uB4E4\uC744 \uC0DD\uC131\uD569\uB2C8\uB2E4.\r"
   godOwner: 2
-  skillRangeType: 0
-  skillPrefab: {fileID: 0}
-  damage: 0
-  duration: 0
-  cooldown: 0
+  skillRangeType: 1
+  skillPrefab: {fileID: 131342133516954262, guid: ef51a259cdefd95469b75ba69bbbb0fa,
+    type: 3}
+  damage: 70
+  duration: 3.5
+  cooldown: 8
   isPassive: 0
   attackInterval: 0
   statusEffectOnHit: 0
-  radius: 0
+  radius: 3
   range: 0
   angle: 0
   maxTargets: 0
-  knockbackForce: 0
-  procChance: 0
+  knockbackForce: 2
+  procChance: 1
   effectValue: 0

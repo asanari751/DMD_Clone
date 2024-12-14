@@ -128,11 +128,12 @@ public class SkillSelector : MonoBehaviour
     {
         cursorManager = FindAnyObjectByType<ChangeCursor>();
         Experience experienceComponent = FindAnyObjectByType<Experience>();
-        pauseController = FindAnyObjectByType<PauseController>();
         if (experienceComponent != null)
         {
-            experienceComponent.onLevelUp.AddListener(StartInteraction);
+            experienceComponent.onSkillSelectLevel.AddListener(StartInteraction);
         }
+
+        pauseController = FindAnyObjectByType<PauseController>();
 
         skillSelectorUI.SetActive(false);
         // darkBackground.gameObject.SetActive(false);

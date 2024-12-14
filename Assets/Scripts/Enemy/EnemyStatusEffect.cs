@@ -15,7 +15,10 @@ public class EnemyStatusEffect : MonoBehaviour
     {
         if (applyDebugEffect)
         {
-            ApplyStatusEffect(debugStatusEffect, debugDuration);
+            if (statusEffectVisual != null && statusEffectAnimator != null)
+            {
+                ApplyStatusEffect(debugStatusEffect, debugDuration);
+            }
             applyDebugEffect = false;
         }
     }
@@ -26,6 +29,15 @@ public class EnemyStatusEffect : MonoBehaviour
     [SerializeField] private float weaknessDebuff = 1.3f;
     [SerializeField] public float poisonDebuff = 3f;
     [SerializeField] private float bleedDebuff = 0.1f;
+
+    [Header("Animation States")]
+    [SerializeField] private GameObject statusEffectVisual;
+    [SerializeField] private string poisonStateName = "Poison_Effect";
+    [SerializeField] private string bleedStateName = "Bleed_Effect";
+    [SerializeField] private string stunStateName = "Stun_Effect";
+    [SerializeField] private string fearStateName = "Fear_Effect";
+    [SerializeField] private string slowStateName = "Slow_Effect";
+    [SerializeField] private string weaknessStateName = "Weakness_Effect";
 
     public enum StatusEffectType
     {
@@ -43,12 +55,17 @@ public class EnemyStatusEffect : MonoBehaviour
     private BasicEnemy basicEnemy;
     private EnemyHealthController enemyHealthController;
     private bool isFeared = false;
+    private Animator statusEffectAnimator;
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         basicEnemy = GetComponent<BasicEnemy>();
         enemyHealthController = GetComponent<EnemyHealthController>();
+        if (statusEffectVisual != null)
+        {
+            statusEffectAnimator = statusEffectVisual.GetComponent<Animator>();
+        }
     }
 
     public void ApplyStatusEffect(StatusEffectType type, float duration)
@@ -104,6 +121,7 @@ public class EnemyStatusEffect : MonoBehaviour
 
     private IEnumerator FearEffect(float duration)
     {
+        statusEffectAnimator.Play(fearStateName, 0, 0f);
         isFeared = true;
         basicEnemy.StopAttack();
 
@@ -123,11 +141,13 @@ public class EnemyStatusEffect : MonoBehaviour
         spriteRenderer.color = Color.white;
 
         isFeared = false;
+        statusEffectAnimator.Play("None", 0, 0f);
         activeStatusEffects.Remove(StatusEffectType.Fear);
     }
 
     private IEnumerator BleedEffect(float duration)
     {
+        statusEffectAnimator.Play(bleedStateName, 0, 0f);
         float elapsedTime = 0f;
         float tickInterval = 1f;
         float nextTickTime = tickInterval;
@@ -145,11 +165,13 @@ public class EnemyStatusEffect : MonoBehaviour
             yield return null;
         }
 
+        statusEffectAnimator.Play("None", 0, 0f);
         activeStatusEffects.Remove(StatusEffectType.Bleed);
     }
 
     private IEnumerator SlowEffect(float duration)
     {
+        statusEffectAnimator.Play(slowStateName, 0, 0f);
         float originalSpeed = basicEnemy.GetMoveSpeed();
         basicEnemy.SetMoveSpeed(originalSpeed * slowDebuff);
 
@@ -161,11 +183,13 @@ public class EnemyStatusEffect : MonoBehaviour
         }
 
         basicEnemy.SetMoveSpeed(originalSpeed); // 원래 속도로 복구
+        statusEffectAnimator.Play("None", 0, 0f);
         activeStatusEffects.Remove(StatusEffectType.Slow);
     }
 
     private IEnumerator WeaknessEffect(float duration)
     {
+        statusEffectAnimator.Play(weaknessStateName, 0, 0f);
         enemyHealthController.SetDamageMultiplier(weaknessDebuff); // 30% 데미지 증가
 
         float elapsedTime = 0f;
@@ -176,11 +200,13 @@ public class EnemyStatusEffect : MonoBehaviour
         }
 
         enemyHealthController.SetDamageMultiplier(1f); // 데미지 배율 원래대로
+        statusEffectAnimator.Play("None", 0, 0f);
         activeStatusEffects.Remove(StatusEffectType.Weakness);
     }
 
     private IEnumerator PoisonEffect(float duration)
     {
+        statusEffectAnimator.Play(poisonStateName, 0, 0f);
         float elapsedTime = 0f;
         float tickInterval = 1f;
         float nextTickTime = tickInterval;
@@ -198,11 +224,13 @@ public class EnemyStatusEffect : MonoBehaviour
             yield return null;
         }
 
+        statusEffectAnimator.Play("None", 0, 0f);
         activeStatusEffects.Remove(StatusEffectType.Poison);
     }
 
     private IEnumerator StunEffect(float duration)
     {
+        statusEffectAnimator.Play(stunStateName, 0, 0f);
         basicEnemy.SetCanMove(false);
 
         Color originalColor = spriteRenderer.color;
@@ -219,6 +247,7 @@ public class EnemyStatusEffect : MonoBehaviour
         }
 
         basicEnemy.SetCanMove(true);
+        statusEffectAnimator.Play("None", 0, 0f);
         activeStatusEffects.Remove(StatusEffectType.Stun);
     }
 
@@ -241,5 +270,19 @@ public class EnemyStatusEffect : MonoBehaviour
         }
         activeStatusEffects.Clear();
         isFeared = false;
+    }
+
+    private string GetAnimationState(StatusEffectType type)
+    {
+        return type switch
+        {
+            StatusEffectType.Poison => poisonStateName,
+            StatusEffectType.Bleed => bleedStateName,
+            StatusEffectType.Stun => stunStateName,
+            StatusEffectType.Fear => fearStateName,
+            StatusEffectType.Slow => slowStateName,
+            StatusEffectType.Weakness => weaknessStateName,
+            _ => ""
+        };
     }
 }

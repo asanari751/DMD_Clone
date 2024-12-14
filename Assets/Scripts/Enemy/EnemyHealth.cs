@@ -20,6 +20,7 @@ public class EnemyHealthController : MonoBehaviour, IDamageable
     private EnemyHealthElite enemyHealthElite;
     private EnemyHealthBoss enemyHealthBoss;
     private ResultManager resultManager;
+    private float damageModifier = 1f;
     public event System.Action OnDie;
 
     protected virtual void Awake()
@@ -39,7 +40,7 @@ public class EnemyHealthController : MonoBehaviour, IDamageable
     {
         if (IsDead()) return;
 
-        float finalDamage = damage * damageMultiplier;
+        float finalDamage = ( damage * damageMultiplier ) * damageModifier;
         ResultManager.Instance.AddDamage(finalDamage);
         currentHealth -= finalDamage;
 
@@ -141,5 +142,21 @@ public class EnemyHealthController : MonoBehaviour, IDamageable
     {
         yield return new WaitForSeconds(0.4f); // 애니메이션 길이만큼 대기
         hitEffectInstance.SetActive(false);
+    }
+
+    public void SetDamageModifier(float modifier)
+    {
+        damageModifier = modifier;
+    }
+
+    public float GetDamageModifier()
+    {
+        return damageModifier;
+    }
+
+    public bool ResetDamageModifier()
+    {
+        damageModifier = 1f;
+        return true;
     }
 }

@@ -28,8 +28,21 @@ public class AnimationController : MonoBehaviour
 
     private void Update()
     {
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
+        if (GameSettings.Instance == null)
+        {
+            // 기존 Input System 사용
+            movement.x = Input.GetAxisRaw("Horizontal");
+            movement.y = Input.GetAxisRaw("Vertical");
+        }
+        
+        else
+        {
+            // 새로운 Input System 사용
+            var moveAction = GameSettings.Instance.defaultProfile.movement.action;
+            Vector2 moveInput = moveAction.ReadValue<Vector2>();
+            movement.x = moveInput.x;
+            movement.y = moveInput.y;
+        }
 
         if (Mathf.Abs(movement.x) > 0)
         {

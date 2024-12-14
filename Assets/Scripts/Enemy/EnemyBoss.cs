@@ -10,6 +10,8 @@ public class EnemyBoss : BasicEnemy
     [SerializeField] private float chargeDistance = 300f;
     [SerializeField] private float chargeAttackRange = 300f;
     [SerializeField] private float chargeDamage = 20f;
+    [SerializeField] private float chargeDamageReduction = 0f; // 보스 데미지 감소율
+    [SerializeField] private bool isInvulnerableDuringCharge = true; // 완전 무적 여부
 
     [Header("Charge Attack Visual")]
     [SerializeField] private Transform prefabSpawnPoint;
@@ -24,6 +26,9 @@ public class EnemyBoss : BasicEnemy
     public event System.Action OnBossEnemyDeath;
     private EnemyHealthBoss enemyHealthBoss;
     private EnemyHealthController enemyHealthController;
+
+    private Rigidbody2D rb;
+    private float originalMass;
 
     private float CustomEaseCharge(float x)
     {
@@ -51,6 +56,8 @@ public class EnemyBoss : BasicEnemy
     protected override void Awake()
     {
         base.Awake();
+        rb = GetComponent<Rigidbody2D>();
+        originalMass = rb.mass;
 
         enemyHealthController = GetComponent<EnemyHealthController>();
         enemyHealthBoss = GetComponent<EnemyHealthBoss>();
@@ -111,6 +118,9 @@ public class EnemyBoss : BasicEnemy
         isCharging = true;
         SetCanMove(false);
 
+        rb.mass = originalMass * 1000f;
+        enemyHealthController.SetDamageModifier(isInvulnerableDuringCharge ? 0f : chargeDamageReduction);
+
         // 돌격 준비
         ShowChargeAttackArea();
         bossAnimController.PlayChargeReadyAnimation();
@@ -139,10 +149,13 @@ public class EnemyBoss : BasicEnemy
             yield return null;
         }
 
+        enemyHealthController.ResetDamageModifier(); // 데미지 감소 초기화
+
         // 돌격 후 1초간 정지
         bossAnimController.StopCharging();
         yield return new WaitForSeconds(1f);
 
+        rb.mass = originalMass;
         isCharging = false;
         SetCanMove(true);
     }

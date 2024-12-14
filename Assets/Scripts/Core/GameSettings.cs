@@ -69,21 +69,33 @@ public class GameSettings : MonoBehaviour
     [SerializeField] private int maxFrameRate = 144;
 
     [Header("Volume")]
-
     [SerializeField] private AudioMixer audioMixer;
-    [SerializeField] private TMP_Text masterVolumeText;
+    // [SerializeField] private TMP_Text masterVolumeText;
     [SerializeField] private Slider masterVolumeSlider;
-    [SerializeField] private TMP_Text sfxVolumeText;
+    // [SerializeField] private TMP_Text sfxVolumeText;
     [SerializeField] private Slider sfxVolumeSlider;
-    [SerializeField] private TMP_Text ambientVolumeText;
+    // [SerializeField] private TMP_Text ambientVolumeText;
     [SerializeField] private Slider ambientVolumeSlider;
-    [SerializeField] private TMP_Text bgmVolumeText;
+    // [SerializeField] private TMP_Text bgmVolumeText;
     [SerializeField] private Slider bgmVolumeSlider;
-    [SerializeField] private TMP_Text UIVolumeText;
+    // [SerializeField] private TMP_Text UIVolumeText;
     [SerializeField] private Slider UIVolumeSlider;
 
+    [SerializeField] private Button masterMuteButton;
+    [SerializeField] private Button sfxMuteButton;
+    [SerializeField] private Button ambientMuteButton;
+    [SerializeField] private Button bgmMuteButton;
+    [SerializeField] private Button uiMuteButton;
+
+    [Header("Mute Button Sprites")]
+    [SerializeField] private Image masterMuteFill;
+    [SerializeField] private Image sfxMuteFill;
+    [SerializeField] private Image ambientMuteFill;
+    [SerializeField] private Image bgmMuteFill;
+    [SerializeField] private Image uiMuteFill;
+
     [Header("Key Bindings")]
-    [SerializeField] private KeyBindingProfile defaultProfile;
+    [SerializeField] public KeyBindingProfile defaultProfile;
     [SerializeField] private TMP_Text[] keyBindingTexts;
     [SerializeField] private Button[] rebindButtons;
 
@@ -115,6 +127,12 @@ public class GameSettings : MonoBehaviour
     private float tempAmbientVolume;
     private float tempBGMVolume;
     private float tempUIVolume;
+
+    private bool isMasterMuted;
+    private bool isSFXMuted;
+    private bool isAmbientMuted;
+    private bool isBGMMuted;
+    private bool isUIMuted;
 
     // Singleton =============================================================
 
@@ -199,7 +217,6 @@ public class GameSettings : MonoBehaviour
 
     private void Start()
     {
-        // settingsPanels 배열 초기화
         panels = new GameObject[]
         {
         videoSettingsPanel,
@@ -209,7 +226,6 @@ public class GameSettings : MonoBehaviour
         textSettingsPanel
         };
 
-        // 모든 패널을 비활성화
         foreach (var panel in panels)
         {
             if (panel != null)
@@ -223,12 +239,13 @@ public class GameSettings : MonoBehaviour
         resetButton.onClick.AddListener(LoadSettings);
         popupApply.onClick.AddListener(OnConfirmExit);
         popupCancle.onClick.AddListener(() => confirmationPopup.SetActive(false));
-        defaultProfile.cancle.action.performed += _ => cancelButton.onClick.Invoke(); // 세부 설정 닫음
-        defaultProfile.cancle.action.performed += _ => OnSettingsExit(); // 설정 창 닫음
+        defaultProfile.cancle.action.performed += _ => cancelButton.onClick.Invoke();
+        defaultProfile.cancle.action.performed += _ => OnSettingsExit();
 
         InitializeSettings();
         InitializeKeyBindings();
         InitializeAccessibilitySettings();
+        InitializeAudioSettings();
         LoadSettings();
     }
 
@@ -458,6 +475,76 @@ public class GameSettings : MonoBehaviour
         // bgmVolumeText.text = $"배경음 {Mathf.RoundToInt(tempBGMVolume * 100)}%";
     }
 
+    private void OnMasterMuteToggled(bool isMuted)
+    {
+        if (isMuted)
+        {
+            AudioListener.volume = 0f;
+            masterVolumeSlider.interactable = false;
+        }
+        else
+        {
+            AudioListener.volume = tempMasterVolume;
+            masterVolumeSlider.interactable = true;
+        }
+    }
+
+    private void OnSFXVolumeMuteToggled(bool isMuted)
+    {
+        if (isMuted)
+        {
+            AudioListener.volume = 0f;
+            sfxVolumeSlider.interactable = false;
+        }
+        else
+        {
+            AudioListener.volume = tempSFXVolume;
+            sfxVolumeSlider.interactable = true;
+        }
+    }
+
+    private void OnAmbientVolumeMuteToggled(bool isMuted)
+    {
+        if (isMuted)
+        {
+            AudioListener.volume = 0f;
+            ambientVolumeSlider.interactable = false;
+        }
+        else
+        {
+            AudioListener.volume = tempAmbientVolume;
+            ambientVolumeSlider.interactable = true;
+        }
+    }
+
+    private void OnBGMVolumeMuteToggled(bool isMuted)
+    {
+        if (isMuted)
+        {
+            AudioListener.volume = 0f;
+            bgmVolumeSlider.interactable = false;
+        }
+        else
+        {
+            AudioListener.volume = tempBGMVolume;
+            bgmVolumeSlider.interactable = true;
+        }
+    }
+
+    private void OnUIVolumeMuteToggled(bool isMuted)
+    {
+        if (isMuted)
+        {
+            AudioListener.volume = 0f;
+            UIVolumeSlider.interactable = false;
+        }
+        else
+        {
+            AudioListener.volume = tempUIVolume;
+            UIVolumeSlider.interactable = true;
+        }
+    }
+
     // Key =================================
 
     private void StartRebinding(int actionIndex)
@@ -679,13 +766,77 @@ public class GameSettings : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    private void InitializeAudioSettings()
+    {
+        isMasterMuted = PlayerPrefs.GetInt("MasterMuted", 0) == 1;
+        isSFXMuted = PlayerPrefs.GetInt("SFXMuted", 0) == 1;
+        isAmbientMuted = PlayerPrefs.GetInt("AmbientMuted", 0) == 1;
+        isBGMMuted = PlayerPrefs.GetInt("BGMMuted", 0) == 1;
+        isUIMuted = PlayerPrefs.GetInt("UIMuted", 0) == 1;
+
+        masterMuteFill.enabled = isMasterMuted;
+        sfxMuteFill.enabled = isSFXMuted;
+        ambientMuteFill.enabled = isAmbientMuted;
+        bgmMuteFill.enabled = isBGMMuted;
+        uiMuteFill.enabled = isUIMuted;
+
+        masterMuteButton.onClick.AddListener(() =>
+        {
+            isMasterMuted = !isMasterMuted;
+            masterMuteFill.enabled = isMasterMuted;
+            OnMasterMuteToggled(isMasterMuted);
+            PlayerPrefs.SetInt("MasterMuted", isMasterMuted ? 1 : 0);
+        });
+
+        sfxMuteButton.onClick.AddListener(() =>
+        {
+            isSFXMuted = !isSFXMuted;
+            sfxMuteFill.enabled = isSFXMuted;
+            OnSFXVolumeMuteToggled(isSFXMuted);
+            PlayerPrefs.SetInt("SFXMuted", isSFXMuted ? 1 : 0);
+        });
+
+        ambientMuteButton.onClick.AddListener(() =>
+        {
+            isAmbientMuted = !isAmbientMuted;
+            ambientMuteFill.enabled = isAmbientMuted;
+            OnAmbientVolumeMuteToggled(isAmbientMuted);
+            PlayerPrefs.SetInt("AmbientMuted", isAmbientMuted ? 1 : 0);
+        });
+
+        bgmMuteButton.onClick.AddListener(() =>
+        {
+            isBGMMuted = !isBGMMuted;
+            bgmMuteFill.enabled = isBGMMuted;
+            OnBGMVolumeMuteToggled(isBGMMuted);
+            PlayerPrefs.SetInt("BGMMuted", isBGMMuted ? 1 : 0);
+        });
+
+        uiMuteButton.onClick.AddListener(() =>
+        {
+            isUIMuted = !isUIMuted;
+            uiMuteFill.enabled = isUIMuted;
+            OnUIVolumeMuteToggled(isUIMuted);
+            PlayerPrefs.SetInt("UIMuted", isUIMuted ? 1 : 0);
+        });
+    }
+
     // 접근성
 
     private void InitializeAccessibilitySettings()
     {
-        damageIndicatorToggle.isOn = PlayerPrefs.GetInt("ShowDamageIndicator", 1) == 1;
-        healthBarToggle.isOn = PlayerPrefs.GetInt("ShowHealthBar", 1) == 1;
-        cameraShakeToggle.isOn = PlayerPrefs.GetInt("EnableCameraShake", 1) == 1;
+        bool damageIndicatorEnabled = PlayerPrefs.GetInt("ShowDamageIndicator", 1) == 1;
+        bool healthBarEnabled = PlayerPrefs.GetInt("ShowHealthBar", 1) == 1;
+        bool cameraShakeEnabled = PlayerPrefs.GetInt("EnableCameraShake", 1) == 1;
+
+        damageIndicatorToggle.isOn = damageIndicatorEnabled;
+        damageIndicatorFill.enabled = damageIndicatorEnabled;
+
+        healthBarToggle.isOn = healthBarEnabled;
+        healthBarFill.enabled = healthBarEnabled;
+
+        cameraShakeToggle.isOn = cameraShakeEnabled;
+        cameraShakeFill.enabled = cameraShakeEnabled;
 
         damageIndicatorToggle.onValueChanged.AddListener(OnDamageIndicatorToggled);
         healthBarToggle.onValueChanged.AddListener(OnHealthBarToggled);
@@ -694,7 +845,7 @@ public class GameSettings : MonoBehaviour
 
     private void OnDamageIndicatorToggled(bool isOn)
     {
-        damageIndicatorFill.enabled = isOn;
+        damageIndicatorFill.gameObject.SetActive(isOn);
         if (DamageIndicator.Instance != null)
             DamageIndicator.Instance.SetEnabled(isOn);
         PlayerPrefs.SetInt("ShowDamageIndicator", isOn ? 1 : 0);
@@ -702,7 +853,7 @@ public class GameSettings : MonoBehaviour
 
     private void OnHealthBarToggled(bool isOn)
     {
-        healthBarFill.enabled = isOn;
+        healthBarFill.gameObject.SetActive(isOn);
         EnemyHealthBoss.SetHealthBarVisibility(isOn);
         EnemyHealthElite.SetHealthBarVisibility(isOn);
         PlayerPrefs.SetInt("ShowHealthBar", isOn ? 1 : 0);
@@ -710,7 +861,7 @@ public class GameSettings : MonoBehaviour
 
     private void OnCameraShakeToggled(bool isOn)
     {
-        cameraShakeFill.enabled = isOn;
+        cameraShakeFill.gameObject.SetActive(isOn);
         if (CameraManager.Instance != null)
             CameraManager.Instance.SetShakeEnabled(isOn);
         PlayerPrefs.SetInt("EnableCameraShake", isOn ? 1 : 0);

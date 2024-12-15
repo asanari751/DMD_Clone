@@ -37,6 +37,7 @@ public class Interaction : MonoBehaviour
     [Header("Interaction Prompt")]
     [SerializeField] private GameObject interactionPrompt;
     [SerializeField] private TMP_Text promptText;
+    [SerializeField] private TMP_Text fillerText;
     [SerializeField] private Vector3 promptOffset = new Vector3(1f, 0f, 0f);
     [SerializeField] private float promptDelay;
     [SerializeField] private CanvasGroup interactionPromptCanvasGroup;
@@ -328,14 +329,28 @@ public class Interaction : MonoBehaviour
     {
         if (index < characters.Length)
         {
+            Debug.Log($"Button clicked: index {index}");
+            switch (index)
+            {
+                case 0: // Bathory
+                    PlayerStats.Instance.SetSelectedAttackType(PlayerStateManager.AttackType.Arrow);
+                    Debug.Log("Setting attack type to Arrow");
+                    break;
+                case 1: // Strigoi
+                    PlayerStats.Instance.SetSelectedAttackType(PlayerStateManager.AttackType.Claw);
+                    Debug.Log("Setting attack type to Claw");
+                    break;
+                case 2: // Vlad
+                    PlayerStats.Instance.SetSelectedAttackType(PlayerStateManager.AttackType.Sword);
+                    Debug.Log("Setting attack type to Sword");
+                    break;
+            }
+
             DisableAllButtonComponents();
             AnimateButtonSelection(index);
 
             CharacterData selectedCharacter = characters[index];
-
-            int randomDialogueIndex = Random.Range(0, 3);
-            string selectedDialogue = selectedCharacter.dialogueTexts[randomDialogueIndex];
-
+            string selectedDialogue = GetWeightedRandomDialogue(index);
             DisplayCharacterData(selectedCharacter, selectedDialogue);
         }
     }
@@ -527,12 +542,14 @@ public class Interaction : MonoBehaviour
 
     private void UpdatePromptText()
     {
-        for (int i = 0; i < interactionAction.action.bindings.Count; i++)
+        var interactAction = interactionAction.action;
+        for (int i = 0; i < interactAction.bindings.Count; i++)
         {
-            if (interactionAction.action.bindings[i].path.Contains("Keyboard"))
+            if (interactAction.bindings[i].path.Contains("Keyboard"))
             {
-                string keyName = interactionAction.action.GetBindingDisplayString(i);
-                promptText.text = $"{keyName}    상호작용";
+                string keyName = interactAction.GetBindingDisplayString(i);
+                fillerText.text = keyName;
+                promptText.text = "상호작용";
                 break;
             }
         }

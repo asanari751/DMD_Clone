@@ -14,7 +14,7 @@ public class CharacterInfo : MonoBehaviour
         Vlad = 2,
     }
 
-    public struct PlayerStats
+    public struct PlayerStatData
     {
         // 1. Attack
         public float damageMultiplier;
@@ -48,12 +48,11 @@ public class CharacterInfo : MonoBehaviour
     [SerializeField] private bool InfoVisible = false;
     [SerializeField] private PauseController pauseController;
     [SerializeField] private PlayerStateManager playerStateManager;
-    [SerializeField] private PlayerStats currentStats;
+    [SerializeField] private PlayerStatData currentStats;
 
     [Header("Icon")]
     [SerializeField] private Sprite[] GodIcons;
     [SerializeField] private Image IconFiller;
-    [SerializeField] private GodType tempSelectedGod;
 
     [Header("Skill Inventory")]
     [SerializeField] private GameObject skillInventory;
@@ -115,26 +114,51 @@ public class CharacterInfo : MonoBehaviour
     {
         InfoUI.SetActive(false);
         skillInventory.SetActive(false);
-        UpdateGodIcon(tempSelectedGod);
 
         undoButton.onClick.AddListener(() => { ToggleInfo(); });
     }
 
     private void Update()
     {
-        UpdateGodIcon(tempSelectedGod);
+        UpdateGodIconBasedOnAttackType();
+    }
+
+    private void UpdateGodIconBasedOnAttackType()
+    {
+        // PlayerStats에서 선택된 공격 타입 가져오기
+        var selectedAttackType = PlayerStats.Instance.selectedAttackType;
+
+        // 공격 타입에 따라 GodType 결정
+        GodType selectedGod = GodType.Bathory; // 기본값 설정
+
+        switch (selectedAttackType)
+        {
+            case PlayerStateManager.AttackType.Claw:
+                selectedGod = GodType.Strigoi; // Claw는 Strigoi
+                break;
+            case PlayerStateManager.AttackType.Arrow:
+                selectedGod = GodType.Bathory; // Arrow는 Bathory
+                break;
+            case PlayerStateManager.AttackType.Sword:
+                selectedGod = GodType.Vlad; // Sword는 Vlad
+                break;
+        }
+
+        UpdateGodIcon(selectedGod);
     }
 
     private void OnEnable()
     {
-        toggleInfoAction.action.performed += OnToggleInfo;  // 이벤트 구독
-        playerStateManager.OnStatsUpdated += UpdateCharacterInfo;
+        toggleInfoAction.action.performed += OnToggleInfo;  // 기존 이벤트 구독
+        playerStateManager.OnStatsUpdated += UpdateCharacterInfo;  // 기존 이벤트 구독
+        PlayerStats.Instance.OnAttackTypeChanged += UpdateGodIconBasedOnAttackType;  // 새로운 이벤트 구독
     }
 
     private void OnDisable()
     {
-        toggleInfoAction.action.performed -= OnToggleInfo;  // 이벤트 해제
-        playerStateManager.OnStatsUpdated -= UpdateCharacterInfo;
+        toggleInfoAction.action.performed -= OnToggleInfo;  // 기존 이벤트 해제
+        playerStateManager.OnStatsUpdated -= UpdateCharacterInfo;  // 기존 이벤트 해제
+        PlayerStats.Instance.OnAttackTypeChanged -= UpdateGodIconBasedOnAttackType;  // 새로운 이벤트 해제
     }
 
     private void OnToggleInfo(InputAction.CallbackContext context)
@@ -164,10 +188,10 @@ public class CharacterInfo : MonoBehaviour
         }
     }
 
-    private void UpdateCharacterInfo(CharacterInfo.PlayerStats newStats)
+    private void UpdateCharacterInfo(CharacterInfo.PlayerStatData newStats)
     {
-        Debug.Log($"새로운 최대 체력: {newStats.maxHealth}");
         currentStats = newStats;
+        currentStats.defaultDamage = playerStateManager.GetCurrentDamage();
         UpdateInfoUI();
     }
 
@@ -224,7 +248,6 @@ public class CharacterInfo : MonoBehaviour
 
     public void UpdateGodIcon(GodType selectedGod)
     {
-        currentGod = selectedGod;
         if (IconFiller != null && GodIcons != null)
         {
             int iconIndex = (int)selectedGod;
@@ -233,6 +256,27 @@ public class CharacterInfo : MonoBehaviour
                 IconFiller.sprite = GodIcons[iconIndex];
             }
         }
+    }
+
+    private void UpdateGodIconBasedOnAttackType(PlayerStateManager.AttackType attackType)
+    {
+        GodType selectedGod;
+        switch (attackType)
+        {
+            case PlayerStateManager.AttackType.Claw:
+                selectedGod = GodType.Strigoi;
+                break;
+            case PlayerStateManager.AttackType.Arrow:
+                selectedGod = GodType.Bathory;
+                break;
+            case PlayerStateManager.AttackType.Sword:
+                selectedGod = GodType.Vlad;
+                break;
+            default:
+                selectedGod = GodType.Bathory;
+                break;
+        }
+        UpdateGodIcon(selectedGod);
     }
 
     // =======================================

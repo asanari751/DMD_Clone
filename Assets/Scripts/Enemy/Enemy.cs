@@ -77,13 +77,13 @@ public class BasicEnemy : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.sortingOrder = Mathf.RoundToInt(-transform.position.y * 100);
-        }
-    }
+    // private void Update()
+    // {
+    //     if (spriteRenderer != null)
+    //     {
+    //         spriteRenderer.sortingOrder = Mathf.RoundToInt(-transform.position.y * 100);
+    //     }
+    // }
 
     private void OnDestroy()
     {

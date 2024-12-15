@@ -3,14 +3,15 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using DG.Tweening;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class PlayerStateManager : MonoBehaviour
 {
     public enum AttackType
     {
-        Claw,
-        Sword,
-        Arrow
+        Arrow,  // Bathory (0)
+        Claw,   // Strigoi (1)
+        Sword   // Vlad (2)
     }
 
     [System.Serializable]
@@ -49,6 +50,11 @@ public class PlayerStateManager : MonoBehaviour
     [SerializeField] private float comboResetTime = 2f;
     [SerializeField] private Vector2 attackEffectOffset = Vector2.zero;
 
+    [Header("Attack Type Base Damage")]
+    [SerializeField] private float clawBaseDamage = 75f;
+    [SerializeField] private float swordBaseDamage = 100f;
+    [SerializeField] private float arrowBaseDamage = 45f;
+
     // 런타임 상태 변수
     private bool isAutoAttack = false;
     private Tween autoAttackTween;
@@ -59,12 +65,13 @@ public class PlayerStateManager : MonoBehaviour
     private GameObject currentAttackEffect;
 
     // 런타임
-    public event Action<CharacterInfo.PlayerStats> OnStatsUpdated;
+    public event Action<CharacterInfo.PlayerStatData> OnStatsUpdated;
 
     private void Awake()
     {
         attackAction.action.performed += _ => ToggleAutoAttack();
         mainCamera = Camera.main;
+        playerStats = PlayerStats.Instance;
 
         if (projectilePool == null)
         {
@@ -76,11 +83,27 @@ public class PlayerStateManager : MonoBehaviour
 
     private void Start()
     {
+        playerStats = PlayerStats.Instance;
         UpdateStats();
     }
 
-    private void OnEnable() => attackAction.action.Enable();
-    private void OnDisable() => attackAction.action.Disable();
+    private void OnEnable()
+    {
+        attackAction.action.Enable();
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        attackAction.action.Disable();
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        playerStats = PlayerStats.Instance;
+        UpdateStats();
+    }
 
     private void Update()
     {
@@ -96,6 +119,22 @@ public class PlayerStateManager : MonoBehaviour
 
         // UpdateSkillCooldown에서 UpdateBasicAttackCooldown으로 변경
         SkillSelector.Instance?.UpdateBasicAttackCooldown(currentCooldown, atkDelay);
+    }
+
+
+    public float GetCurrentDamage()
+    {
+        switch (currentAttackType)
+        {
+            case AttackType.Claw:
+                return clawBaseDamage;
+            case AttackType.Arrow:
+                return arrowBaseDamage;
+            case AttackType.Sword:
+                return swordBaseDamage;
+            default:
+                return arrowBaseDamage;
+        }
     }
 
     private void ToggleAutoAttack()
@@ -195,7 +234,7 @@ public class PlayerStateManager : MonoBehaviour
         trail.endColor = projectileTrailSettings.trailEndColor;
         trail.enabled = true;
 
-        projectile.Initialize(projectileSpeed, playerStats.defaultDamage, penetrateCount, projectilePool);
+        projectile.Initialize(projectileSpeed, GetCurrentDamage(), penetrateCount, projectilePool);
 
         lastRangedAttackTime = Time.time;
     }
@@ -239,7 +278,7 @@ public class PlayerStateManager : MonoBehaviour
                 if (enemyHealth != null)
                 {
                     Vector2 knockbackDirection = (collider.transform.position - transform.position).normalized;
-                    enemyHealth.TakeDamage(playerStats.defaultDamage, -knockbackDirection);
+                    enemyHealth.TakeDamage(GetCurrentDamage(), -knockbackDirection);
                 }
             }
         }
@@ -332,7 +371,7 @@ public class PlayerStateManager : MonoBehaviour
 
     public void UpdateStats()
     {
-        var stats = new CharacterInfo.PlayerStats
+        var stats = new CharacterInfo.PlayerStatData
         {
             // 1. Attack
             damageMultiplier = playerStats.damageMultiplier,

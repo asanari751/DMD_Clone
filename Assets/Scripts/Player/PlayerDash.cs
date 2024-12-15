@@ -17,10 +17,10 @@ public class PlayerDash : MonoBehaviour
     public LayerMask collisionMask;
 
     public event System.Action OnDashStateChanged;
-
+    
     private void Start()
     {
-        playerStats = GetComponent<PlayerStats>();
+        playerStats = PlayerStats.Instance;
         playerController = GetComponent<PlayerController>();
         dashGaugeCount = (int)playerStats.dashCount;
         InitializeDashGauges();

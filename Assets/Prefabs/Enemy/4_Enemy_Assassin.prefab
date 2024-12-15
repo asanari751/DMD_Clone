@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 8943113403550105905}
   - component: {fileID: 101119730260552853}
   - component: {fileID: 7525911174553023784}
+  - component: {fileID: -4045429148783324323}
   m_Layer: 6
   m_Name: 4_Enemy_Assassin
   m_TagString: Enemy
@@ -304,6 +305,18 @@ MonoBehaviour:
   deathTime: 0.5
   hitEffectPrefab: {fileID: 8728873011509484398, guid: bb5a3a5f35cc856478974f064db25f1e,
     type: 3}
+--- !u!114 &-4045429148783324323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4976483147096513540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cfffa180eb6403489d2710a087f1891, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5223107067649577173
 GameObject:
   m_ObjectHideFlags: 0

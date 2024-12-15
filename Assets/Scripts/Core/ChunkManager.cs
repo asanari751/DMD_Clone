@@ -5,6 +5,7 @@ using UnityEngine.Tilemaps;
 public class ChunkManager : MonoBehaviour
 {
     [SerializeField] private bool showChunkGizmos = true;
+    [SerializeField] private Transform chunksContainer;
     public static ChunkManager Instance;
     public Transform player;
     public int chunkSize = 16;
@@ -94,6 +95,7 @@ public class ChunkManager : MonoBehaviour
     private void CreateChunk(Vector2Int coord)
     {
         GameObject chunkObj = new GameObject($"Chunk_{coord.x}_{coord.y}");
+        chunkObj.transform.SetParent(chunksContainer);
         Vector3 worldPosition = new Vector3(
             coord.x * chunkSize * 1.0f,
             coord.y * chunkSize * 1.0f,

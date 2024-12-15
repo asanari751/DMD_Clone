@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [DefaultExecutionOrder(-100)]
 [System.Serializable]
 public class PlayerStats : MonoBehaviour
 {
     [SerializeField] private PlayerStateManager playerStateManager;
+
+    public static PlayerStats Instance { get; private set; }
 
     // 1. Attack
     public float damageMultiplier { get; private set; }
@@ -34,12 +37,47 @@ public class PlayerStats : MonoBehaviour
     public float dashRange { get; private set; }
     public float dashCount { get; private set; }
 
-    public event System.Action<CharacterInfo.PlayerStats> OnStatsUpdated;
+    public event System.Action<CharacterInfo.PlayerStatData> OnStatsUpdated;
+    public event System.Action<PlayerStateManager.AttackType> OnAttackTypeChanged;
+    public PlayerStateManager.AttackType selectedAttackType { get; private set; }
 
     // ===============================================
 
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     private void Start()
     {
+        playerStateManager = FindAnyObjectByType<PlayerStateManager>();
+        InitializeDefaultStats();
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (!gameObject.activeSelf)
+        {
+            gameObject.SetActive(true);
+        }
         playerStateManager = FindAnyObjectByType<PlayerStateManager>();
     }
 
@@ -51,7 +89,7 @@ public class PlayerStats : MonoBehaviour
             playerStateManager.UpdateStats();
         }
     }
-    
+
     public void SetCriticalDamage(float value) => criticalDamage = value;
     public void SetCriticalChance(float value)
     {
@@ -87,7 +125,7 @@ public class PlayerStats : MonoBehaviour
     public void SetDashRange(float value) => dashRange = value;
     public void SetDashCount(float value) => dashCount = value;
 
-    private void Awake()
+    private void InitializeDefaultStats()
     {
         SetDamageMultiplier(1f);
         SetCriticalDamage(3f);
@@ -110,9 +148,14 @@ public class PlayerStats : MonoBehaviour
         SetDashCount(2f);
     }
 
-    private CharacterInfo.PlayerStats GetCurrentStats()
+    public void SetSelectedAttackType(PlayerStateManager.AttackType type)
     {
-        return new CharacterInfo.PlayerStats
+        selectedAttackType = type;
+        OnAttackTypeChanged?.Invoke(type);
+    }
+    private CharacterInfo.PlayerStatData GetCurrentStats()
+    {
+        return new CharacterInfo.PlayerStatData
         {
             // Attack
             damageMultiplier = this.damageMultiplier,

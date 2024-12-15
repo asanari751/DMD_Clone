@@ -59,7 +59,7 @@ public class RandomEncounter : MonoBehaviour
     private Vector2 GenerateRandomPosition()
     {
         Vector2 cameraSize = new Vector2(mainCamera.orthographicSize * mainCamera.aspect, mainCamera.orthographicSize);
-        float spawnDistance = 1f;
+        float spawnDistance = 5f;
 
         Vector2 cameraPosition = mainCamera.transform.position;
         float randomSide = Random.value;

@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1200702539569150159}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -65,6 +65,63 @@ MonoBehaviour:
     volume: 1
   - name: S4
     clip: {fileID: 8300000, guid: a784a098ad38a054cb7accf748e2942d, type: 3}
+    volume: 1
+  - name: S5
+    clip: {fileID: 8300000, guid: ba150fa1f85b36a44b1db0e64860c99e, type: 3}
+    volume: 1
+  - name: S6
+    clip: {fileID: 8300000, guid: 43f41c66dc799eb49bf3eb5aec18b6a7, type: 3}
+    volume: 1
+  - name: S7
+    clip: {fileID: 8300000, guid: 32f53bce0b579974995c9153d9953d64, type: 3}
+    volume: 1
+  - name: S8
+    clip: {fileID: 8300000, guid: cb0f416b6474e294782a3ac7b9156528, type: 3}
+    volume: 1
+  - name: S9
+    clip: {fileID: 8300000, guid: b98bd8709c676004d90959bd2c63a0b5, type: 3}
+    volume: 1
+  - name: S10
+    clip: {fileID: 8300000, guid: 93806f8a44d4fff448c99765e546ac8b, type: 3}
+    volume: 1
+  - name: S11
+    clip: {fileID: 8300000, guid: e4daead68d3393e4c8273b008a423cfd, type: 3}
+    volume: 1
+  - name: S12
+    clip: {fileID: 8300000, guid: 5a38e32dcc5c0c34688e87a2d3697015, type: 3}
+    volume: 1
+  - name: S13
+    clip: {fileID: 8300000, guid: 3e9ee63f5e0dcc6429500f8d0af4ddd7, type: 3}
+    volume: 1
+  - name: S14
+    clip: {fileID: 8300000, guid: f27ab47c7912bf34397952c9fcff7dd0, type: 3}
+    volume: 1
+  - name: S15
+    clip: {fileID: 8300000, guid: 52d10c17635572c418cc62c9fe554172, type: 3}
+    volume: 1
+  - name: S16
+    clip: {fileID: 8300000, guid: 976bfa9f458ab8d45b960ded0c059fc7, type: 3}
+    volume: 1
+  - name: S17
+    clip: {fileID: 8300000, guid: 6aed1ce97aa5b44438ec5c5401c8b048, type: 3}
+    volume: 1
+  - name: S18
+    clip: {fileID: 8300000, guid: 348fbb47559cd334bb86d04fc6238b55, type: 3}
+    volume: 1
+  - name: S19
+    clip: {fileID: 8300000, guid: 39cfb4ec1a9f46a4289b25d1c22a21a6, type: 3}
+    volume: 1
+  - name: S20
+    clip: {fileID: 8300000, guid: 4b2b39b8ea9a7b34a88f8d655e5f6f70, type: 3}
+    volume: 1
+  - name: S4
+    clip: {fileID: 8300000, guid: 010ac56d15f2e1c4084c8c8453004e1f, type: 3}
+    volume: 1
+  - name: S4
+    clip: {fileID: 8300000, guid: c370f431368f5904f9eccef509d6d04c, type: 3}
+    volume: 1
+  - name: S4
+    clip: {fileID: 8300000, guid: a2b24f8f643e7b543afad0a66d6491ce, type: 3}
     volume: 1
   bgmSounds:
   - name: B1
@@ -110,7 +167,7 @@ MonoBehaviour:
   - name: A11
     clip: {fileID: 8300000, guid: e7b702239b4bf06468290bd76de6c04e, type: 3}
     volume: 1
-  - name: A9
+  - name: A12
     clip: {fileID: 8300000, guid: e46c78707a88b684e92840a64dca481f, type: 3}
     volume: 1
   - name: A13

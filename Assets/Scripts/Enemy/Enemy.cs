@@ -12,7 +12,8 @@ public class BasicEnemy : MonoBehaviour
     private AudioManager audioManager;
 
     [Header("Attack Settings")]
-    [SerializeField] private GameObject attackAreaPrefab;    // 공격 범위 시각화를 위한 프리팹
+    [SerializeField] private GameObject circleAttackAreaPrefab;    // 원형 공격 범위 프리팹
+    [SerializeField] private GameObject rectangleAttackAreaPrefab; // 직사각형 공격 범위 프리팹
 
     public EnemyStats.EnemyType GetEnemyType() => stats.enemyType;
     public float GetBasedSpeed() => stats.MoveSpeed;
@@ -209,11 +210,14 @@ public class BasicEnemy : MonoBehaviour
 
     private void ShowAttackArea()
     {
-        if (attackAreaPrefab != null)
+        GameObject prefabToUse = stats.enemyType == EnemyStats.EnemyType.Melee ?
+                               circleAttackAreaPrefab : rectangleAttackAreaPrefab;
+
+        if (prefabToUse != null)
         {
             if (attackAreaInstance == null)
             {
-                attackAreaInstance = Instantiate(attackAreaPrefab, transform.position, Quaternion.identity, transform);
+                attackAreaInstance = Instantiate(prefabToUse, transform.position, Quaternion.identity, transform);
                 attackAreaSpriteRenderer = attackAreaInstance.GetComponent<SpriteRenderer>();
             }
             else
@@ -225,9 +229,17 @@ public class BasicEnemy : MonoBehaviour
             attackAreaInstance.transform.rotation = Quaternion.Euler(0, 0, attackAngle);
 
             float range = stats.AttackRange;
-            attackAreaInstance.transform.localScale = new Vector3(range / 3, range / 3, 1);
+            if (stats.enemyType == EnemyStats.EnemyType.Melee)
+            {
+                attackAreaInstance.transform.localScale = new Vector3(range / 3, range / 3, 1);
+            }
+            else
+            {
+                // Arrow 타입의 스케일 조정
+                attackAreaInstance.transform.localScale = new Vector3(range / 3, range / 3.3f, 1);
+            }
 
-            attackAreaSpriteRenderer.color = startColor; // 시작 색을 startColor로 변경
+            attackAreaSpriteRenderer.color = startColor;
             attackAreaSpriteRenderer.DOColor(endcolor, stats.attackDelay)
                 .OnComplete(() =>
                 {
@@ -238,30 +250,33 @@ public class BasicEnemy : MonoBehaviour
 
     private void ExecuteAttack()
     {
+        Collider2D[] hits;
+
         if (stats.enemyType == EnemyStats.EnemyType.Melee)
         {
             audioManager.PlaySFX("S21");
+            hits = Physics2D.OverlapCircleAll(transform.position, stats.AttackRange);
         }
-        else if (stats.enemyType == EnemyStats.EnemyType.Arrow)
+        else // Arrow type
         {
             audioManager.PlaySFX("S22");
+            float width = stats.AttackRange * 0.5f;
+            float length = stats.AttackRange;
+
+            Vector2 boxCenter = (Vector2)transform.position + attackDirection * (length * 0.5f);
+            float angle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
+
+            hits = Physics2D.OverlapBoxAll(boxCenter, new Vector2(width, length), angle);
         }
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, stats.AttackRange);
         foreach (var hit in hits)
         {
             if (hit.CompareTag("Player"))
             {
-                Vector2 directionToTarget = (hit.transform.position - transform.position).normalized;
-                float angleToTarget = Vector2.Angle(attackDirection, directionToTarget);
-
-                if (angleToTarget <= stats.attackAngleRange)
+                PlayerHealthUI playerHealth = hit.GetComponent<PlayerHealthUI>();
+                if (playerHealth != null)
                 {
-                    PlayerHealthUI playerHealth = hit.GetComponent<PlayerHealthUI>();
-                    if (playerHealth != null)
-                    {
-                        playerHealth.TakeDamage(stats.attackDamage);
-                    }
+                    playerHealth.TakeDamage(stats.attackDamage);
                 }
             }
         }

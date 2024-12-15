@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1053218259864952604}
   - component: {fileID: 3767833898144420002}
   m_Layer: 0
-  m_Name: 97_Enemy_Tri_Generic
+  m_Name: 95_Enemy_Tri_Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27,8 +27,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 1, y: 0.33, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 995
-  m_Sprite: {fileID: 8429661811320669028, guid: e46fc319214acb4408492e2e38ae678d,
+  m_Sprite: {fileID: -7795140677074163782, guid: e46fc319214acb4408492e2e38ae678d,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

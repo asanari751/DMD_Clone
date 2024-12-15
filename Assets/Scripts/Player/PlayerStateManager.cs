@@ -212,6 +212,12 @@ public class PlayerStateManager : MonoBehaviour
 
     private void PerformRangedAttack(Vector2 targetPosition)
     {
+        if (firePosition == null)
+        {
+            Debug.LogWarning("FirePosition이 할당되지 않았습니다. Inspector에서 할당해주세요.");
+            return;
+        }
+
         if (Time.time - lastRangedAttackTime < atkDelay)
         {
             return;

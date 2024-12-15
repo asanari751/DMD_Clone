@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine.UI;
 using Unity.VisualScripting;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class CharacterInfo : MonoBehaviour
 {
@@ -152,6 +153,7 @@ public class CharacterInfo : MonoBehaviour
         toggleInfoAction.action.performed += OnToggleInfo;  // 기존 이벤트 구독
         playerStateManager.OnStatsUpdated += UpdateCharacterInfo;  // 기존 이벤트 구독
         PlayerStats.Instance.OnAttackTypeChanged += UpdateGodIconBasedOnAttackType;  // 새로운 이벤트 구독
+        SceneManager.sceneLoaded += OnSceneLoaded; // 씬 로드 이벤트 구독 추가
     }
 
     private void OnDisable()
@@ -159,6 +161,7 @@ public class CharacterInfo : MonoBehaviour
         toggleInfoAction.action.performed -= OnToggleInfo;  // 기존 이벤트 해제
         playerStateManager.OnStatsUpdated -= UpdateCharacterInfo;  // 기존 이벤트 해제
         PlayerStats.Instance.OnAttackTypeChanged -= UpdateGodIconBasedOnAttackType;  // 새로운 이벤트 해제
+        SceneManager.sceneLoaded -= OnSceneLoaded; // 씬 로드 이벤트 구독 해제
     }
 
     private void OnToggleInfo(InputAction.CallbackContext context)
@@ -334,5 +337,17 @@ public class CharacterInfo : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ResetCharacterInfo();
+    }
+
+    private void ResetCharacterInfo()
+    {
+        InfoVisible = false;
+        InfoUI.SetActive(false);
+        skillInventory.SetActive(false);
     }
 }

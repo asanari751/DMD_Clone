@@ -8,9 +8,11 @@ public class B6 : MonoBehaviour
     private float duration;
     private float knockbackForce;
     private SkillData.StatusEffectOnHit effectOnHit;
+    private AudioManager audioManager;
 
     public void Initialize(SkillData skillData, int skillLevel)
     {
+        audioManager = FindAnyObjectByType<AudioManager>();
         damage = skillData.damage * skillLevel;
         radius = skillData.radius;
         duration = skillData.duration;
@@ -25,6 +27,7 @@ public class B6 : MonoBehaviour
         Vector2 targetPos = FindMostCrowdedPosition(radius);
         transform.position = targetPos;
 
+        audioManager.PlaySFX("S9");
         DealExplosionDamage();
     }
 

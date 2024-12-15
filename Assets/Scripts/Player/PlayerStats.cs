@@ -79,6 +79,7 @@ public class PlayerStats : MonoBehaviour
             gameObject.SetActive(true);
         }
         playerStateManager = FindAnyObjectByType<PlayerStateManager>();
+        InitializeDefaultStats();
     }
 
     public void SetDamageMultiplier(float value)

@@ -43,6 +43,7 @@ public class UIManager : MonoBehaviour
     private PauseController pauseController;
     private SceneTransitionManager sceneTransitionManager;
     private GameSettings gameSettings;
+    private bool isLoadingScene = false;
 
     private void Start()
     {
@@ -145,9 +146,13 @@ public class UIManager : MonoBehaviour
 
         endGameButton.onClick.AddListener(() =>
         {
+            if (isLoadingScene) return; // 이미 로딩 중이면 무시
+
+            isLoadingScene = true;
             Time.timeScale = 1f;
             SceneManager.sceneLoaded += OnSceneLoaded;
             SceneTransitionManager.Instance.LoadSceneWithTransition(hubSceneName);
+            endGameButton.interactable = false; // 버튼 비활성화
             Debug.Log("씬 변경: Hub");
         });
     }
@@ -156,6 +161,7 @@ public class UIManager : MonoBehaviour
     {
         if (scene.name == "1_Hub")
         {
+            isLoadingScene = false; // 씬 로딩이 완료되면 플래그 초기화
             pauseController.ResumeForGameClear();
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }

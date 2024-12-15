@@ -11,9 +11,11 @@ public class B2 : MonoBehaviour
     private float angle;
     private int skillLevel;
     private SkillData.StatusEffectOnHit statusEffectOnHit;
+    private AudioManager audioManager;
 
     public void Initialize(SkillData skillData, int skillLevel)
     {
+        audioManager = FindAnyObjectByType<AudioManager>();
         this.damage = skillData.damage * skillLevel;
         this.duration = skillData.duration;
         this.knockbackForce = skillData.knockbackForce;
@@ -25,9 +27,11 @@ public class B2 : MonoBehaviour
 
         // 플레이어 위치에 스킬 배치
         Transform playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        transform.SetParent(playerTransform);
         transform.position = playerTransform.position;
 
         // 부채꼴 범위 내 적 감지 및 데미지 처리
+        audioManager.PlaySFX("S20");
         StartCoroutine(DetectAndDamageEnemiesRoutine());
     }
 

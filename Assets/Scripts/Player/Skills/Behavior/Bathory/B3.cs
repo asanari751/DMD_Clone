@@ -12,9 +12,11 @@ public class B3 : MonoBehaviour
     private Vector2 direction;
     private float expandSpeed = 100f; // 콜라이더 확장 속도
     private BoxCollider2D boxCollider;
+    private AudioManager audioManager;
 
     public void Initialize(SkillData skillData, int skillLevel)
     {
+        audioManager = FindAnyObjectByType<AudioManager>();
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         GameObject nearestEnemy = null;
         float nearestDistance = float.MaxValue;
@@ -54,6 +56,7 @@ public class B3 : MonoBehaviour
         boxCollider.size = new Vector2(0.5f, 0.5f);
         boxCollider.isTrigger = true;
 
+        audioManager.PlaySFX("S10");
         StartExpandingCollider();
     }
 

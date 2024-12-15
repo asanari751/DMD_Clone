@@ -8,9 +8,11 @@ public class S5 : MonoBehaviour
     private float duration;
     private float attackInterval;
     private SkillData.StatusEffectOnHit effectOnHit;
+    private AudioManager audioManager;
 
     public void Initialize(SkillData skillData, int skillLevel)
     {
+        audioManager = FindAnyObjectByType<AudioManager>();
         damage = skillData.damage * skillLevel;
         radius = skillData.radius;
         duration = skillData.duration;
@@ -24,6 +26,7 @@ public class S5 : MonoBehaviour
 
         // 플레이어 위치에 스킬 생성
         transform.position = GameObject.FindGameObjectWithTag("Player").transform.position;
+        audioManager.PlaySFX("S17");
 
         StartCoroutine(DealDamageOverTime());
     }

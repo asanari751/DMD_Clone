@@ -10,9 +10,11 @@ public class V3 : MonoBehaviour
     private List<GameObject> hitEnemies = new List<GameObject>();
     private Vector3 moveDirection;
     private bool canMove = true;
+    private AudioManager audioManager;
 
     public void Initialize(SkillData data, int level)
     {
+        audioManager = FindAnyObjectByType<AudioManager>();
         skillData = data;
         skillLevel = level;
         circleCollider = GetComponent<CircleCollider2D>();
@@ -34,6 +36,7 @@ public class V3 : MonoBehaviour
 
             // 메인 폭풍 (중앙)
             moveDirection = baseDirection;
+            audioManager.PlaySFX("V3");
             StartCoroutine(LifetimeRoutine());
             StartCoroutine(DamageRoutine());
 

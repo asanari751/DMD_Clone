@@ -11,9 +11,11 @@ public class B4 : MonoBehaviour
     private new CircleCollider2D collider;
     private bool isActive = true;
     private int skillLevel;
+    private AudioManager audioManager;
 
     public void Initialize(SkillData skillData, int skillLevel)
     {
+        audioManager = FindAnyObjectByType<AudioManager>();
         this.damage = skillData.damage * skillLevel;
         this.knockbackForce = skillData.knockbackForce;
         this.duration = skillData.duration;
@@ -30,11 +32,13 @@ public class B4 : MonoBehaviour
             collider.radius = radius;
         }
 
+        audioManager.PlaySFX("S7");
         StartCoroutine(PullEnemies());
     }
 
     private IEnumerator PullEnemies()
     {
+        audioManager.PlaySFX("S8");
         float elapsedTime = 0f;
         while (elapsedTime < duration && isActive)
         {

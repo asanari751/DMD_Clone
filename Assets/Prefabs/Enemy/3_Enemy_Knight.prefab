@@ -334,7 +334,9 @@ MonoBehaviour:
     attackDamage: 1
     RetreatSpeed: 1
     attackAngleRange: 30
-  attackAreaPrefab: {fileID: 5094983644987885009, guid: e869be970af93c540b757083e85fa8a4,
+  circleAttackAreaPrefab: {fileID: 5094983644987885009, guid: e869be970af93c540b757083e85fa8a4,
+    type: 3}
+  rectangleAttackAreaPrefab: {fileID: 5094983644987885009, guid: a2150c3319dab4749a2d95f5abde7007,
     type: 3}
   startColor: {r: 1, g: 0, b: 0, a: 0.5882353}
   endcolor: {r: 1, g: 1, b: 1, a: 1}

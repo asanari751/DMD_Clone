@@ -8,9 +8,11 @@ public class B5 : MonoBehaviour
     private float duration;
     private float attackInterval;
     private SkillData.StatusEffectOnHit effectOnHit;
+    private AudioManager audioManager;
 
     public void Initialize(SkillData skillData, int skillLevel)
     {
+        audioManager = FindAnyObjectByType<AudioManager>();
         damage = skillData.damage * skillLevel;
         radius = skillData.radius;
         duration = skillData.duration;

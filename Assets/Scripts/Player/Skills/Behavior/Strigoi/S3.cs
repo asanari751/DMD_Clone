@@ -10,9 +10,11 @@ public class S3 : MonoBehaviour
     private float radius;
     private float attackInterval;
     private LayerMask enemyLayer;
+    private AudioManager audioManager;
 
     public void Initialize(SkillData data, int level)
     {
+        audioManager = FindAnyObjectByType<AudioManager>();
         skillData = data;
         skillLevel = level;
         enemyLayer = LayerMask.GetMask("Enemy");
@@ -25,6 +27,7 @@ public class S3 : MonoBehaviour
         
         transform.position = GameObject.FindGameObjectWithTag("Player").transform.position;
         
+        audioManager.PlaySFX("S18");
         StartCoroutine(DamageOverTime());
         Destroy(gameObject, duration);
     }

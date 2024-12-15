@@ -41,7 +41,7 @@ public class GameSettings : MonoBehaviour
     [SerializeField] private GameObject soundSettingsPanel;
     [SerializeField] private GameObject keyBindingSettingsPanel;
     [SerializeField] private GameObject accessibilitySettingsPanel;
-    [SerializeField] private GameObject textSettingsPanel;
+    // [SerializeField] private GameObject textSettingsPanel;
     [SerializeField] private GameObject[] panels;
 
     [Header("Buttons")]
@@ -173,10 +173,10 @@ public class GameSettings : MonoBehaviour
         ShowSettingsPanel(accessibilitySettingsPanel);
     }
 
-    public void ShowTextSettings()
-    {
-        ShowSettingsPanel(textSettingsPanel);
-    }
+    // public void ShowTextSettings()
+    // {
+    //     ShowSettingsPanel(textSettingsPanel);
+    // }
 
     private void ShowSettingsPanel(GameObject activePanel)
     {
@@ -223,7 +223,7 @@ public class GameSettings : MonoBehaviour
         soundSettingsPanel,
         keyBindingSettingsPanel,
         accessibilitySettingsPanel,
-        textSettingsPanel
+        // textSettingsPanel
         };
 
         foreach (var panel in panels)
@@ -255,7 +255,7 @@ public class GameSettings : MonoBehaviour
         soundSettingsButton.onClick.AddListener(ShowSoundSettings);
         keyBindingSettingsButton.onClick.AddListener(ShowKeyBindingSettings);
         accessibilitySettingsButton.onClick.AddListener(ShowAccessibilitySettings);
-        textSettingsButton.onClick.AddListener(ShowTextSettings);
+        // textSettingsButton.onClick.AddListener(ShowTextSettings);
 
         if (closeSettingsButton != null)
             closeSettingsButton.onClick.AddListener(() => OnSettingsExit());
@@ -901,7 +901,7 @@ public class GameSettings : MonoBehaviour
         soundSettingsPanel.SetActive(false);
         keyBindingSettingsPanel.SetActive(false);
         accessibilitySettingsPanel.SetActive(false);
-        textSettingsPanel.SetActive(false);
+        // textSettingsPanel.SetActive(false);
         SettingsPanel.SetActive(false);
         closeSettingsButton.gameObject.SetActive(false);
     }

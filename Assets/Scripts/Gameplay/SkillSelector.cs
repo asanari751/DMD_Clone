@@ -367,6 +367,9 @@ public class SkillSelector : MonoBehaviour
 
     private void ShuffleSkills(List<Skilldata> skillsToShuffle)
     {
+        // 레벨 3 이하인 스킬만 필터링
+        skillsToShuffle.RemoveAll(skill => PlayerSkills.Instance.GetSkillLevel(skill.skillName) >= 3);
+
         System.Random rng = new System.Random();
         int n = skillsToShuffle.Count;
         while (n > 1)

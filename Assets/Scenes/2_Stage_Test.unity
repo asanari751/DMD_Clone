@@ -4992,7 +4992,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &378472069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5311,17 +5311,17 @@ MonoBehaviour:
     - Key: 4
       Value: 4
     - Key: 5
-      Value: 25
+      Value: 5
     - Key: 6
-      Value: 30
+      Value: 6
     - Key: 7
-      Value: 35
+      Value: 7
     - Key: 8
-      Value: 40
+      Value: 8
     - Key: 9
-      Value: 45
+      Value: 9
     - Key: 10
-      Value: 50
+      Value: 10
     - Key: 11
       Value: 55
     - Key: 12
@@ -17295,61 +17295,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
-        type: 3}
-      propertyPath: sfxSounds.Array.size
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
-        type: 3}
-      propertyPath: sfxSounds.Array.data[4].clip
-      value: 
-      objectReference: {fileID: 8300000, guid: 010ac56d15f2e1c4084c8c8453004e1f, type: 3}
-    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
-        type: 3}
-      propertyPath: sfxSounds.Array.data[4].name
-      value: S21
-      objectReference: {fileID: 0}
-    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
-        type: 3}
-      propertyPath: sfxSounds.Array.data[5].clip
-      value: 
-      objectReference: {fileID: 8300000, guid: c370f431368f5904f9eccef509d6d04c, type: 3}
-    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
-        type: 3}
-      propertyPath: sfxSounds.Array.data[5].name
-      value: S22
-      objectReference: {fileID: 0}
-    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
-        type: 3}
-      propertyPath: sfxSounds.Array.data[6].clip
-      value: 
-      objectReference: {fileID: 8300000, guid: a2b24f8f643e7b543afad0a66d6491ce, type: 3}
-    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
-        type: 3}
-      propertyPath: sfxSounds.Array.data[6].name
-      value: S23
-      objectReference: {fileID: 0}
-    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
-        type: 3}
-      propertyPath: sfxSounds.Array.data[4].volume
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
-        type: 3}
-      propertyPath: sfxSounds.Array.data[5].volume
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
-        type: 3}
-      propertyPath: sfxSounds.Array.data[6].volume
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
-        type: 3}
-      propertyPath: ambientSounds.Array.data[11].name
-      value: A12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -39592,16 +39537,16 @@ MonoBehaviour:
   gameTimerController: {fileID: 647825382}
   uiManager: {fileID: 1743977334}
   enemySpawnDataList:
-  - enemyPrefab: {fileID: 4976483147096513540, guid: 59825fa9970cb5244a15edb5125abe5b,
+  - enemyPrefab: {fileID: 4976483147096513540, guid: ee46c4dc20a4aff4cbef07a494a8bd05,
       type: 3}
     spawnProbability: 25
     spawnTime0: 0
     spawnTime1: 600
     enemyPool: []
-  - enemyPrefab: {fileID: 4976483147096513540, guid: e7f176f0170d27f4eac4d8cc569023d6,
+  - enemyPrefab: {fileID: 4976483147096513540, guid: abaa9613eb843e24d82c80e3f280ba54,
       type: 3}
     spawnProbability: 25
-    spawnTime0: 60
+    spawnTime0: 0
     spawnTime1: 600
     enemyPool: []
   - enemyPrefab: {fileID: 4976483147096513540, guid: 08595b27f6b0904419dee2a41153195d,
@@ -39617,7 +39562,7 @@ MonoBehaviour:
     spawnTime1: 600
     enemyPool: []
   spawnInterval: 0.01
-  maxEnemies: 50
+  maxEnemies: 100
   parent: {fileID: 914842388}
   eliteEnemy: {fileID: 6135728234777956250}
   bossEnemy: {fileID: 3011803388326096627}
@@ -41596,8 +41541,8 @@ MonoBehaviour:
     attackDamage: 1
     RetreatSpeed: 2
     attackAngleRange: 30
-  attackAreaPrefab: {fileID: 5094983644987885009, guid: e869be970af93c540b757083e85fa8a4,
-    type: 3}
+  circleAttackAreaPrefab: {fileID: 0}
+  rectangleAttackAreaPrefab: {fileID: 0}
   startColor: {r: 1, g: 0, b: 0, a: 0.5882353}
   endcolor: {r: 1, g: 1, b: 1, a: 1}
   chargeReadyDuration: 1.5
@@ -41636,8 +41581,8 @@ MonoBehaviour:
     attackDamage: 1
     RetreatSpeed: 3
     attackAngleRange: 30
-  attackAreaPrefab: {fileID: 5094983644987885009, guid: e869be970af93c540b757083e85fa8a4,
-    type: 3}
+  circleAttackAreaPrefab: {fileID: 0}
+  rectangleAttackAreaPrefab: {fileID: 0}
   startColor: {r: 1, g: 0, b: 0, a: 0.5882353}
   endcolor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &2567118109556788340

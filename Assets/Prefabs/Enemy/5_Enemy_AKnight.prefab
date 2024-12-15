@@ -328,13 +328,15 @@ MonoBehaviour:
     enemyType: 1
     MoveSpeed: 2
     MaxHealth: 3
-    AttackRange: 3
+    AttackRange: 8
     attackDelay: 1
     attackCooldown: 1
     attackDamage: 1
     RetreatSpeed: 1
-    attackAngleRange: 30
-  attackAreaPrefab: {fileID: 5094983644987885009, guid: e869be970af93c540b757083e85fa8a4,
+    attackAngleRange: 60
+  circleAttackAreaPrefab: {fileID: 5094983644987885009, guid: e869be970af93c540b757083e85fa8a4,
+    type: 3}
+  rectangleAttackAreaPrefab: {fileID: 5094983644987885009, guid: a2150c3319dab4749a2d95f5abde7007,
     type: 3}
   startColor: {r: 1, g: 0, b: 0, a: 0.5882353}
   endcolor: {r: 1, g: 1, b: 1, a: 1}
@@ -369,10 +371,10 @@ MonoBehaviour:
   animator: {fileID: 4674724632027795859}
   spriteRenderer: {fileID: 662584177183261202}
   moveThreshold: 1
-  idleStateName: Elf Idle
-  walkSideStateName: Elf Walk
-  attackStateName: Elf Attack
-  hitStateName: Elf Hit
+  idleStateName: AKnight Idle
+  walkSideStateName: AKnight Walk
+  attackStateName: AKnight Attack
+  hitStateName: AKnight Hit
   hitAnimationDuration: 0.5
 --- !u!114 &6294113158063939857
 MonoBehaviour:

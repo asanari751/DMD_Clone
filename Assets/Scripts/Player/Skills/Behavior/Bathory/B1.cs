@@ -11,11 +11,13 @@ public class B1 : MonoBehaviour
     private float attackInterval;
     private SkillData.StatusEffectOnHit statusEffectOnHit;
     private int skillLevel;
+    private AudioManager audioManager;
 
     private List<EnemyHealthController> affectedEnemies = new List<EnemyHealthController>();
 
     public void Initialize(SkillData skillData, int skillLevel)
     {
+        audioManager = FindAnyObjectByType<AudioManager>();
         this.damage = skillData.damage * skillLevel;
         this.knockbackForce = skillData.knockbackForce;
         this.radius = skillData.radius;
@@ -34,6 +36,7 @@ public class B1 : MonoBehaviour
         collider.isTrigger = true;
 
         // 스킬 작동 시작
+        audioManager.PlaySFX("S5");
         StartCoroutine(ApplyDamageOverTime());
     }
 

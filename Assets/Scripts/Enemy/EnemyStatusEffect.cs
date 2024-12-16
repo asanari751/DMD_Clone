@@ -272,6 +272,21 @@ public class EnemyStatusEffect : MonoBehaviour
         isFeared = false;
     }
 
+    public void ClearAllStatusEffects()
+    {
+        foreach (var effect in activeStatusEffects)
+        {
+            StopCoroutine(effect.Value);
+        }
+        activeStatusEffects.Clear();
+        isFeared = false;
+
+        if (statusEffectAnimator != null)
+        {
+            statusEffectAnimator.Play("None", 0, 0f);
+        }
+    }
+
     private string GetAnimationState(StatusEffectType type)
     {
         return type switch

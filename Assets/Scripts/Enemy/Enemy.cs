@@ -231,12 +231,12 @@ public class BasicEnemy : MonoBehaviour
             float range = stats.AttackRange;
             if (stats.enemyType == EnemyStats.EnemyType.Melee)
             {
-                attackAreaInstance.transform.localScale = new Vector3(range / 3, range / 3, 1);
+                attackAreaInstance.transform.localScale = new Vector3(range / 3f, range / 3f, 1);
             }
             else
             {
                 // Arrow 타입의 스케일 조정
-                attackAreaInstance.transform.localScale = new Vector3(range / 3, range / 3.3f, 1);
+                attackAreaInstance.transform.localScale = new Vector3(range / 3, range / 3f, 1);
             }
 
             attackAreaSpriteRenderer.color = startColor;
@@ -255,16 +255,32 @@ public class BasicEnemy : MonoBehaviour
         if (stats.enemyType == EnemyStats.EnemyType.Melee)
         {
             audioManager.PlaySFX("S21");
+            List<Collider2D> validHits = new List<Collider2D>();
             hits = Physics2D.OverlapCircleAll(transform.position, stats.AttackRange);
+
+            foreach (var collider in hits)
+            {
+                if (collider.CompareTag("Player"))
+                {
+                    Vector2 directionToPlayer = (collider.transform.position - transform.position).normalized;
+                    float angle = Vector2.Angle(attackDirection, directionToPlayer);
+
+                    if (angle <= stats.attackAngleRange / 2)
+                    {
+                        validHits.Add(collider);
+                    }
+                }
+            }
+            hits = validHits.ToArray();
         }
         else // Arrow type
         {
             audioManager.PlaySFX("S22");
-            float width = stats.AttackRange * 0.5f;
+            float width = stats.AttackRange * 0.1f;
             float length = stats.AttackRange;
 
             Vector2 boxCenter = (Vector2)transform.position + attackDirection * (length * 0.5f);
-            float angle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg;
+            float angle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg + 90f;
 
             hits = Physics2D.OverlapBoxAll(boxCenter, new Vector2(width, length), angle);
         }
@@ -350,20 +366,47 @@ public class BasicEnemy : MonoBehaviour
     {
         if (stats != null)
         {
-            // 공격 범위 시각화 (흰색 와이어프레임)
-            Gizmos.color = new Color(1, 1, 1, 0.3f);
-            Gizmos.DrawWireSphere(transform.position, stats.AttackRange);
-
-            // 공격 범위 채우기 (반투명 흰색)
-            Gizmos.color = new Color(1, 1, 1, 0.1f);
-            Gizmos.DrawSphere(transform.position, stats.AttackRange);
-
-            // 공격 방향 시각화 (빨간색 선)
-            if (IsAttacking && playerTransform != null)
+            if (stats.enemyType == EnemyStats.EnemyType.Arrow && IsAttacking && playerTransform != null)
             {
-                Gizmos.color = Color.red;
-                Vector3 direction = (playerTransform.position - transform.position).normalized;
-                Gizmos.DrawLine(transform.position, transform.position + direction * stats.AttackRange);
+                float width = stats.AttackRange * 0.1f;
+                float length = stats.AttackRange;
+                Vector2 boxCenter = (Vector2)transform.position + attackDirection * (length * 0.5f);
+                float angle = Mathf.Atan2(attackDirection.y, attackDirection.x) * Mathf.Rad2Deg + 90f;  // 90도 추가
+
+                Gizmos.color = new Color(1, 0, 0, 0.3f);
+                Matrix4x4 rotationMatrix = Matrix4x4.TRS(
+                    boxCenter,
+                    Quaternion.Euler(0, 0, angle),
+                    new Vector3(width, length, 1)
+                );
+                Gizmos.matrix = rotationMatrix;
+                Gizmos.DrawCube(Vector3.zero, Vector3.one);
+            }
+
+            else if (stats.enemyType == EnemyStats.EnemyType.Melee && playerTransform != null)
+            {
+                Vector2 direction = playerTransform.position - transform.position;
+                float currentAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+                Vector3 forward = Quaternion.Euler(0, 0, currentAngle) * Vector3.right;
+                float totalAngle = stats.attackAngleRange;
+                float startAngle = -totalAngle / 2;
+                float angleStep = 5f;
+
+                Gizmos.color = new Color(1, 1, 1, 0.3f);
+                Vector3 previousPoint = transform.position;
+
+                for (float angle = startAngle; angle <= totalAngle / 2; angle += angleStep)
+                {
+                    Vector3 rotatedDirection = Quaternion.Euler(0, 0, angle) * forward;
+                    Vector3 currentPoint = transform.position + rotatedDirection * stats.AttackRange;
+
+                    Gizmos.DrawLine(transform.position, currentPoint);
+                    if (angle != startAngle)
+                        Gizmos.DrawLine(previousPoint, currentPoint);
+
+                    previousPoint = currentPoint;
+                }
             }
         }
     }

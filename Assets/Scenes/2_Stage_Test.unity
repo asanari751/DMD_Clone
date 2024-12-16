@@ -39540,7 +39540,7 @@ MonoBehaviour:
   enemySpawnDataList:
   - enemyPrefab: {fileID: 4976483147096513540, guid: ee46c4dc20a4aff4cbef07a494a8bd05,
       type: 3}
-    spawnProbability: 0
+    spawnProbability: 25
     spawnTime0: 0
     spawnTime1: 600
     enemyPool: []
@@ -39563,7 +39563,7 @@ MonoBehaviour:
     spawnTime1: 600
     enemyPool: []
   spawnInterval: 0.01
-  maxEnemies: 100
+  maxEnemies: 0
   parent: {fileID: 914842388}
   eliteEnemy: {fileID: 6135728234777956250}
   bossEnemy: {fileID: 3011803388326096627}
@@ -40829,12 +40829,12 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -44025399
-  m_SortingLayer: 5
+  m_SortingLayerID: -1869315837
+  m_SortingLayer: 3
   m_SortingOrder: 50
-  m_Sprite: {fileID: 7812820661483254461, guid: 215687feeab0b7445b4a1cd86c82c2e1,
+  m_Sprite: {fileID: -1423650638414297335, guid: 1cb6ebfc95c8b234cbda4881a950b6aa,
     type: 3}
-  m_Color: {r: 0.6680556, g: 1, b: 0.5896226, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -41580,15 +41580,17 @@ MonoBehaviour:
   stats:
     enemyType: 0
     MoveSpeed: 5
-    MaxHealth: 10
-    AttackRange: 1
+    MaxHealth: 300
+    AttackRange: 5
     attackDelay: 1
     attackCooldown: 1
     attackDamage: 1
     RetreatSpeed: 3
-    attackAngleRange: 30
-  circleAttackAreaPrefab: {fileID: 0}
-  rectangleAttackAreaPrefab: {fileID: 0}
+    attackAngleRange: 120
+  circleAttackAreaPrefab: {fileID: 5094983644987885009, guid: 23c4246fb8acba645b5c10bf0742f8b7,
+    type: 3}
+  rectangleAttackAreaPrefab: {fileID: 5094983644987885009, guid: a2150c3319dab4749a2d95f5abde7007,
+    type: 3}
   startColor: {r: 1, g: 0, b: 0, a: 0.5882353}
   endcolor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &2567118109556788340
@@ -41675,19 +41677,18 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 49
-  m_Sprite: {fileID: 4093480436322176185, guid: 4b18ad44f3f1a8a4e97c86b53774dace,
-    type: 3}
+  m_SortingLayerID: -1107081779
+  m_SortingLayer: 1
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: 36a283609e753d8418f91932e2d7bfd1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.875, y: 0.375}
+  m_Size: {x: 7.5, y: 6.25}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!224 &2966674188553246072
@@ -41730,6 +41731,7 @@ GameObject:
   - component: {fileID: 7344789330219823334}
   - component: {fileID: 2327410662848346831}
   - component: {fileID: 6435195111542685423}
+  - component: {fileID: 7344789330219823338}
   m_Layer: 6
   m_Name: Enemy Prototype Boss
   m_TagString: Boss
@@ -41822,7 +41824,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -18.7, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8640566874361398932}
@@ -42645,6 +42647,9 @@ GameObject:
   - component: {fileID: 7646493029839192376}
   - component: {fileID: 4363411972407563631}
   - component: {fileID: 7646493029839192375}
+  - component: {fileID: 7646493029839192379}
+  - component: {fileID: 7646493029839192378}
+  - component: {fileID: 7646493029839192377}
   m_Layer: 6
   m_Name: Enemy Prototype Elite
   m_TagString: Elite
@@ -43105,6 +43110,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7344789330219823338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3011803388326096627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cfffa180eb6403489d2710a087f1891, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &7358053288140771453
 RectTransform:
   m_ObjectHideFlags: 0
@@ -43325,7 +43342,7 @@ MonoBehaviour:
   weaknessDebuff: 1.3
   poisonDebuff: 3
   bleedDebuff: 0.1
-  statusEffectVisual: {fileID: 0}
+  statusEffectVisual: {fileID: 1997973551}
   poisonStateName: Poison_Effect
   bleedStateName: Bleed_Effect
   stunStateName: Stun_Effect
@@ -43347,6 +43364,61 @@ MonoBehaviour:
   deathTime: 2
   hitEffectPrefab: {fileID: 8728873011509484398, guid: bb5a3a5f35cc856478974f064db25f1e,
     type: 3}
+--- !u!114 &7646493029839192377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6135728234777956250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c203f6661cacc1c45a6b323a29cf4867, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTransform: {fileID: 1766201571}
+  animator: {fileID: 7646493029839192378}
+  spriteRenderer: {fileID: 1803552631393358220}
+  moveThreshold: 1
+  idleStateName: Knight Idle
+  walkSideStateName: Knight Walk
+  attackStateName: Knight Attack
+  hitStateName: Knight Hit
+  hitAnimationDuration: 0.5
+--- !u!95 &7646493029839192378
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6135728234777956250}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 25d1af6ca06dee445a51f187246b1227, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7646493029839192379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6135728234777956250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cfffa180eb6403489d2710a087f1891, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8001883372842411974
 GameObject:
   m_ObjectHideFlags: 0
@@ -43403,8 +43475,8 @@ Transform:
   m_GameObject: {fileID: 6361982533125817163}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: -0.2559, z: 0}
-  m_LocalScale: {x: 0.61409646, y: 0.9312, z: 1}
+  m_LocalPosition: {x: 0, y: -0.025, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3355487361817194400}
@@ -43581,23 +43653,39 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 44363367910825813, guid: 92b6c5ef7904dda42bf485f7d25ee78e,
         type: 3}
+      propertyPath: m_Radius
+      value: 0.21274598
+      objectReference: {fileID: 0}
+    - target: {fileID: 44363367910825813, guid: 92b6c5ef7904dda42bf485f7d25ee78e,
+        type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 44363367910825813, guid: 92b6c5ef7904dda42bf485f7d25ee78e,
+        type: 3}
+      propertyPath: m_Offset.x
+      value: -0.0058750315
+      objectReference: {fileID: 0}
+    - target: {fileID: 44363367910825813, guid: 92b6c5ef7904dda42bf485f7d25ee78e,
+        type: 3}
+      propertyPath: m_Offset.y
+      value: 0.17424726
       objectReference: {fileID: 0}
     - target: {fileID: 1073935636222999149, guid: 92b6c5ef7904dda42bf485f7d25ee78e,
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1283234797, guid: 59f638111bd6c534ea9649543122cf62,
+        type: 3}
     - target: {fileID: 1073935636222999149, guid: 92b6c5ef7904dda42bf485f7d25ee78e,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1073935636222999149, guid: 92b6c5ef7904dda42bf485f7d25ee78e,
         type: 3}
       propertyPath: m_WasSpriteAssigned
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1127252578132899203, guid: 92b6c5ef7904dda42bf485f7d25ee78e,
         type: 3}

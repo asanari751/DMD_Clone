@@ -202,7 +202,7 @@ SpriteRenderer:
   m_Sprite: {fileID: -1423650638414297335, guid: f250cd0d0b1d51f4ebe1f73ba1720fd4,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 1}
@@ -327,13 +327,13 @@ MonoBehaviour:
   stats:
     enemyType: 0
     MoveSpeed: 3
-    MaxHealth: 10
+    MaxHealth: 150
     AttackRange: 5
-    attackDelay: 0.5
-    attackCooldown: 1
-    attackDamage: 1
+    attackDelay: 1.5
+    attackCooldown: 2
+    attackDamage: 3
     RetreatSpeed: 1
-    attackAngleRange: 30
+    attackAngleRange: 60
   circleAttackAreaPrefab: {fileID: 5094983644987885009, guid: e869be970af93c540b757083e85fa8a4,
     type: 3}
   rectangleAttackAreaPrefab: {fileID: 5094983644987885009, guid: a2150c3319dab4749a2d95f5abde7007,
@@ -368,6 +368,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c203f6661cacc1c45a6b323a29cf4867, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerTransform: {fileID: 0}
   animator: {fileID: 4674724632027795859}
   spriteRenderer: {fileID: 662584177183261202}
   moveThreshold: 1

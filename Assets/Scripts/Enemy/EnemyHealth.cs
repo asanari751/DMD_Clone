@@ -88,6 +88,15 @@ public class EnemyHealthController : MonoBehaviour, IDamageable
         if (!IsDead())
         {
             isDead = true;
+
+            EnemyStatusEffect statusEffect = GetComponent<EnemyStatusEffect>();
+            if (statusEffect != null)
+            {
+                foreach (EnemyStatusEffect.StatusEffectType type in System.Enum.GetValues(typeof(EnemyStatusEffect.StatusEffectType)))
+                {
+                    statusEffect.RemoveStatusEffect(type);
+                }
+            }
         }
 
         basicEnemy.SpawnExpOrbs();

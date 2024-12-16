@@ -81,7 +81,7 @@ public class PlayerSkills : MonoBehaviour
 
         while (true)
         {
-            if (skill.isReady && !playerHealth.IsDead())
+            if (skill.isReady) // !playerHealth.IsDead()
             {
                 UseSkill(skill);
                 skill.isReady = false;
@@ -139,6 +139,10 @@ public class PlayerSkills : MonoBehaviour
                 UseB8(skill);
                 break;
             // ===================== 블라드
+            case "꼬챙이형": // V2
+                UseV2(skill);
+                break;
+
             case "박쥐 폭풍": // V3
                 UseV3(skill);
                 break;
@@ -284,6 +288,13 @@ public class PlayerSkills : MonoBehaviour
     }
 
     // ===================== 블라드
+
+    private void UseV2(Skill skill)
+    {
+        GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+        V2 v2 = skillEffect.AddComponent<V2>();
+        v2.Initialize(skill.skillData, skill.skillLevel);
+    }
 
     private void UseV3(Skill skill)
     {

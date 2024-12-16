@@ -23,6 +23,16 @@ public class B4 : MonoBehaviour
         this.radius = skillData.radius;
         this.skillLevel = skillLevel;
 
+        // 플레이어 주변 랜덤 위치 계산
+        Transform playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        float randomAngle = Random.Range(0f, 360f);
+        float randomDistance = Random.Range(0f, 10f);
+        Vector2 randomOffset = new Vector2(
+            Mathf.Cos(randomAngle * Mathf.Deg2Rad) * randomDistance,
+            Mathf.Sin(randomAngle * Mathf.Deg2Rad) * randomDistance
+        );
+        transform.position = (Vector2)playerTransform.position + randomOffset;
+
         // 콜라이더 설정
         collider = GetComponent<CircleCollider2D>();
         if (collider == null)

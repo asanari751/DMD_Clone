@@ -47,6 +47,7 @@ public class BasicEnemy : MonoBehaviour
     private EnemyStatusEffect statusEffect;
     private bool canMove = true;
     private float currentMoveSpeed;
+    private float expOrbDropRate = 0.75f; // 0.0 ~ 1.0 사이의 값, 기본값 100%
 
     protected virtual void Awake()
     {
@@ -102,7 +103,10 @@ public class BasicEnemy : MonoBehaviour
 
     public void SpawnExpOrbs()
     {
-        if (expOrbPool == null) return; // 호출 실패 시 처리
+        if (expOrbPool == null) return;
+
+        // 드랍 확률 체크
+        if (Random.value > expOrbDropRate) return;
 
         for (int i = 0; i < expOrbCount; i++)
         {

@@ -282,9 +282,9 @@ MonoBehaviour:
   debugStatusEffect: 1
   debugDuration: 3
   applyDebugEffect: 0
-  slowDebuff: 0.75
+  slowDebuff: 1
   weaknessDebuff: 1.3
-  poisonDebuff: 3
+  poisonDebuff: 10
   bleedDebuff: 0.1
   statusEffectVisual: {fileID: 6421531990816341770}
   poisonStateName: Poison

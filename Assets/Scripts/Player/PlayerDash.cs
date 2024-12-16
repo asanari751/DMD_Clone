@@ -1,12 +1,14 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class PlayerDash : MonoBehaviour
 {
     [SerializeField] private PlayerStats playerStats;
     [SerializeField] private AudioManager audioManager;
     [SerializeField] private PlayerHealthUI playerHealth;
+    [SerializeField] private string hubScene = "1_Hub";
     private float dashDistance;
     private float dashDuration = 0.2f;
     private int dashGaugeCount;
@@ -18,7 +20,7 @@ public class PlayerDash : MonoBehaviour
     public LayerMask collisionMask;
 
     public event System.Action OnDashStateChanged;
-    
+
     private void Start()
     {
         playerStats = PlayerStats.Instance;
@@ -34,6 +36,8 @@ public class PlayerDash : MonoBehaviour
 
     public void OnDash(InputValue value)
     {
+        if (SceneManager.GetActiveScene().name == hubScene) return;
+
         if (value.isPressed && !isDashing && CanDash() && !playerHealth.IsDead())
         {
             PerformDash();

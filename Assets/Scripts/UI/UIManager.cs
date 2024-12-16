@@ -153,6 +153,7 @@ public class UIManager : MonoBehaviour
             SceneManager.sceneLoaded += OnSceneLoaded;
             SceneTransitionManager.Instance.LoadSceneWithTransition(hubSceneName);
             endGameButton.interactable = false; // 버튼 비활성화
+            DamageIndicator.Instance.DestroySingleton();
             Debug.Log("씬 변경: Hub");
         });
     }

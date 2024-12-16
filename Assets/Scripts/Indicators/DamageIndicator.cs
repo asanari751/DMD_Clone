@@ -154,4 +154,21 @@ public class DamageIndicator : MonoBehaviour
         textMesh.color = Color.green;
         StartCoroutine(AnimateText(healText));
     }
+
+    public void DestroySingleton()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+
+            if (transform.parent != null)
+            {
+                Destroy(transform.parent.gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+    }
 }

@@ -18,15 +18,16 @@ MonoBehaviour:
   skillDescription: "\uC790\uC2E0\uC744 \uB458\uB7EC\uC2FC \uAC00\uC2DC\uB97C \uC18C\uD658\uD558\uC5EC
     \uC77C\uC815 \uC2DC\uAC04 \uB3D9\uC548 \uC801\uB4E4\uC5D0\uAC8C \uD53C\uD574\uB97C
     \uC8FC\uACE0, \uC801\uC5D0\uAC8C \uB454\uD654\uB97C \uBD80\uC5EC\uD569\uB2C8\uB2E4.\r"
+  godOwner: 0
   skillRangeType: 1
   skillPrefab: {fileID: 131342133516954262, guid: ae9eea5991cc0714ab2344b261fc099a,
     type: 3}
-  damage: 1
+  damage: 50
   duration: 3
   cooldown: 8
   isPassive: 0
   attackInterval: 0.5
-  statusEffectOnHit: 0
+  statusEffectOnHit: 3
   radius: 4.5
   range: 3
   angle: 360

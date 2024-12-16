@@ -19,15 +19,16 @@ MonoBehaviour:
     \uB79C\uB364\uD55C \uC704\uCE58\uC5D0 \uC544\uC774\uC5B8 \uBA54\uC774\uB4E0\uC774
     \uB5A8\uC5B4\uC9C0\uACE0 \uC8FC\uBCC0\uC758 \uC801\uC744 \uB04C\uC5B4\uB2F9\uACA8
     \uC801\uB4E4\uC5D0\uAC8C \uD53C\uD574\uB97C \uC8FC\uACE0 \uCD9C\uD608\uC744 \uBD80\uC5EC\uD569\uB2C8\uB2E4.\r"
+  godOwner: 0
   skillRangeType: 1
   skillPrefab: {fileID: 7940702198678251978, guid: c6703797b5fd13c4ea4a88c48574ab56,
     type: 3}
-  damage: 1
-  duration: 5
-  cooldown: 5
+  damage: 30
+  duration: 4
+  cooldown: 20
   isPassive: 0
   attackInterval: 0.5
-  statusEffectOnHit: 0
+  statusEffectOnHit: 2
   radius: 5
   range: 0
   angle: 0

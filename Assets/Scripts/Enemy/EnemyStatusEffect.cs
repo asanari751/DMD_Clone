@@ -27,7 +27,7 @@ public class EnemyStatusEffect : MonoBehaviour
     [Header("Status Effect Values")]
     [SerializeField] private float slowDebuff = 0.75f;
     [SerializeField] private float weaknessDebuff = 1.3f;
-    [SerializeField] public float poisonDebuff = 3f;
+    [SerializeField] public float poisonDebuff = 10f;
     [SerializeField] private float bleedDebuff = 0.1f;
 
     [Header("Animation States")]
@@ -56,6 +56,7 @@ public class EnemyStatusEffect : MonoBehaviour
     private EnemyHealthController enemyHealthController;
     private bool isFeared = false;
     private Animator statusEffectAnimator;
+    private Sequence fearSequence;
 
     private void Awake()
     {
@@ -130,7 +131,7 @@ public class EnemyStatusEffect : MonoBehaviour
         isFeared = true;
         basicEnemy.StopAttack();
 
-        Sequence fearSequence = DOTween.Sequence();
+        fearSequence = DOTween.Sequence();
         fearSequence.Append(spriteRenderer.DOColor(Color.grey, 0.2f))
                     .Append(spriteRenderer.DOColor(Color.white, 0.2f))
                     .SetLoops(-1);
@@ -284,12 +285,20 @@ public class EnemyStatusEffect : MonoBehaviour
 
     public void ClearAllStatusEffects()
     {
+        if (fearSequence != null)
+        {
+            fearSequence.Kill();
+            fearSequence = null;
+        }
+
         foreach (var effect in activeStatusEffects)
         {
             StopCoroutine(effect.Value);
         }
+
         activeStatusEffects.Clear();
         isFeared = false;
+        spriteRenderer.color = Color.white;
 
         // 모든 상태이상 효과 초기화
         if (basicEnemy != null)

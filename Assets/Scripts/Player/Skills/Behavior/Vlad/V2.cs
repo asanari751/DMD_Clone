@@ -12,6 +12,7 @@ public class V2 : MonoBehaviour
     private float stunDuration = 1f;
     private float detectionRadius;
     private int maxTargets;
+    private AudioManager audioManager;
 
     private readonly float[] damageValues = { 120f, 150f, 210f };
     private readonly float[] durationValues = { 10f, 9f, 8f };
@@ -28,6 +29,7 @@ public class V2 : MonoBehaviour
         duration = durationValues[index];
         detectionRadius = radiusValues[index];
         maxTargets = targetValues[index];
+        audioManager = FindAnyObjectByType<AudioManager>();
 
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null)
@@ -42,6 +44,7 @@ public class V2 : MonoBehaviour
             animator.Play(skillData.skillName);
         }
 
+        audioManager.PlaySFX("S12");
         SpawnMultipleSkillEffects();
         StartCoroutine(DestroyAfterDuration());
     }

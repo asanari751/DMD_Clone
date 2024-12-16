@@ -18,6 +18,7 @@ MonoBehaviour:
   skillLevel: 0
   skillDescription: "\uC801\uC744 \uCC98\uCE58\uD560 \uB54C\uB9C8\uB2E4 \uD655\uB960\uC801\uC73C\uB85C
     \uCD5C\uB300 \uCCB4\uB825\uC774 \uC99D\uAC00\uD569\uB2C8\uB2E4.\r"
+  godOwner: 0
   skillRangeType: 4
   skillPrefab: {fileID: 2706603564707984373, guid: 91de03c2595291b478908c128613a3aa,
     type: 3}
@@ -32,5 +33,5 @@ MonoBehaviour:
   angle: 0
   maxTargets: 0
   knockbackForce: 0
-  procChance: 80
+  procChance: 10
   effectValue: 0

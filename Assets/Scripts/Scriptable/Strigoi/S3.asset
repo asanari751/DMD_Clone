@@ -24,11 +24,11 @@ MonoBehaviour:
     type: 3}
   damage: 20
   duration: 5
-  cooldown: 8
+  cooldown: 13
   isPassive: 0
   attackInterval: 1
   statusEffectOnHit: 4
-  radius: 8
+  radius: 5
   range: 0
   angle: 0
   maxTargets: 0

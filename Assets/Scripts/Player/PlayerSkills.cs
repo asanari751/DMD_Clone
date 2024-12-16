@@ -81,11 +81,30 @@ public class PlayerSkills : MonoBehaviour
 
         while (true)
         {
-            if (skill.isReady) // !playerHealth.IsDead()
+            // V1 스킬에 대한 특별 처리
+            if (skill.skillData.skillName == "검기 사출")
+            {
+                if (V1.IsSkillReady() && skill.isReady)
+                {
+                    UseSkill(skill);
+                    skill.isReady = false;
+                    float elapsedTime = 0f;
+                    int skillIndex = activeSkills.IndexOf(skill);
+
+                    while (elapsedTime < skill.skillData.cooldown)
+                    {
+                        elapsedTime += Time.deltaTime;
+                        SkillSelector.Instance.UpdateSkillCooldown(skillIndex, elapsedTime, skill.skillData.cooldown);
+                        yield return null;
+                    }
+                    skill.isReady = true;
+                }
+            }
+
+            else if (skill.isReady)
             {
                 UseSkill(skill);
                 skill.isReady = false;
-
                 float elapsedTime = 0f;
                 int skillIndex = activeSkills.IndexOf(skill);
 
@@ -95,7 +114,6 @@ public class PlayerSkills : MonoBehaviour
                     SkillSelector.Instance.UpdateSkillCooldown(skillIndex, elapsedTime, skill.skillData.cooldown);
                     yield return null;
                 }
-
                 skill.isReady = true;
             }
             yield return null;
@@ -139,12 +157,27 @@ public class PlayerSkills : MonoBehaviour
                 UseB8(skill);
                 break;
             // ===================== 블라드
+            case "검기 사출": // V1
+                if (V1.IsSkillReady() && skill.isReady)
+                {
+                    GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+                    V1 v1 = skillEffect.AddComponent<V1>();
+                    v1.Initialize(skill.skillData, skill.skillLevel);
+                    V1.ResetSkillReady();
+                    skill.isReady = false;
+                }
+                break;
+
             case "꼬챙이형": // V2
                 UseV2(skill);
                 break;
 
             case "박쥐 폭풍": // V3
                 UseV3(skill);
+                break;
+
+            case "용의 포효": // V4
+                UseV4(skill);
                 break;
 
             case "용의 아들": // V7
@@ -168,8 +201,16 @@ public class PlayerSkills : MonoBehaviour
                 UseS3(skill);
                 break;
 
+            case "묘지의 부름": // S4
+                UseS4(skill);
+                break;
+
             case "썩은 피 안개": // S5
                 UseS5(skill);
+                break;
+
+            case "역병의 땅": // S6
+                UseS6(skill);
                 break;
 
             case "죽음의 속삭임": // S7
@@ -297,6 +338,13 @@ public class PlayerSkills : MonoBehaviour
         v3.Initialize(skill.skillData, skill.skillLevel);
     }
 
+    private void UseV4(Skill skill)
+    {
+        GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+        V4 v4 = skillEffect.AddComponent<V4>();
+        v4.Initialize(skill.skillData, skill.skillLevel);
+    }
+
     private void UseV7(Skill skill)
     {
         V7 existingV7 = FindAnyObjectByType<V7>();
@@ -370,6 +418,13 @@ public class PlayerSkills : MonoBehaviour
         }
     }
 
+    private void UseS4(Skill skill)
+    {
+        GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+        S4 s4 = skillEffect.AddComponent<S4>();
+        s4.Initialize(skill.skillData, skill.skillLevel);
+    }
+
     private void UseS5(Skill skill)
     {
         GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
@@ -381,6 +436,13 @@ public class PlayerSkills : MonoBehaviour
         {
             animator.Play(skill.skillData.skillName);
         }
+    }
+
+    private void UseS6(Skill skill)
+    {
+        GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
+        S6 s6 = skillEffect.AddComponent<S6>();
+        s6.Initialize(skill.skillData, skill.skillLevel);
     }
 
     private void UseS7(Skill skill)

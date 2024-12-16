@@ -237,6 +237,7 @@ public class PlayerStateManager : MonoBehaviour
 
         Vector2 direction = (targetPosition - (Vector2)firePosition.position).normalized;
         audioManager.PlaySFX("S4");
+        V1.IncrementAttackCounter();
 
         GameObject projectileObj = projectilePool.GetProjectile();
         projectileObj.transform.position = firePosition.position;
@@ -275,6 +276,7 @@ public class PlayerStateManager : MonoBehaviour
                 break;
         }
 
+        V1.IncrementAttackCounter();
         AttackInSemicircle(targetPosition);
         lastAttackTime = Time.time;
     }

@@ -25,6 +25,7 @@ public class PlayerHealthUI : MonoBehaviour
     [Header("Ref")]
     [SerializeField] private Transform playerTransform;
     [SerializeField] private AudioManager audioManager;
+    [SerializeField] private LayerMask collisionMask;
     [SerializeField] private string hubScene = "1_Hub";
     [SerializeField] private bool InCombatArea = false;
     private Rigidbody2D playerRigidbody;
@@ -118,7 +119,21 @@ public class PlayerHealthUI : MonoBehaviour
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
-            Vector2 targetPosition = (Vector2)transform.position + (knockbackDirection * knockbackForce);
+
+            // Raycast로 충돌 체크
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, knockbackDirection, knockbackForce, collisionMask);
+            Vector2 targetPosition;
+
+            if (hit.collider != null)
+            {
+                // 충돌지점 직전으로 위치 조정 (약간의 여유 공간 추가)
+                targetPosition = hit.point - (knockbackDirection * 0.1f);
+            }
+            else
+            {
+                // 충돌이 없으면 원래 계획된 위치로
+                targetPosition = (Vector2)transform.position + (knockbackDirection * knockbackForce);
+            }
 
             transform.DOMove(targetPosition, 0.5f)
                 .SetEase(Ease.OutCubic)

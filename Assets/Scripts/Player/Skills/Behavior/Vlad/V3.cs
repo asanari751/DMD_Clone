@@ -36,7 +36,7 @@ public class V3 : MonoBehaviour
 
             // 메인 폭풍 (중앙)
             moveDirection = baseDirection;
-            audioManager.PlaySFX("V3");
+            audioManager.PlaySFX("S13");
             StartCoroutine(LifetimeRoutine());
             StartCoroutine(DamageRoutine());
 

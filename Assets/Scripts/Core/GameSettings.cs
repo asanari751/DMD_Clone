@@ -4,6 +4,7 @@ using TMPro;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.Audio;
+using UnityEditor;
 
 public class GameSettings : MonoBehaviour
 {
@@ -448,44 +449,50 @@ public class GameSettings : MonoBehaviour
     private void OnMasterVolumeChanged(float value)
     {
         tempMasterVolume = value / 10f;
-        // masterVolumeText.text = $"전체 음량 {Mathf.RoundToInt(tempMasterVolume * 100)}%";
+        float volume = tempMasterVolume == 0 ? -80f : Mathf.Log10(tempMasterVolume) * 20;
+        audioMixer.SetFloat("masterVolume", volume);
     }
 
     private void OnSFXVolumeChanged(float value)
     {
         tempSFXVolume = value / 10f;
-        // sfxVolumeText.text = $"효과음 {Mathf.RoundToInt(tempSFXVolume * 100)}%";
+        float volume = tempSFXVolume == 0 ? -80f : Mathf.Log10(tempSFXVolume) * 20;
+        audioMixer.SetFloat("sfxVolume", volume);
     }
 
     private void OnAmbientVolumeChanged(float value)
     {
         tempAmbientVolume = value / 10f;
-        // ambientVolumeText.text = $"환경음 {Mathf.RoundToInt(tempAmbientVolume * 100)}%";
+        float volume = tempAmbientVolume == 0 ? -80f : Mathf.Log10(tempAmbientVolume) * 20;
+        audioMixer.SetFloat("ambientVolume", volume);
     }
 
     private void OnBGMVolumeChanged(float value)
     {
         tempBGMVolume = value / 10f;
-        // bgmVolumeText.text = $"배경음 {Mathf.RoundToInt(tempBGMVolume * 100)}%";
+        float volume = tempBGMVolume == 0 ? -80f : Mathf.Log10(tempBGMVolume) * 20;
+        audioMixer.SetFloat("bgmVolume", volume);
     }
 
     private void OnUIVolumeChanged(float value)
     {
         tempUIVolume = value / 10f;
-        // bgmVolumeText.text = $"배경음 {Mathf.RoundToInt(tempBGMVolume * 100)}%";
+        float volume = tempUIVolume == 0 ? -80f : Mathf.Log10(tempUIVolume) * 20 + 20;
+        audioMixer.SetFloat("uiVolume", volume);
     }
 
     private void OnMasterMuteToggled(bool isMuted)
     {
         if (isMuted)
         {
-            AudioListener.volume = 0f;
-            masterVolumeSlider.interactable = false;
+            audioMixer.SetFloat("masterVolume", -80f); // -80dB는 실질적인 음소거
+            // masterVolumeSlider.interactable = false;
         }
         else
         {
-            AudioListener.volume = tempMasterVolume;
-            masterVolumeSlider.interactable = true;
+            float volume = tempMasterVolume == 0 ? -80f : Mathf.Log10(tempMasterVolume) * 20;
+            audioMixer.SetFloat("masterVolume", volume);
+            // masterVolumeSlider.interactable = true;
         }
     }
 
@@ -493,13 +500,14 @@ public class GameSettings : MonoBehaviour
     {
         if (isMuted)
         {
-            AudioListener.volume = 0f;
-            sfxVolumeSlider.interactable = false;
+            audioMixer.SetFloat("sfxVolume", -80f);
+            // sfxVolumeSlider.interactable = false;
         }
         else
         {
-            AudioListener.volume = tempSFXVolume;
-            sfxVolumeSlider.interactable = true;
+            float volume = tempSFXVolume == 0 ? -80f : Mathf.Log10(tempSFXVolume) * 20;
+            audioMixer.SetFloat("sfxVolume", volume);
+            // sfxVolumeSlider.interactable = true;
         }
     }
 
@@ -507,13 +515,14 @@ public class GameSettings : MonoBehaviour
     {
         if (isMuted)
         {
-            AudioListener.volume = 0f;
-            ambientVolumeSlider.interactable = false;
+            audioMixer.SetFloat("ambientVolume", -80f);
+            // ambientVolumeSlider.interactable = false;
         }
         else
         {
-            AudioListener.volume = tempAmbientVolume;
-            ambientVolumeSlider.interactable = true;
+            float volume = tempAmbientVolume == 0 ? -80f : Mathf.Log10(tempAmbientVolume) * 20;
+            audioMixer.SetFloat("ambientVolume", volume);
+            // ambientVolumeSlider.interactable = true;
         }
     }
 
@@ -521,13 +530,14 @@ public class GameSettings : MonoBehaviour
     {
         if (isMuted)
         {
-            AudioListener.volume = 0f;
-            bgmVolumeSlider.interactable = false;
+            audioMixer.SetFloat("bgmVolume", -80f);
+            // bgmVolumeSlider.interactable = false;
         }
         else
         {
-            AudioListener.volume = tempBGMVolume;
-            bgmVolumeSlider.interactable = true;
+            float volume = tempBGMVolume == 0 ? -80f : Mathf.Log10(tempBGMVolume) * 20;
+            audioMixer.SetFloat("bgmVolume", volume);
+            // bgmVolumeSlider.interactable = true;
         }
     }
 
@@ -535,13 +545,14 @@ public class GameSettings : MonoBehaviour
     {
         if (isMuted)
         {
-            AudioListener.volume = 0f;
-            UIVolumeSlider.interactable = false;
+            audioMixer.SetFloat("uiVolume", -80f);
+            // UIVolumeSlider.interactable = false;
         }
         else
         {
-            AudioListener.volume = tempUIVolume;
-            UIVolumeSlider.interactable = true;
+            float volume = tempUIVolume == 0 ? -80f : Mathf.Log10(tempUIVolume) * 20 + 20;
+            audioMixer.SetFloat("uiVolume", volume);
+            // UIVolumeSlider.interactable = true;
         }
     }
 
@@ -773,6 +784,13 @@ public class GameSettings : MonoBehaviour
         isAmbientMuted = PlayerPrefs.GetInt("AmbientMuted", 0) == 1;
         isBGMMuted = PlayerPrefs.GetInt("BGMMuted", 0) == 1;
         isUIMuted = PlayerPrefs.GetInt("UIMuted", 0) == 1;
+
+        Debug.Log("=== 오디오 설정 초기화 ===");
+        Debug.Log($"Master 뮤트 상태: {(isMasterMuted ? "켜짐" : "꺼짐")}");
+        Debug.Log($"SFX 뮤트 상태: {(isSFXMuted ? "켜짐" : "꺼짐")}");
+        Debug.Log($"Ambient 뮤트 상태: {(isAmbientMuted ? "켜짐" : "꺼짐")}");
+        Debug.Log($"BGM 뮤트 상태: {(isBGMMuted ? "켜짐" : "꺼짐")}");
+        Debug.Log($"UI 뮤트 상태: {(isUIMuted ? "켜짐" : "꺼짐")}");
 
         masterMuteFill.enabled = isMasterMuted;
         sfxMuteFill.enabled = isSFXMuted;

@@ -39563,7 +39563,7 @@ MonoBehaviour:
     spawnTime1: 600
     enemyPool: []
   spawnInterval: 0.01
-  maxEnemies: 0
+  maxEnemies: 50
   parent: {fileID: 914842388}
   eliteEnemy: {fileID: 6135728234777956250}
   bossEnemy: {fileID: 3011803388326096627}

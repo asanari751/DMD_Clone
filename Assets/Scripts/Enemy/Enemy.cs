@@ -337,6 +337,14 @@ public class BasicEnemy : MonoBehaviour
         {
             enemyKnockback.ResetColor();
         }
+
+        // 상태이상 초기화 추가
+        if (statusEffect != null)
+        {
+            statusEffect.ClearAllStatusEffects();
+        }
+        SetCanMove(true);
+        SetMoveSpeed(stats.MoveSpeed);
     }
 
     // 상태이상

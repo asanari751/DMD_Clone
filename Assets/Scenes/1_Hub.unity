@@ -698,7 +698,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ComponentVersion: 1
-  m_AssetsPPU: 72
+  m_AssetsPPU: 64
   m_RefResolutionX: 1600
   m_RefResolutionY: 900
   m_CropFrame: 0
@@ -9777,8 +9777,8 @@ PolygonCollider2D:
     m_Paths:
     - - {x: 20, y: 14.5}
       - {x: -20, y: 14.5}
-      - {x: -20, y: -12}
-      - {x: 20, y: -12}
+      - {x: -20, y: -11}
+      - {x: 20, y: -11}
   m_UseDelaunayMesh: 0
 --- !u!224 &1727722610 stripped
 RectTransform:

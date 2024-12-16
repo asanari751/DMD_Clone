@@ -193,7 +193,7 @@ MonoBehaviour:
   initialMoveSpeed: 1
   maxMoveSpeed: 100
   accelerationRate: 25
-  experienceValue: 1
+  experienceValue: 5
   collectionDistance: 0.5
   minScatterDistance: 0.1
   maxScatterDistance: 0.5

@@ -1,6 +1,9 @@
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(SkillData))]
 public class SkillDataEditor : Editor
 {
@@ -10,8 +13,8 @@ public class SkillDataEditor : Editor
         serializedObject.Update();
 
         // 기본 속성들만 표시 (타입별 속성 제외)
-        DrawPropertiesExcluding(serializedObject, new string[] { 
-            "radius", "range", "angle", "maxTargets", "knockbackForce" 
+        DrawPropertiesExcluding(serializedObject, new string[] {
+            "radius", "range", "angle", "maxTargets", "knockbackForce"
         });
 
         // 패시브가 아닌 경우에만 넉백 값 표시
@@ -54,3 +57,4 @@ public class SkillDataEditor : Editor
         serializedObject.ApplyModifiedProperties();
     }
 }
+#endif

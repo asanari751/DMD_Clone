@@ -329,7 +329,7 @@ MonoBehaviour:
     MoveSpeed: 3
     MaxHealth: 150
     AttackRange: 5
-    attackDelay: 1.5
+    attackDelay: 1
     attackCooldown: 2
     attackDamage: 3
     RetreatSpeed: 1

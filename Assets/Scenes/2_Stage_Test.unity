@@ -5339,50 +5339,90 @@ MonoBehaviour:
   audioManager: {fileID: 493379727}
   expFillImage: {fileID: 3235992026771069525}
   lerpSpeed: 5
-  skillSelectableLevels: 01000000030000000500000007000000090000000b0000000d0000000f000000110000001300000015000000
+  skillSelectableLevels: 01000000030000000500000007000000090000000b0000000d0000000f00000011000000130000001600000017000000190000001b0000001d0000001f00000021000000230000002500000027000000
   levelText: {fileID: 617240382}
   expTable:
     _serializedList:
     - Key: 1
       Value: 1
     - Key: 2
-      Value: 1
+      Value: 15
     - Key: 3
-      Value: 3
+      Value: 50
     - Key: 4
-      Value: 4
+      Value: 115
     - Key: 5
-      Value: 5
+      Value: 220
     - Key: 6
-      Value: 6
+      Value: 370
     - Key: 7
-      Value: 7
+      Value: 555
     - Key: 8
-      Value: 8
+      Value: 775
     - Key: 9
-      Value: 9
+      Value: 1020
     - Key: 10
-      Value: 10
+      Value: 1290
     - Key: 11
-      Value: 55
+      Value: 1580
     - Key: 12
-      Value: 60
+      Value: 1890
     - Key: 13
-      Value: 65
+      Value: 2215
     - Key: 14
-      Value: 75
+      Value: 2555
     - Key: 15
-      Value: 80
+      Value: 2905
     - Key: 16
-      Value: 85
+      Value: 3265
     - Key: 17
-      Value: 90
+      Value: 3630
     - Key: 18
-      Value: 95
+      Value: 4005
     - Key: 19
-      Value: 100
+      Value: 4385
     - Key: 20
-      Value: 105
+      Value: 4773
+    - Key: 21
+      Value: 5170
+    - Key: 22
+      Value: 5570
+    - Key: 23
+      Value: 5980
+    - Key: 24
+      Value: 6395
+    - Key: 25
+      Value: 6820
+    - Key: 26
+      Value: 7250
+    - Key: 27
+      Value: 7685
+    - Key: 28
+      Value: 8130
+    - Key: 29
+      Value: 8580
+    - Key: 30
+      Value: 9040
+    - Key: 31
+      Value: 9470
+    - Key: 32
+      Value: 9955
+    - Key: 33
+      Value: 10415
+    - Key: 34
+      Value: 10870
+    - Key: 35
+      Value: 11330
+    - Key: 36
+      Value: 11790
+    - Key: 37
+      Value: 12245
+    - Key: 38
+      Value: 12705
+    - Key: 39
+      Value: 13160
+    - Key: 40
+      Value: 13620
   onSkillSelectLevel:
     m_PersistentCalls:
       m_Calls: []
@@ -7632,7 +7672,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ComponentVersion: 1
-  m_AssetsPPU: 48
+  m_AssetsPPU: 40
   m_RefResolutionX: 1600
   m_RefResolutionY: 900
   m_CropFrame: 0
@@ -9613,8 +9653,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timerText: {fileID: 1928920833}
   uiManager: {fileID: 1743977334}
-  debugParameter: 1
-  updateInterval: 0
+  debugParameter: 2
+  updateInterval: 1
   timeSinceLastUpdate: 0
   obstacleHierahy: {fileID: 1558981614}
   pauseController: {fileID: 647825381}
@@ -10182,7 +10222,7 @@ PrefabInstance:
     - target: {fileID: 2503420945451881671, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
       propertyPath: m_Name
-      value: Keycap
+      value: D
       objectReference: {fileID: 0}
     - target: {fileID: 5999597535221532232, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
@@ -10262,7 +10302,7 @@ PrefabInstance:
     - target: {fileID: 5999597535221532232, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -150
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5999597535221532232, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
@@ -14080,7 +14120,7 @@ PrefabInstance:
     - target: {fileID: 2503420945451881671, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
       propertyPath: m_Name
-      value: Keycap
+      value: A
       objectReference: {fileID: 0}
     - target: {fileID: 5999597535221532232, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
@@ -14160,7 +14200,7 @@ PrefabInstance:
     - target: {fileID: 5999597535221532232, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -100
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 5999597535221532232, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
@@ -17021,6 +17061,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: sfxSounds.Array.data[20].name
+      value: S21
+      objectReference: {fileID: 0}
+    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: sfxSounds.Array.data[21].name
+      value: S22
+      objectReference: {fileID: 0}
+    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: sfxSounds.Array.data[22].name
+      value: S23
+      objectReference: {fileID: 0}
+    - target: {fileID: 3981744486984712804, guid: 5bb6939206ecd6b4899874ba3d7273b1,
+        type: 3}
+      propertyPath: sfxSounds.Array.data[20].volume
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -17359,7 +17419,7 @@ PrefabInstance:
     - target: {fileID: 2503420945451881671, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
       propertyPath: m_Name
-      value: Keycap
+      value: S
       objectReference: {fileID: 0}
     - target: {fileID: 5999597535221532232, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
@@ -17439,7 +17499,7 @@ PrefabInstance:
     - target: {fileID: 5999597535221532232, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -50
+      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 5999597535221532232, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
@@ -18526,7 +18586,7 @@ PrefabInstance:
     - target: {fileID: 2503420945451881671, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
       propertyPath: m_Name
-      value: Keycap
+      value: W
       objectReference: {fileID: 0}
     - target: {fileID: 5999597535221532232, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
@@ -18606,7 +18666,7 @@ PrefabInstance:
     - target: {fileID: 5999597535221532232, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: -150
       objectReference: {fileID: 0}
     - target: {fileID: 5999597535221532232, guid: c1a546185e9076d40b6f738314f942b8,
         type: 3}
@@ -39146,7 +39206,7 @@ MonoBehaviour:
     enemyPool: []
   - enemyPrefab: {fileID: 4976483147096513540, guid: abaa9613eb843e24d82c80e3f280ba54,
       type: 3}
-    spawnProbability: 25
+    spawnProbability: 5
     spawnTime0: 0
     spawnTime1: 600
     enemyPool: []
@@ -39163,7 +39223,10 @@ MonoBehaviour:
     spawnTime1: 600
     enemyPool: []
   spawnInterval: 0.01
-  maxEnemies: 50
+  maxEnemies: 25
+  initialMaxEnemies: 25
+  finalMaxEnemies: 75
+  maxEnemiesIncreaseTime: 600
   parent: {fileID: 914842388}
   eliteEnemy: {fileID: 6135728234777956250}
   bossEnemy: {fileID: 3011803388326096627}
@@ -40548,6 +40611,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
+      propertyPath: attackAngle
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
       propertyPath: audioManager
       value: 
       objectReference: {fileID: 493379727}
@@ -40556,6 +40624,11 @@ PrefabInstance:
       propertyPath: projectilePool
       value: 
       objectReference: {fileID: 629233471}
+    - target: {fileID: 7507806457156272074, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: currentAttackType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8806226838755246314, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -40570,6 +40643,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 8806226838755246314, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 8806226838755246314, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.47
       objectReference: {fileID: 0}
     - target: {fileID: 8806226838755246314, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
@@ -40772,10 +40855,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1f181633f45cd341bed96261f280ec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  experienceDrop: 3
+  experienceDrop: 10
   expOrbPrefab: {fileID: 6992617434821140472, guid: 5221308d8fca95b4f88475e0a2e5314c,
     type: 3}
-  expOrbCount: 1
+  expOrbCount: 5
   stats:
     enemyType: 0
     MoveSpeed: 5

@@ -29,6 +29,9 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private List<EnemySpawnData> enemySpawnDataList;
     [SerializeField] private float spawnInterval;
     [SerializeField] private int maxEnemies;
+    [SerializeField] private int initialMaxEnemies = 25;
+    [SerializeField] private int finalMaxEnemies = 75;
+    [SerializeField] private float maxEnemiesIncreaseTime = 600f; // 10분동안 점진적 증가
     [SerializeField] private Transform parent;
 
     [Header("Special")]
@@ -62,6 +65,14 @@ public class EnemySpawner : MonoBehaviour
 
         eliteEnemy.SetActive(false);
         bossEnemy.SetActive(false);
+    }
+
+    private void Update()
+    {
+        // 현재 시간에 따라 maxEnemies 동적 조정
+        float currentTime = gameTimerController.GetElapsedTime();
+        float timeProgress = Mathf.Clamp01(currentTime / maxEnemiesIncreaseTime);
+        maxEnemies = Mathf.RoundToInt(Mathf.Lerp(initialMaxEnemies, finalMaxEnemies, timeProgress));
     }
 
     private void InitializeEnemyPools()

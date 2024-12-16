@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using AYellowpaper.SerializedCollections;
 using UnityEngine.Events;
 using System.Linq;
+using TMPro;
 
 public class Experience : MonoBehaviour
 {
@@ -10,11 +11,12 @@ public class Experience : MonoBehaviour
 	[SerializeField] private Image expFillImage;
 	[SerializeField] private float lerpSpeed = 5f;
 	[SerializeField] private int[] skillSelectableLevels;
+	[SerializeField] private TMP_Text levelText;
 
 
 	[SerializedDictionary("Level", "Required Experience")]
 	public SerializedDictionary<int, float> expTable;
-	
+
 	public UnityEvent onSkillSelectLevel;
 
 	private float currentExp;
@@ -26,6 +28,7 @@ public class Experience : MonoBehaviour
 	private void Start()
 	{
 		InitializeExperience();
+		UpdateLevelText();  // 초기 레벨 표시
 	}
 
 	private void Update()
@@ -52,23 +55,21 @@ public class Experience : MonoBehaviour
 		UpdateExpBar();
 	}
 
-	// 레벨업 처리
 	private void LevelUp()
-    {
-        currentLevel++;
-        UpdateLevelExperience();
-        
-        // 현재 레벨이 스킬 선택 가능한 레벨인지 확인
-        if (IsSkillSelectableLevel(currentLevel))
-        {
-            onSkillSelectLevel.Invoke();
-        }
+	{
+		currentLevel++;
+		UpdateLevelText();
+		UpdateLevelExperience();
 
-        else
-        {
-            onLevelUp.Invoke();
-        }
-    }
+		if (IsSkillSelectableLevel(currentLevel))
+		{
+			onSkillSelectLevel.Invoke();
+		}
+		else
+		{
+			onLevelUp.Invoke();
+		}
+	}
 
 	// 레벨별 경험치 업데이트
 	private void UpdateLevelExperience()
@@ -104,9 +105,17 @@ public class Experience : MonoBehaviour
 	}
 
 	private bool IsSkillSelectableLevel(int level)
-    {
-        return skillSelectableLevels.Contains(level);
-    }
+	{
+		return skillSelectableLevels.Contains(level);
+	}
+
+	private void UpdateLevelText()
+	{
+		if (levelText != null)
+		{
+			levelText.text = $"Lv.{currentLevel}";
+		}
+	}
 
 	// 현재 레벨 반환
 	public int GetCurrentLevel() => currentLevel;

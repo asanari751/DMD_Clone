@@ -44,12 +44,15 @@ public class B1 : MonoBehaviour
     {
         float elapsedTime = 0f;
         float nextAttackTime = 0f;
+        float rotationSpeed = 60f;
+
         Transform playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
         while (elapsedTime < duration)
         {
             // 매 물리 업데이트마다 위치 갱신
             transform.position = playerTransform.position;
+            transform.Rotate(Vector3.forward * rotationSpeed * Time.deltaTime);
 
             // 공격 간격 체크
             if (Time.time >= nextAttackTime)

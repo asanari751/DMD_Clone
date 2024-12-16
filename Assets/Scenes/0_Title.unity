@@ -6511,6 +6511,167 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 658971499}
   m_CullTransparentMesh: 1
+--- !u!1 &660452092
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 660452094}
+  - component: {fileID: 660452093}
+  m_Layer: 0
+  m_Name: Game Setting
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &660452093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 660452092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 116c738c7d6da7a40ba740a4f6407878, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SettingsPanel: {fileID: 982662190}
+  majorCategory: {fileID: 807457759}
+  closeSettingsButton: {fileID: 8346205}
+  videoSettingsPanel: {fileID: 2068563745}
+  soundSettingsPanel: {fileID: 1434567087}
+  keyBindingSettingsPanel: {fileID: 300657967}
+  accessibilitySettingsPanel: {fileID: 134079612}
+  panels:
+  - {fileID: 300657967}
+  - {fileID: 2068563745}
+  - {fileID: 1434567087}
+  - {fileID: 134079612}
+  keyBindingSettingsButton: {fileID: 1857220216}
+  accessibilitySettingsButton: {fileID: 1004334903}
+  videoSettingsButton: {fileID: 1198815023}
+  soundSettingsButton: {fileID: 1816752102}
+  textSettingsButton: {fileID: 0}
+  resolutionText: {fileID: 804459116}
+  resolutionButtons:
+  - {fileID: 976260331}
+  - {fileID: 1831597404}
+  - {fileID: 866093795}
+  - {fileID: 1598010480}
+  - {fileID: 968970709}
+  - {fileID: 1222461450}
+  availableResolutions:
+  - label: 1280 / 7
+    width: 1280
+    height: 720
+    refreshRate: 300
+  - label: 1280 / 8
+    width: 1280
+    height: 800
+    refreshRate: 300
+  - label: Test 16:9
+    width: 1600
+    height: 900
+    refreshRate: 120
+  - label: FHD / 144
+    width: 1920
+    height: 1080
+    refreshRate: 144
+  - label: QHD / 60
+    width: 2560
+    height: 1440
+    refreshRate: 60
+  - label: UHD / 144
+    width: 3840
+    height: 2160
+    refreshRate: 144
+  fullscreenToggle: {fileID: 1767174948}
+  fullscreenFill: {fileID: 850280780}
+  frameRateText: {fileID: 918307356}
+  frameRateSlider: {fileID: 881400762}
+  minFrameRate: 30
+  maxFrameRate: 300
+  audioMixer: {fileID: 24100000, guid: ea791f1735cf4bf49935e2e85109e50f, type: 2}
+  masterVolumeSlider: {fileID: 1274198673}
+  sfxVolumeSlider: {fileID: 1744959770}
+  ambientVolumeSlider: {fileID: 987105937}
+  bgmVolumeSlider: {fileID: 484168963}
+  UIVolumeSlider: {fileID: 1981152516}
+  masterMuteButton: {fileID: 1225010824}
+  sfxMuteButton: {fileID: 928065593}
+  ambientMuteButton: {fileID: 700306543}
+  bgmMuteButton: {fileID: 658971501}
+  uiMuteButton: {fileID: 1955169769}
+  masterMuteFill: {fileID: 325919416}
+  sfxMuteFill: {fileID: 1083246969}
+  ambientMuteFill: {fileID: 1005641227}
+  bgmMuteFill: {fileID: 287065458}
+  uiMuteFill: {fileID: 478803169}
+  defaultProfile:
+    profileName: Default
+    movement: {fileID: 8035919368643098079, guid: a1886f06b34f896438b03680aaca1a39,
+      type: 3}
+    interact: {fileID: 520689026858291179, guid: a1886f06b34f896438b03680aaca1a39,
+      type: 3}
+    autoAttack: {fileID: 4982818992402008513, guid: a1886f06b34f896438b03680aaca1a39,
+      type: 3}
+    dash: {fileID: 422733343138556659, guid: a1886f06b34f896438b03680aaca1a39, type: 3}
+    showInfo: {fileID: 32936766095909236, guid: a1886f06b34f896438b03680aaca1a39,
+      type: 3}
+    cancle: {fileID: -7683534745137616285, guid: a1886f06b34f896438b03680aaca1a39,
+      type: 3}
+  keyBindingTexts:
+  - {fileID: 172632514}
+  - {fileID: 685873274}
+  - {fileID: 1216983452}
+  - {fileID: 1138470046}
+  - {fileID: 405747134}
+  - {fileID: 593627394}
+  - {fileID: 1783325783}
+  - {fileID: 7875636}
+  - {fileID: 1714994622}
+  rebindButtons:
+  - {fileID: 319709389}
+  - {fileID: 1519523039}
+  - {fileID: 1183285734}
+  - {fileID: 1567009589}
+  - {fileID: 243707408}
+  - {fileID: 2014464363}
+  - {fileID: 499854637}
+  - {fileID: 605444054}
+  - {fileID: 1071768476}
+  damageIndicatorToggle: {fileID: 2140978910}
+  damageIndicatorFill: {fileID: 714105213}
+  healthBarToggle: {fileID: 34845917}
+  healthBarFill: {fileID: 527976696}
+  cameraShakeToggle: {fileID: 477011631}
+  cameraShakeFill: {fileID: 184405028}
+  applyButton: {fileID: 222668381}
+  resetButton: {fileID: 164364239}
+  cancelButton: {fileID: 1371518039}
+  confirmationPopup: {fileID: 80565418}
+  popupApply: {fileID: 87948050}
+  popupCancle: {fileID: 164364239}
+--- !u!4 &660452094
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 660452092}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 7.4402866, y: 5.0093484, z: -0.0005581919}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &663424080
 GameObject:
   m_ObjectHideFlags: 0
@@ -17965,7 +18126,6 @@ GameObject:
   - component: {fileID: 2078451796}
   - component: {fileID: 2078451800}
   - component: {fileID: 2078451798}
-  - component: {fileID: 2078451797}
   - component: {fileID: 2078451801}
   - component: {fileID: 2078451802}
   m_Layer: 5
@@ -18003,135 +18163,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2078451797
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2078451795}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 116c738c7d6da7a40ba740a4f6407878, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SettingsPanel: {fileID: 982662190}
-  majorCategory: {fileID: 807457759}
-  closeSettingsButton: {fileID: 8346205}
-  videoSettingsPanel: {fileID: 2068563745}
-  soundSettingsPanel: {fileID: 1434567087}
-  keyBindingSettingsPanel: {fileID: 300657967}
-  accessibilitySettingsPanel: {fileID: 134079612}
-  panels:
-  - {fileID: 300657967}
-  - {fileID: 2068563745}
-  - {fileID: 1434567087}
-  - {fileID: 134079612}
-  keyBindingSettingsButton: {fileID: 1857220216}
-  accessibilitySettingsButton: {fileID: 1004334903}
-  videoSettingsButton: {fileID: 1198815023}
-  soundSettingsButton: {fileID: 1816752102}
-  textSettingsButton: {fileID: 0}
-  resolutionText: {fileID: 804459116}
-  resolutionButtons:
-  - {fileID: 976260331}
-  - {fileID: 1831597404}
-  - {fileID: 866093795}
-  - {fileID: 1598010480}
-  - {fileID: 968970709}
-  - {fileID: 1222461450}
-  availableResolutions:
-  - label: 1280 / 7
-    width: 1280
-    height: 720
-    refreshRate: 300
-  - label: 1280 / 8
-    width: 1280
-    height: 800
-    refreshRate: 300
-  - label: Test 16:9
-    width: 1600
-    height: 900
-    refreshRate: 120
-  - label: FHD / 144
-    width: 1920
-    height: 1080
-    refreshRate: 144
-  - label: QHD / 60
-    width: 2560
-    height: 1440
-    refreshRate: 60
-  - label: UHD / 144
-    width: 3840
-    height: 2160
-    refreshRate: 144
-  fullscreenToggle: {fileID: 1767174948}
-  fullscreenFill: {fileID: 850280780}
-  frameRateText: {fileID: 918307356}
-  frameRateSlider: {fileID: 881400762}
-  minFrameRate: 30
-  maxFrameRate: 300
-  audioMixer: {fileID: 24100000, guid: ea791f1735cf4bf49935e2e85109e50f, type: 2}
-  masterVolumeSlider: {fileID: 1274198673}
-  sfxVolumeSlider: {fileID: 1744959770}
-  ambientVolumeSlider: {fileID: 987105937}
-  bgmVolumeSlider: {fileID: 484168963}
-  UIVolumeSlider: {fileID: 1981152516}
-  masterMuteButton: {fileID: 1225010824}
-  sfxMuteButton: {fileID: 928065593}
-  ambientMuteButton: {fileID: 700306543}
-  bgmMuteButton: {fileID: 658971501}
-  uiMuteButton: {fileID: 1955169769}
-  masterMuteFill: {fileID: 325919416}
-  sfxMuteFill: {fileID: 1083246969}
-  ambientMuteFill: {fileID: 1005641227}
-  bgmMuteFill: {fileID: 287065458}
-  uiMuteFill: {fileID: 478803169}
-  defaultProfile:
-    profileName: Default
-    movement: {fileID: 8035919368643098079, guid: a1886f06b34f896438b03680aaca1a39,
-      type: 3}
-    interact: {fileID: 520689026858291179, guid: a1886f06b34f896438b03680aaca1a39,
-      type: 3}
-    autoAttack: {fileID: 4982818992402008513, guid: a1886f06b34f896438b03680aaca1a39,
-      type: 3}
-    dash: {fileID: 422733343138556659, guid: a1886f06b34f896438b03680aaca1a39, type: 3}
-    showInfo: {fileID: 32936766095909236, guid: a1886f06b34f896438b03680aaca1a39,
-      type: 3}
-    cancle: {fileID: -7683534745137616285, guid: a1886f06b34f896438b03680aaca1a39,
-      type: 3}
-  keyBindingTexts:
-  - {fileID: 172632514}
-  - {fileID: 685873274}
-  - {fileID: 1216983452}
-  - {fileID: 1138470046}
-  - {fileID: 405747134}
-  - {fileID: 593627394}
-  - {fileID: 1783325783}
-  - {fileID: 7875636}
-  - {fileID: 1714994622}
-  rebindButtons:
-  - {fileID: 319709389}
-  - {fileID: 1519523039}
-  - {fileID: 1183285734}
-  - {fileID: 1567009589}
-  - {fileID: 243707408}
-  - {fileID: 2014464363}
-  - {fileID: 499854637}
-  - {fileID: 605444054}
-  - {fileID: 1071768476}
-  damageIndicatorToggle: {fileID: 2140978910}
-  damageIndicatorFill: {fileID: 714105213}
-  healthBarToggle: {fileID: 34845917}
-  healthBarFill: {fileID: 527976696}
-  cameraShakeToggle: {fileID: 477011631}
-  cameraShakeFill: {fileID: 184405028}
-  applyButton: {fileID: 222668381}
-  resetButton: {fileID: 164364239}
-  cancelButton: {fileID: 1371518039}
-  confirmationPopup: {fileID: 80565418}
-  popupApply: {fileID: 87948050}
-  popupCancle: {fileID: 164364239}
 --- !u!114 &2078451798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18156,7 +18187,7 @@ MonoBehaviour:
   colorChangeEase: 6
   startColor: {r: 0, g: 0, b: 0, a: 0.2}
   endColor: {r: 0, g: 0, b: 0, a: 1}
-  gameSettings: {fileID: 2078451797}
+  gameSettings: {fileID: 660452093}
 --- !u!222 &2078451800
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -18974,3 +19005,4 @@ SceneRoots:
   - {fileID: 1995602140}
   - {fileID: 1490679256}
   - {fileID: 1429157833587364574}
+  - {fileID: 660452094}

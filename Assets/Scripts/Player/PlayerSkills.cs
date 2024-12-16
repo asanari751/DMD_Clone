@@ -193,12 +193,6 @@ public class PlayerSkills : MonoBehaviour
         GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
         B1 b1 = skillEffect.AddComponent<B1>();
         b1.Initialize(skill.skillData, skill.skillLevel);
-
-        Animator animator = skillEffect.GetComponent<Animator>();
-        if (animator != null)
-        {
-            animator.Play(skill.skillData.skillName);
-        }
     }
 
     private void UseB2(Skill skill)
@@ -246,11 +240,11 @@ public class PlayerSkills : MonoBehaviour
         B5 b5 = skillEffect.AddComponent<B5>();
         b5.Initialize(skill.skillData, skill.skillLevel);
 
-        // Animator animator = skillEffect.GetComponent<Animator>();
-        // if (animator != null)
-        // {
-        //     animator.Play(skill.skillData.skillName);
-        // }
+        Animator animator = skillEffect.GetComponent<Animator>();
+        if (animator != null)
+        {
+            animator.Play(skill.skillData.skillName);
+        }
     }
 
     private void UseB6(Skill skill)
@@ -342,6 +336,8 @@ public class PlayerSkills : MonoBehaviour
         }
     }
 
+    private bool useFirstAnimation = true;  // 클래스 멤버 변수로 추가
+
     private void UseS2(Skill skill)
     {
         GameObject skillEffect = Instantiate(skill.skillData.skillPrefab);
@@ -351,7 +347,13 @@ public class PlayerSkills : MonoBehaviour
         Animator animator = skillEffect.GetComponent<Animator>();
         if (animator != null)
         {
-            animator.Play(skill.skillData.skillName);
+            // 번갈아가며 애니메이션 재생
+            string animationName = useFirstAnimation ?
+                skill.skillData.skillName + " 1" :
+                skill.skillData.skillName + " 2";
+
+            animator.Play(animationName);
+            useFirstAnimation = !useFirstAnimation;  // 다음 호출을 위해 토글
         }
     }
 

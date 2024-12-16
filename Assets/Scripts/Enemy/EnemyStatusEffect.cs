@@ -305,16 +305,19 @@ public class EnemyStatusEffect : MonoBehaviour
 
         if (statusEffectVisual != null)
         {
-            // 애니메이션 초기화
-            statusEffectAnimator.Play("None", 0, 0f);
-
-            // 스프라이트 렌더러 찾아서 스프라이트 비우기
+            // 스프라이트 렌더러 초기화
             SpriteRenderer statusSpriteRenderer = statusEffectVisual.GetComponent<SpriteRenderer>();
             if (statusSpriteRenderer != null)
             {
                 statusSpriteRenderer.sprite = null;
             }
 
+            // 애니메이터 초기화 전에 오브젝트 활성화
+            statusEffectVisual.SetActive(true);
+            if (statusEffectAnimator != null)
+            {
+                statusEffectAnimator.Play("None", 0, 0f);
+            }
             statusEffectVisual.SetActive(false);
         }
     }

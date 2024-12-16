@@ -81,6 +81,11 @@ public class PlayerStateManager : MonoBehaviour
         UpdateStats();
     }
 
+    private bool IsInHubScene()
+    {
+        return SceneManager.GetActiveScene().name == "1_Hub";
+    }
+
     private void Start()
     {
         playerStats = PlayerStats.Instance;
@@ -102,7 +107,10 @@ public class PlayerStateManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         playerStats = PlayerStats.Instance;
+        // 씬 전환시 PlayerStats의 선택된 공격 타입을 가져와서 설정
+        currentAttackType = playerStats.selectedAttackType;
         UpdateStats();
+        Debug.Log($"[PlayerStateManager] 씬 전환: 공격 타입 {currentAttackType}으로 업데이트");
     }
 
     private void Update()
@@ -139,6 +147,7 @@ public class PlayerStateManager : MonoBehaviour
 
     private void ToggleAutoAttack()
     {
+        if (IsInHubScene()) return;
         isAutoAttack = !isAutoAttack;
         SkillSelector.Instance?.ToggleAutoAttackIndicator(isAutoAttack);
 
@@ -176,6 +185,7 @@ public class PlayerStateManager : MonoBehaviour
 
     private void PerformAutoAttack()
     {
+        if (IsInHubScene()) return;
         if (PauseController.Paused == true) return;
         GameObject closestEnemy = FindClosestEnemy();
 
@@ -190,6 +200,7 @@ public class PlayerStateManager : MonoBehaviour
 
     private void PerformManualAttack()
     {
+        if (IsInHubScene()) return;
         if (PauseController.Paused == true) return;
 
         Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
@@ -212,6 +223,7 @@ public class PlayerStateManager : MonoBehaviour
 
     private void PerformRangedAttack(Vector2 targetPosition)
     {
+        if (IsInHubScene()) return;
         if (firePosition == null)
         {
             Debug.LogWarning("FirePosition이 할당되지 않았습니다. Inspector에서 할당해주세요.");
@@ -247,6 +259,7 @@ public class PlayerStateManager : MonoBehaviour
 
     private void PerformAttack(Vector2 targetPosition)
     {
+        if (IsInHubScene()) return;
         if (Time.time - lastAttackTime < atkDelay)
         {
             return;

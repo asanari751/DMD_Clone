@@ -54,6 +54,7 @@ public class CharacterInfo : MonoBehaviour
     [Header("Icon")]
     [SerializeField] private Sprite[] GodIcons;
     [SerializeField] private Image IconFiller;
+    [SerializeField] private TMP_Text godName;
 
     [Header("Skill Inventory")]
     [SerializeField] private GameObject skillInventory;
@@ -136,12 +137,15 @@ public class CharacterInfo : MonoBehaviour
         {
             case PlayerStateManager.AttackType.Claw:
                 selectedGod = GodType.Strigoi; // Claw는 Strigoi
+                godName.text = "스트리고이";
                 break;
             case PlayerStateManager.AttackType.Arrow:
-                selectedGod = GodType.Bathory; // Arrow는 Bathory
+                selectedGod = GodType.Bathory; // Arrow는 Bathory\
+                godName.text = "바토리 에르제베트";
                 break;
             case PlayerStateManager.AttackType.Sword:
                 selectedGod = GodType.Vlad; // Sword는 Vlad
+                godName.text = "블라드 3세";
                 break;
         }
 

@@ -152,8 +152,10 @@ public class PlayerStats : MonoBehaviour
     public void SetSelectedAttackType(PlayerStateManager.AttackType type)
     {
         selectedAttackType = type;
+        Debug.Log($"[PlayerStats] 공격 타입 변경: {type}");
         OnAttackTypeChanged?.Invoke(type);
     }
+
     private CharacterInfo.PlayerStatData GetCurrentStats()
     {
         return new CharacterInfo.PlayerStatData

@@ -309,6 +309,7 @@ public class Interaction : MonoBehaviour
         Time.timeScale = 0f;
         godChoosePanel.SetActive(true);
         backgroundOverlay.gameObject.SetActive(true);
+        closeButton.gameObject.SetActive(true);
 
         for (int i = 0; i < godChooseButtons.Length; i++)
         {
@@ -316,7 +317,6 @@ public class Interaction : MonoBehaviour
             godChooseButtons[i].transform.position = originalButtonPositions[i];
         }
         areButtonsVisible = true;
-        titleImage.SetActive(true);
 
         titleImage.SetActive(true);
         if (titleImageCanvasGroup != null)
@@ -329,20 +329,20 @@ public class Interaction : MonoBehaviour
     {
         if (index < characters.Length)
         {
-            Debug.Log($"Button clicked: index {index}");
+            Debug.Log($"[Interaction] 선택된 버튼: {index}");
             switch (index)
             {
                 case 0: // Bathory
                     PlayerStats.Instance.SetSelectedAttackType(PlayerStateManager.AttackType.Arrow);
-                    Debug.Log("Setting attack type to Arrow");
+                    Debug.Log("[Interaction] Bathory 선택 - Arrow 공격 타입으로 설정");
                     break;
                 case 1: // Strigoi
                     PlayerStats.Instance.SetSelectedAttackType(PlayerStateManager.AttackType.Claw);
-                    Debug.Log("Setting attack type to Claw");
+                    Debug.Log("[Interaction] Strigoi 선택 - Claw 공격 타입으로 설정");
                     break;
                 case 2: // Vlad
                     PlayerStats.Instance.SetSelectedAttackType(PlayerStateManager.AttackType.Sword);
-                    Debug.Log("Setting attack type to Sword");
+                    Debug.Log("[Interaction] Vlad 선택 - Sword 공격 타입으로 설정");
                     break;
             }
 
@@ -514,6 +514,9 @@ public class Interaction : MonoBehaviour
         {
             button.enabled = false;
         }
+
+        if (closeButton != null)
+            closeButton.gameObject.SetActive(false);
     }
 
     private void EnableAllButtonComponents()

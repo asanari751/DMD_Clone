@@ -22,6 +22,7 @@ public class PlayerSkills : MonoBehaviour
 
     public static PlayerSkills Instance { get; private set; }
 
+    [SerializeField] private PlayerHealthUI playerHealth;
     private Dictionary<string, int> skillLevels = new Dictionary<string, int>();
     public List<Skill> activeSkills = new List<Skill>();
     private EnemyHealthController enemyHealthController;
@@ -80,7 +81,7 @@ public class PlayerSkills : MonoBehaviour
 
         while (true)
         {
-            if (skill.isReady)
+            if (skill.isReady && !playerHealth.IsDead())
             {
                 UseSkill(skill);
                 skill.isReady = false;

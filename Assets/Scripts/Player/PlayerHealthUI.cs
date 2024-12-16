@@ -204,13 +204,11 @@ public class PlayerHealthUI : MonoBehaviour
             uIManager.ShowStageClearUI();
             resultUI.ShowResults();
         }
-
-        Time.timeScale = 0f;
     }
 
     private IEnumerator TransitionAfterAnimation(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSecondsRealtime(delay); // 실제 시간 기준으로 대기
         SceneTransitionManager.Instance.LoadSceneWithTransition(hubScene);
     }
 

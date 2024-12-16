@@ -6,6 +6,7 @@ public class PlayerDash : MonoBehaviour
 {
     [SerializeField] private PlayerStats playerStats;
     [SerializeField] private AudioManager audioManager;
+    [SerializeField] private PlayerHealthUI playerHealth;
     private float dashDistance;
     private float dashDuration = 0.2f;
     private int dashGaugeCount;
@@ -33,7 +34,7 @@ public class PlayerDash : MonoBehaviour
 
     public void OnDash(InputValue value)
     {
-        if (value.isPressed && !isDashing && CanDash())
+        if (value.isPressed && !isDashing && CanDash() && !playerHealth.IsDead())
         {
             PerformDash();
             audioManager.PlaySFX("S1");

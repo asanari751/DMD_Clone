@@ -10,6 +10,7 @@ public class EnemyMovementController : MonoBehaviour
     private Rigidbody2D rb;
     private Transform playerTransform;
     private EnemyAnimationController animationController;
+    private PlayerHealthUI playerHealth;
 
     private void Start()
     {
@@ -20,11 +21,14 @@ public class EnemyMovementController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
         animationController = GetComponent<EnemyAnimationController>();
+        playerHealth = playerTransform?.GetComponent<PlayerHealthUI>();
     }
 
     private void FixedUpdate()
     {
-        if (flowfield != null && rb != null && playerTransform != null && !basicEnemy.IsKnockedBack() && !enemyHealthController.IsDead())
+        if (flowfield != null && rb != null && playerTransform != null &&
+                   !basicEnemy.IsKnockedBack() && !enemyHealthController.IsDead() &&
+                   !playerHealth.IsDead())
         {
             BossAnimationController bossAnimController = GetComponent<BossAnimationController>();
             if (!basicEnemy.CanMove())

@@ -7,6 +7,7 @@ using System.Collections;
 
 public class EnemyAnimationController : MonoBehaviour
 {
+    [SerializeField] private Transform playerTransform;
     [SerializeField] private Animator animator;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private float moveThreshold = 0.1f;
@@ -31,6 +32,9 @@ public class EnemyAnimationController : MonoBehaviour
             animator = GetComponent<Animator>();
         if (spriteRenderer == null)
             spriteRenderer = GetComponent<SpriteRenderer>();
+        if (playerTransform == null)
+            playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
+
         basicEnemy = GetComponent<BasicEnemy>();
     }
 
@@ -44,11 +48,17 @@ public class EnemyAnimationController : MonoBehaviour
         }
     }
 
+
     public void PlayAttackAnimation()
     {
-        if (!isAttacking && !isHit)
+        if (!isAttacking && !isHit && playerTransform != null)
         {
             isAttacking = true;
+
+            float directionX = playerTransform.position.x - transform.position.x;
+            isFacingRight = directionX > 0;
+            spriteRenderer.flipX = !isFacingRight;
+
             StartCoroutine(AttackAnimationCoroutine());
         }
     }

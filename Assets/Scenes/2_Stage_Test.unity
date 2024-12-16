@@ -36995,16 +36995,16 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1869315837
   m_SortingLayer: 3
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
+  m_SortingOrder: 3
+  m_Sprite: {fileID: -411142319, guid: 1354fc1cc83eb294ea53ba9b73aac387, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 3.125, y: 3.125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1894358763
@@ -37016,8 +37016,8 @@ Transform:
   m_GameObject: {fileID: 1894358760}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.59275, y: -0.08175, z: 0}
-  m_LocalScale: {x: 0.375, y: 0.375, z: 0.5}
+  m_LocalPosition: {x: 0.06, y: 1.13, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5943478898570677961}
@@ -38238,8 +38238,8 @@ Transform:
   m_GameObject: {fileID: 1997973551}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.244834, y: -0.0545, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.5}
+  m_LocalPosition: {x: -0.12, y: 0.25, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3355487361817194400}
@@ -38311,11 +38311,11 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 3.125, y: 3.125}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
@@ -43046,13 +43046,13 @@ MonoBehaviour:
   weaknessDebuff: 1.3
   poisonDebuff: 3
   bleedDebuff: 0.1
-  statusEffectVisual: {fileID: 0}
-  poisonStateName: Poison_Effect
-  bleedStateName: Bleed_Effect
-  stunStateName: Stun_Effect
-  fearStateName: Fear_Effect
-  slowStateName: Slow_Effect
-  weaknessStateName: Weakness_Effect
+  statusEffectVisual: {fileID: 1894358760}
+  poisonStateName: Poison
+  bleedStateName: Bleed
+  stunStateName: Stun
+  fearStateName: Fear
+  slowStateName: Slow
+  weaknessStateName: Weakness
 --- !u!114 &7344789330219823335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43343,12 +43343,12 @@ MonoBehaviour:
   poisonDebuff: 3
   bleedDebuff: 0.1
   statusEffectVisual: {fileID: 1997973551}
-  poisonStateName: Poison_Effect
-  bleedStateName: Bleed_Effect
-  stunStateName: Stun_Effect
-  fearStateName: Fear_Effect
-  slowStateName: Slow_Effect
-  weaknessStateName: Weakness_Effect
+  poisonStateName: Poison
+  bleedStateName: Bleed
+  stunStateName: Stun
+  fearStateName: Fear
+  slowStateName: Slow
+  weaknessStateName: Weakness
 --- !u!114 &7646493029839192376
 MonoBehaviour:
   m_ObjectHideFlags: 0

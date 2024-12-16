@@ -1,28 +1,10 @@
 fileFormatVersion: 2
-guid: 1c6fb375c82289249a0b3aa0c7bd385d
+guid: 9f565b26e0281b54d8686a89119a19ee
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1280646856677322220
-    second: B1_0
-  - first:
-      213: 4838300807155666343
-    second: B1_1
-  - first:
-      213: -3541824025507231042
-    second: B1_2
-  - first:
-      213: -4394390896083388116
-    second: B1_3
-  - first:
-      213: 4353367238201033142
-    second: B1_4
-  - first:
-      213: -7522882308345889866
-    second: B1_5
-  - first:
-      213: -7847296655057895813
-    second: B1_6
+      213: -8680600549941539823
+    second: niddlePrison_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -69,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 12
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -118,155 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: B1_0
+      name: niddlePrison_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 198
+        x: 14
+        y: 8
         width: 100
-        height: 99
+        height: 100
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 649eb69a64c90934baad9d020ff7d61d
-      internalID: -611056681
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: B1_1
-      rect:
-        serializedVersion: 2
-        x: 100
-        y: 198
-        width: 100
-        height: 99
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 62dcf1a221190f94caf712ce03c84d2a
-      internalID: 598653904
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: B1_2
-      rect:
-        serializedVersion: 2
-        x: 200
-        y: 198
-        width: 100
-        height: 99
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2d57b0e2db5f83440a3af31ccce506ee
-      internalID: -1366525757
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: B1_3
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 99
-        width: 100
-        height: 99
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 815f52e8029b0dc4599638c5b9c5f47c
-      internalID: 991143378
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: B1_4
-      rect:
-        serializedVersion: 2
-        x: 100
-        y: 99
-        width: 100
-        height: 99
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 225ce35c4617de248a5db01c07cebb28
-      internalID: 130898534
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: B1_5
-      rect:
-        serializedVersion: 2
-        x: 200
-        y: 99
-        width: 100
-        height: 99
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a2949303df7733b4eb14ed58c30d4319
-      internalID: 1567126581
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: B1_6
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 100
-        height: 99
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d7bad3402afdcca49b1b9f7b2811a6c7
-      internalID: -1888696116
+      spriteID: 11c8ca7aacf488780800000000000000
+      internalID: -8680600549941539823
       vertices: []
       indices: 
       edges: []
@@ -275,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 1a460902a13da014fa33c5bd894b2f8f
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -285,13 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      B1_0: -611056681
-      B1_1: 598653904
-      B1_2: -1366525757
-      B1_3: 991143378
-      B1_4: 130898534
-      B1_5: 1567126581
-      B1_6: -1888696116
+      niddlePrison_0: -8680600549941539823
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

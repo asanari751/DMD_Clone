@@ -287,12 +287,12 @@ MonoBehaviour:
   poisonDebuff: 3
   bleedDebuff: 0.1
   statusEffectVisual: {fileID: 6421531990816341770}
-  poisonStateName: Poison_Effect
-  bleedStateName: Bleed_Effect
-  stunStateName: Stun_Effect
-  fearStateName: Fear_Effect
-  slowStateName: Slow_Effect
-  weaknessStateName: Weakness_Effect
+  poisonStateName: Poison
+  bleedStateName: Bleed
+  stunStateName: Stun
+  fearStateName: Fear
+  slowStateName: Slow
+  weaknessStateName: Weakness
 --- !u!114 &7525911174553023784
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -70,6 +70,10 @@ public class EnemyStatusEffect : MonoBehaviour
 
     public void ApplyStatusEffect(StatusEffectType type, float duration)
     {
+        Debug.Log($"상태이상 적용 시도: {type}, 지속시간: {duration}초");
+        Debug.Log($"Animator 상태: {(statusEffectAnimator != null ? "존재" : "없음")}");
+        Debug.Log($"Visual 상태: {(statusEffectVisual != null ? "존재" : "없음")}");
+
         if (activeStatusEffects.ContainsKey(type))
         {
             StopCoroutine(activeStatusEffects[type]);
@@ -121,6 +125,7 @@ public class EnemyStatusEffect : MonoBehaviour
 
     private IEnumerator FearEffect(float duration)
     {
+        statusEffectVisual.SetActive(true);
         statusEffectAnimator.Play(fearStateName, 0, 0f);
         isFeared = true;
         basicEnemy.StopAttack();
@@ -147,6 +152,7 @@ public class EnemyStatusEffect : MonoBehaviour
 
     private IEnumerator BleedEffect(float duration)
     {
+        statusEffectVisual.SetActive(true);
         statusEffectAnimator.Play(bleedStateName, 0, 0f);
         float elapsedTime = 0f;
         float tickInterval = 1f;
@@ -171,6 +177,7 @@ public class EnemyStatusEffect : MonoBehaviour
 
     private IEnumerator SlowEffect(float duration)
     {
+        statusEffectVisual.SetActive(true);
         statusEffectAnimator.Play(slowStateName, 0, 0f);
         float originalSpeed = basicEnemy.GetMoveSpeed();
         basicEnemy.SetMoveSpeed(originalSpeed * slowDebuff);
@@ -189,6 +196,7 @@ public class EnemyStatusEffect : MonoBehaviour
 
     private IEnumerator WeaknessEffect(float duration)
     {
+        statusEffectVisual.SetActive(true);
         statusEffectAnimator.Play(weaknessStateName, 0, 0f);
         enemyHealthController.SetDamageMultiplier(weaknessDebuff); // 30% 데미지 증가
 
@@ -206,6 +214,7 @@ public class EnemyStatusEffect : MonoBehaviour
 
     private IEnumerator PoisonEffect(float duration)
     {
+        statusEffectVisual.SetActive(true);
         statusEffectAnimator.Play(poisonStateName, 0, 0f);
         float elapsedTime = 0f;
         float tickInterval = 1f;
@@ -230,6 +239,7 @@ public class EnemyStatusEffect : MonoBehaviour
 
     private IEnumerator StunEffect(float duration)
     {
+        statusEffectVisual.SetActive(true);
         statusEffectAnimator.Play(stunStateName, 0, 0f);
         basicEnemy.SetCanMove(false);
 
@@ -281,9 +291,31 @@ public class EnemyStatusEffect : MonoBehaviour
         activeStatusEffects.Clear();
         isFeared = false;
 
-        if (statusEffectAnimator != null)
+        // 모든 상태이상 효과 초기화
+        if (basicEnemy != null)
         {
+            basicEnemy.SetMoveSpeed(basicEnemy.GetBasedSpeed());
+            basicEnemy.SetCanMove(true);
+        }
+
+        if (enemyHealthController != null)
+        {
+            enemyHealthController.SetDamageMultiplier(1f);
+        }
+
+        if (statusEffectVisual != null)
+        {
+            // 애니메이션 초기화
             statusEffectAnimator.Play("None", 0, 0f);
+
+            // 스프라이트 렌더러 찾아서 스프라이트 비우기
+            SpriteRenderer statusSpriteRenderer = statusEffectVisual.GetComponent<SpriteRenderer>();
+            if (statusSpriteRenderer != null)
+            {
+                statusSpriteRenderer.sprite = null;
+            }
+
+            statusEffectVisual.SetActive(false);
         }
     }
 

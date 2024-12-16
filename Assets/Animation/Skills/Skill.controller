@@ -182,7 +182,7 @@ AnimatorStateMachine:
     m_Position: {x: 240, y: -30, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -1681786887843834187}
-    m_Position: {x: -180, y: -30, z: 0}
+    m_Position: {x: 30, y: -80, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -7046424979230270927}
     m_Position: {x: -180, y: 190, z: 0}
@@ -288,7 +288,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: "\uAC00\uC2DC\uC758 \uAC10\uC625"
+  m_Name: "\uAC00\uC2DC\uC758 \uC800\uC8FC"
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []

@@ -22,9 +22,9 @@ MonoBehaviour:
   skillRangeType: 1
   skillPrefab: {fileID: 7225946344014412257, guid: 486268e6db11bba4e952b891064fb6ae,
     type: 3}
-  damage: 1
+  damage: 60
   duration: 5
-  cooldown: 5
+  cooldown: 12
   isPassive: 0
   attackInterval: 1
   statusEffectOnHit: 0

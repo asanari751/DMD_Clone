@@ -443,6 +443,7 @@ MonoBehaviour:
     type: 3}
   audioManager: {fileID: 0}
   playerHealth: {fileID: 1559543733641452481}
+  hubScene: 1_Hub
   collisionMask:
     serializedVersion: 2
     m_Bits: 128
@@ -528,6 +529,9 @@ MonoBehaviour:
   playerShadow: {fileID: 8255492480168050247}
   playerTransform: {fileID: 1970981162685179035}
   audioManager: {fileID: 0}
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 0
   hubScene: 1_Hub
   InCombatArea: 1
 --- !u!114 &3311380662734704670

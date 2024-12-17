@@ -39202,7 +39202,7 @@ MonoBehaviour:
       type: 3}
     spawnProbability: 25
     spawnTime0: 0
-    spawnTime1: 600
+    spawnTime1: 540
     enemyPool: []
   - enemyPrefab: {fileID: 4976483147096513540, guid: abaa9613eb843e24d82c80e3f280ba54,
       type: 3}
@@ -39218,7 +39218,7 @@ MonoBehaviour:
     enemyPool: []
   - enemyPrefab: {fileID: 4976483147096513540, guid: b8de2fe49420bec4382ee07f2e0c98ba,
       type: 3}
-    spawnProbability: 25
+    spawnProbability: 5
     spawnTime0: 360
     spawnTime1: 600
     enemyPool: []
@@ -39226,7 +39226,7 @@ MonoBehaviour:
   maxEnemies: 25
   initialMaxEnemies: 25
   finalMaxEnemies: 75
-  maxEnemiesIncreaseTime: 600
+  maxEnemiesIncreaseTime: 540
   parent: {fileID: 914842388}
   eliteEnemy: {fileID: 6135728234777956250}
   bossEnemy: {fileID: 3011803388326096627}
@@ -40578,6 +40578,11 @@ PrefabInstance:
       propertyPath: audioManager
       value: 
       objectReference: {fileID: 493379727}
+    - target: {fileID: 3311380662734704670, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+        type: 3}
+      propertyPath: playerHealth
+      value: 
+      objectReference: {fileID: 1830011061318543573}
     - target: {fileID: 4433714712038889224, guid: 887ea8f10e08dca4a8e0bab97d37934d,
         type: 3}
       propertyPath: m_Name
@@ -40664,6 +40669,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 887ea8f10e08dca4a8e0bab97d37934d, type: 3}
+--- !u!114 &1830011061318543573 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1559543733641452481, guid: 887ea8f10e08dca4a8e0bab97d37934d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1830011061318543572}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 822370006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca7cce8b62e10e046819198de4ea1460, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &1922712402515409082
 RectTransform:
   m_ObjectHideFlags: 0

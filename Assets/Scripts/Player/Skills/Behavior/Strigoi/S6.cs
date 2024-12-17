@@ -21,6 +21,12 @@ public class S6 : MonoBehaviour
         playerStats = PlayerStats.Instance;
         moveSpeedBonus = moveSpeedBonusValues[skillLevel - 1];
 
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.enabled = false;
+        }
+
         // 이동속도 증가 적용
         float currentMoveSpeed = playerStats.moveSpeed;
         playerStats.SetMoveSpeed(currentMoveSpeed * moveSpeedBonus);
@@ -59,9 +65,22 @@ public class S6Footprint : MonoBehaviour
     private SkillData skillData;
     private float weaknessDuration;
     private CircleCollider2D circleCollider;
+    private static readonly float minDistanceBetweenFootprints = 1f; // 발자국 간 최소 거리
 
     public void Initialize(float weaknessDuration, float duration, SkillData skillData)
     {
+        // 근처에 이미 발자국이 있는지 확인
+        Collider2D[] nearbyColliders = Physics2D.OverlapCircleAll(transform.position, minDistanceBetweenFootprints);
+        foreach (var collider in nearbyColliders)
+        {
+            if (collider.GetComponent<S6Footprint>() != null && collider.gameObject != gameObject)
+            {
+                // 이미 발자국이 있다면 새로운 발자국 제거
+                Destroy(gameObject);
+                return;
+            }
+        }
+        
         this.weaknessDuration = weaknessDuration;
 
         // 콜라이더 설정

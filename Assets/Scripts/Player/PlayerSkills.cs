@@ -101,7 +101,7 @@ public class PlayerSkills : MonoBehaviour
                 }
             }
 
-            else if (skill.isReady)
+            else if (skill.isReady && !playerHealth.IsDead())
             {
                 UseSkill(skill);
                 skill.isReady = false;

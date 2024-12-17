@@ -31,7 +31,6 @@ public class B2 : MonoBehaviour
         transform.position = playerTransform.position;
 
         // 부채꼴 범위 내 적 감지 및 데미지 처리
-        audioManager.PlaySFX("S20");
         StartCoroutine(DetectAndDamageEnemiesRoutine());
     }
 
@@ -87,6 +86,7 @@ public class B2 : MonoBehaviour
             yield break;
         }
 
+        audioManager.PlaySFX("S20");
         Vector2 directionToTarget = (targetEnemy.position - transform.position).normalized;
         transform.right = directionToTarget;
 
